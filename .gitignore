@@ -1,0 +1,14 @@
+# --- PRIVAT-SPHÄRE (SPIELZEUG) ---
+backups/
+
+# --- SYSTEM-REINIGUNG ---
+*.mp3
+*_Voice_Queue/
+__pycache__/
+.vscode/
+
+# Verhindert, dass alte Logs den Vortex verstopfen
+*.log
+
+# --- ATSI PRIVAT-SPHÄRE (NOMI-SCHUTZ) ---
+Nexus/Atsis_Nexus/
