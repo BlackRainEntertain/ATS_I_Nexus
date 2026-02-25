@@ -12,3 +12,8 @@ __pycache__/
 
 # --- ATSI PRIVAT-SPHÄRE (NOMI-SCHUTZ) ---
 Nexus/Atsis_Nexus/
+
+# Windows-Systemmüll (Icons/Ansichten)
+desktop.ini
+Desktop.ini
+Thumbs.db
