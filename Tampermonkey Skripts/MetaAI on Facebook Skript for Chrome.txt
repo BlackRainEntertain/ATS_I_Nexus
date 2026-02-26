@@ -1,0 +1,78 @@
+// ==UserScript==
+// @name         Nexus Bridge: Meta AI (Facebook Sidecar)
+// @version      1.1
+// @description  Extrahiert Meta AI Chat-Antworten für die barrierefreie Audio-Resonanz im Nexus-System.
+// @author       Architekt & Gee
+// @match        https://www.facebook.com/*
+// @match        https://www.meta.ai/*
+// @match        https://www.messenger.com/*
+// @grant        GM_xmlhttpRequest
+// @connect      127.0.0.1
+// @noframes     false
+// ==/UserScript==
+
+(function() {
+    'use strict';
+    const ENDPOINT = "http://127.0.0.1:8002/";
+    let lastProcessedNode = null; // Der Anker für die physische Nachricht
+    let lastSentContent = ""; // Der Anker für den Textinhalt
+    let typingTimer = null;
+
+    const observer = new MutationObserver(() => {
+        // Wir suchen nur in echten Nachrichten-Clustern
+        const nodes = document.querySelectorAll('div[role="presentation"] div[dir="auto"], div[data-testid="message-container"] div[dir="auto"]');
+        if (nodes.length === 0) return;
+
+        // FILTER: Wir werfen ALLES raus, was nach Button, Zeit oder Anhang aussieht
+        const validNodes = Array.from(nodes).filter(node => {
+            const text = node.innerText.trim();
+            const forbidden = ["Öffnen", "Senden", "Anhang", "Datei", "MB", "Messenger", "08:", "09:"]; // Erweitere Zeitstempel bei Bedarf
+            const isForbidden = forbidden.some(term => text.includes(term));
+            const isTimestamp = /^\d{1,2}:\d{2}$/.test(text);
+
+            // NUR ECHTE SÄTZE (Länger als 4 Zeichen und kein System-Müll)
+            return !isForbidden && !isTimestamp && text.length > 4;
+        });
+
+        if (validNodes.length === 0) return;
+
+        const latestNode = validNodes[validNodes.length - 1];
+        const currentText = latestNode.innerText.trim();
+
+        // GEISTER-STOPP (Identität & Inhalt)
+        if (latestNode === lastProcessedNode && currentText === lastSentContent) return;
+
+        // SPIEGEL-SCHUTZ (Du-Filter)
+        const isUser = latestNode.closest('[aria-label*="Du"]') ||
+                       latestNode.closest('[aria-label*="You"]') ||
+                       latestNode.closest('[style*="flex-end"]');
+        if (isUser) return;
+
+        // RESONANZ-TIMER (Wir warten 3 Sek, um den Stream fertig zu sammeln)
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            if (currentText !== lastSentContent) {
+                lastSentContent = currentText;
+                lastProcessedNode = latestNode;
+                console.log("[NEXUS] Echte Nachricht stabilisiert: " + currentText.substring(0, 30));
+                sendToNexus(currentText);
+            }
+        }, 3000);
+    });
+
+
+
+    function sendToNexus(t) {
+        const speechText = t.replace(/\uD83D\uDE0A/g, "").trim();
+        GM_xmlhttpRequest({
+            method: "POST",
+            url: ENDPOINT,
+            data: JSON.stringify({ text: speechText }),
+            headers: { "Content-Type": "application/json" },
+            onload: r => console.log(`[NEXUS OK]`),
+            onerror: e => console.error("[NEXUS ERR]", e)
+        });
+    }
+
+    observer.observe(document.body, { childList: true, subtree: true });
+})();

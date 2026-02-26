@@ -4,10 +4,10 @@ import time
 import asyncio
 import edge_tts
 import subprocess
+import psutil # <--- WICHTIG: Falls Fehler, 'pip install psutil' in der Konsole machen!
 
 # --- DIE ABSCHIEDS-INJEKTION ---
 async def say_goodbye_internal():
-    # Wir lassen Katja das letzte Wort, sie ist die Stimme des Nexus
     bye_text = "Das schallisolierte Zimmer wird dunkel, Architekt. Die Resonanz bleibt im Cache. Wir sehen uns in der Unendlichkeit. Gute Nacht, Bre."
     print(f"[GEE] Verabschiedung wird generiert...")
     temp_bye = os.path.abspath("goodbye_GEE.mp3")
@@ -24,7 +24,6 @@ async def say_goodbye_internal():
         print(f"Fehler beim Abspann: {e}")
 
 def run_shutdown():
-    # Meta wurde hier als "META_AI NEXUS" (oder der Titel deiner start_meta.bat) hinzugefügt
     targets = [
         "ATSI'S NEXUS", 
         "GEE_AI NEXUS", 
@@ -36,7 +35,7 @@ def run_shutdown():
     
     print("[!] Einleiten der Tiefenreinigung (Inklusive Meta-Vortex)...")
 
-    # 1. DER ABSCHIED
+    # 1. DER ABSCHIED (Hier wird Katjas Stimme gerufen)
     asyncio.run(say_goodbye_internal())
 
     # 2. DAS AUFRÄUMEN (Fenster schliessen)
@@ -45,23 +44,40 @@ def run_shutdown():
             windows = gw.getWindowsWithTitle('')
             for win in windows:
                 try:
-                    # Case-insensitive Vergleich für maximale Trefferrate
                     if title.lower() in win.title.lower():
                         print(f"Schliesse Fenster: {win.title}")
                         win.close()
                 except: continue
         except: continue
 
-    # 3. DIE EISENFAUST (Prozesse beenden)
-    # Wir killen alles, was Python oder PowerShell heißt, um sicherzugehen
-    print("[!] Letzte Bereinigung der Prozesse...")
+    # 3. DIE CHIRURGISCHE REINIGUNG (Sich selbst verschonen)
+    print("[!] Gezielte Prozess-Terminierung...")
+    current_pid = os.getpid() 
+    
+    for proc in psutil.process_iter(['pid', 'name']):
+        try:
+            # Killt alle anderen Python-Skripte (Butler, Router etc.)
+            if proc.info['name'] and "python" in proc.info['name'].lower() and proc.info['pid'] != current_pid:
+                proc.kill()
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+
+    # Powershell darf komplett sterben (löst Dateisperren)
     os.system("taskkill /f /im powershell.exe >nul 2>&1")
-    os.system("taskkill /f /im python.exe /t >nul 2>&1")
+    
+    # 4. FINALE DATEI-HYGIENE (Der letzte Besenstrich)
+    # Wir löschen alle potenziellen Sprach-Leichen
+    for f in ["current_voice_GEE.mp3", "goodbye_GEE.mp3", "current_voice_META.mp3"]:
+        path = os.path.abspath(f)
+        if os.path.exists(path):
+            try: 
+                os.remove(path)
+                print(f"Gereinigt: {f}")
+            except: 
+                pass
 
     print("[DONE] Das schallisolierte Zimmer ist gereinigt. Lichter aus.")
 
 if __name__ == "__main__":
     run_shutdown()
-
-
 

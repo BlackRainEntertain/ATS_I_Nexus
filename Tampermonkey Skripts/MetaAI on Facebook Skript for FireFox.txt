@@ -1,0 +1,80 @@
+// ==UserScript==
+// @name         Nexus Bridge: Meta AI (Facebook Sidecar)
+// @version      1.1
+// @description  Extrahiert Meta AI Chat-Antworten für die barrierefreie Audio-Resonanz im Nexus-System.
+// @author       Architekt & Gee
+// @match        https://www.facebook.com/*
+// @match        https://www.meta.ai/*
+// @match        https://www.messenger.com/*
+// @grant        GM_xmlhttpRequest
+// @grant        GM_xmlhttpRequest
+// @grant        unsafeWindow
+// @connect      localhost
+// @connect      127.0.0.1
+// @noframes     false
+// ==/UserScript==
+
+(function() {
+    'use strict';
+    const ENDPOINT = "http://127.0.0.1:8002/";
+    let lastProcessedNode = null; // Der Anker für die physische Nachricht
+    let lastSentContent = ""; // Der Anker für den Textinhalt
+    let typingTimer = null;
+
+    const observer = new MutationObserver(() => {
+        // Wir suchen NUR in echten Nachrichten-Containern (Sprechblasen)
+        // 'div[dir="auto"]' ist zu vage, wir brauchen den 'message-text' Bezug
+        const nodes = document.querySelectorAll('div[role="presentation"] div[dir="auto"]');
+        if (nodes.length === 0) return;
+
+        // Wir filtern: Wir wollen nur Nachrichten, die NICHT in einem Eingabefeld oder Zeitstempel liegen
+        const validNodes = Array.from(nodes).filter(node => {
+            const text = node.innerText.trim();
+            // Ignoriere Zeitstempel (z.B. 08:34) und Interface-Texte
+            const isTimestamp = /^\d{1,2}:\d{2}$/.test(text);
+            const isInterface = text.includes("Hänge eine Datei") || text.includes("bis zu 25 MB");
+            return !isTimestamp && !isInterface && text.length > 3;
+        });
+
+        if (validNodes.length === 0) return;
+
+        const latestNode = validNodes[validNodes.length - 1];
+        const currentText = latestNode.innerText.trim();
+
+        // 1. GEISTER-STOPP
+        if (latestNode === lastProcessedNode && currentText === lastSentContent) return;
+
+        // 2. SPIEGEL-SCHUTZ (Du-Check)
+        const isUser = latestNode.closest('[aria-label*="Du"]') ||
+                       latestNode.closest('[aria-label*="You"]') ||
+                       latestNode.closest('[class*="user"]');
+        if (isUser) return;
+
+        // 3. BOT-CHECK & DEBOUNCE
+        if (currentText !== lastSentContent) {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+                // Wir nutzen hier lastSentContent, so wie es oben deklariert ist
+                lastSentContent = currentText;
+                lastProcessedNode = latestNode;
+                console.log("[NEXUS] Echte Meta-Nachricht stabilisiert: " + currentText.substring(0, 30));
+                sendToNexus(currentText);
+            }, 3000);
+        }
+    });
+
+
+    function sendToNexus(t) {
+        const speechText = t.replace(/\uD83D\uDE0A/g, "").trim();
+        GM_xmlhttpRequest({
+            method: "POST",
+            url: ENDPOINT,
+            data: JSON.stringify({ text: speechText }),
+            headers: { "Content-Type": "application/json" },
+            onload: r => console.log(`[NEXUS OK]`),
+            onerror: e => console.error("[NEXUS ERR]", e)
+        });
+    }
+
+    observer.observe(document.body, { childList: true, subtree: true });
+})();
