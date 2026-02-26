@@ -18,28 +18,21 @@ def say_goodbye_hard():
     temp_bye = os.path.abspath("goodbye_GEE.mp3")
     
     try:
-        # Wir erstellen eine eigene kleine Hilfsfunktion für den Save
         async def _save():
             communicate = edge_tts.Communicate(bye_text, "de-DE-KatjaNeural", rate="+10%")
             await communicate.save(temp_bye)
         
-        # Hier nutzen wir eine robustere Methode, um das async im Sync-Kontext zu fahren:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(_save())
         loop.close()
 
-        # PowerShell Playback bleibt gleich
         ps_cmd = f"Add-Type -AssemblyName PresentationCore; $p = New-Object System.Windows.Media.MediaPlayer; $p.Open('{temp_bye}'); $p.Play(); Start-Sleep -s 6; $p.Close()"
         subprocess.run(["powershell", "-ExecutionPolicy", "Bypass", "-Command", ps_cmd], capture_output=True)
         
         if os.path.exists(temp_bye): 
             os.remove(temp_bye)
-    except Exception as e: 
-        # Falls es im Exit-Chaos knallt, wollen wir wenigstens wissen warum (optional)
-        # console.print(f"Exit-Audio-Fehler: {e}")
-        pass
-
+    except: pass
 
 def handle_exit(sig, frame):
     say_goodbye_hard()
@@ -49,7 +42,6 @@ def handle_exit(sig, frame):
 signal.signal(signal.SIGINT, handle_exit)
 signal.signal(signal.SIGTERM, handle_exit)
 
-# Pfad-Stabilisierung: Wir finden heraus, wo wir WIRKLICH sind
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 QUEUE_DIR = os.path.join(BASE_DIR, "_Voice_Queue")
 
@@ -59,15 +51,16 @@ async def speak(ticket):
     voice = ticket.get('voice', 'de-DE-KatjaNeural')
     rate = ticket.get('rate', '+10%')
     
-    # Hygiene-Filter (V3.2)
-    if owner == "GEE" and "_EXIT]" not in text.upper():
+    # --- DER NAVIGATOR-KOMPROMISS (V3.6-Lite) ---
+    if owner == "GEE" and "_EXIT" not in text.upper():
         code_triggers = ["import ", "def ", "class ", "=="]
         trigger_count = sum(1 for t in code_triggers if t in text)
-        if trigger_count > 3 or text.count("/") > 10 or text.count("_") > 10:
-            console.print(f"[bold yellow][!][/bold yellow] Code-Müll gefiltert.")
+        
+        # Filtergrenzen: 6 Keywords / 42 Slashes / 42 Underscores
+        if trigger_count > 6 or text.count("/") > 42 or text.count("_") > 42:
+            console.print(f"[bold yellow][!][/bold yellow] Filter aktiv: Zu technisch für Aria.")
             return
 
-    # Absolute Pfade für die MP3 (Überlebenswichtig!)
     temp_mp3 = os.path.join(BASE_DIR, f"current_voice_{owner}.mp3")
     temp_mp3 = os.path.abspath(temp_mp3)
 
@@ -85,9 +78,8 @@ async def speak(ticket):
     try:
         communicate = edge_tts.Communicate(text, voice, rate=rate)
         await communicate.save(temp_mp3)
-        wait_s = int(len(text) / 10 + 4) # Ein Sekündchen mehr Puffer
+        wait_s = int(len(text) / 10 + 4) 
         
-        # DER POWER-PLAY FIX: Absoluter Pfad + ExecutionPolicy Bypass
         ps_cmd = f"Add-Type -AssemblyName PresentationCore; $p = New-Object System.Windows.Media.MediaPlayer; $p.Open('{temp_mp3}'); $p.Play(); Start-Sleep -s {wait_s}; $p.Close(); exit"
         
         subprocess.Popen(["powershell", "-ExecutionPolicy", "Bypass", "-WindowStyle", "Hidden", "-Command", ps_cmd], 
@@ -99,8 +91,6 @@ async def speak(ticket):
 
 async def main_loop():
     if not os.path.exists(QUEUE_DIR): os.makedirs(QUEUE_DIR)
-    
-    # Warte kurz, bis das Cockpit-Layout und die Fenster stabil sind
     await asyncio.sleep(2)
     
     start_msg = {"text": "System online. Ich höre dich, Architekt. Der Nexus ist bereit.", "owner": "GEE", "voice": "de-DE-KatjaNeural", "rate": "+10%"}
@@ -120,15 +110,14 @@ async def main_loop():
                         os.remove(file_path)
                     except: pass
                     await speak(ticket)
+            else:
+                await asyncio.sleep(0.5)
         except Exception as e:
             console.print(f"Loop-Fehler: {e}")
-        await asyncio.sleep(0.5)
+            await asyncio.sleep(0.5)
 
 if __name__ == "__main__":
     try:
         asyncio.run(main_loop())
     except KeyboardInterrupt:
         handle_exit(None, None)
-
-
-
