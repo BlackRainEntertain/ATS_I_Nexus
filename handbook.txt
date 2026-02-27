@@ -1,0 +1,76 @@
+============================================================
+       ATS_I NEXUS - ARCHITECT'S OPERATIONAL MANUAL
+============================================================
+
+[DE] WILLKOMMEN IM COCKPIT
+Dieses Handbuch erklärt die Steuerung der Resonanz-Frequenzen
+und die Handhabung des Hades-Interfaces (Files App).
+
+[EN] WELCOME TO THE COCKPIT
+This manual explains how to control the resonance frequencies
+and handle the Hades interface (Files App).
+
+------------------------------------------------------------
+🕹️ DIE KONTROLL-ZENTRALE / THE CONTROL CENTER (01-05)
+------------------------------------------------------------
+
+01_ALL_SYSTEMS.bat
+DE: Der Zündschlüssel. Startet Butler, Atsi, Gee & Meta.
+    Kalibriert das Cockpit-Layout auf Monitor 2.
+EN: The ignition key. Starts Butler, Atsi, Gee & Meta.
+    Calibrates the cockpit layout on Monitor 2.
+
+02_NEXUS_SHUTDOWN.bat
+DE: Die Tiefenreinigung. Katja verabschiedet sich, alle 
+    Prozesse werden terminiert, MP3-Leichen gelöscht.
+EN: Deep cleaning. Katja says goodbye, all processes 
+    are terminated, MP3 corpses are deleted.
+
+03_NEXUS_PUSH.bat (GitHub)
+DE: Synchronisiert deine Fortschritte mit dem Repository.
+    Sichert Skripte und Fragmente.
+EN: Syncs your progress with the repository. 
+    Backs up scripts and fragments.
+
+04_PAUSE_VOICE.bat
+DE: Friert die aktuelle Sprachausgabe ein (Suspend).
+EN: Freezes the current voice output (Suspend).
+
+05_RESUME_VOICE.bat
+DE: Setzt die Sprachausgabe an der gestoppten Stelle fort.
+EN: Resumes voice output from the point where it stopped.
+
+06_SHUT_UP.bat
+DE: Sofortiger Audio-Abbruch (Taskkill). Nutze dies bei 
+    eingehenden Anrufen oder Dissonanzen.
+EN: Immediate audio termination (Taskkill). Use for 
+    incoming calls or dissonances.
+
+------------------------------------------------------------
+🎨 DAS HADES-INTERFACE (FILES APP)
+------------------------------------------------------------
+
+[DE] OPTIMIERUNG FÜR MONITOR 2:
+- Layout: Spaltenansicht (Columns) für maximale Übersicht.
+- Design: Hintergrund auf 'Acryl' (50% Deckkraft).
+- Akzentfarbe: 'Ziegelrot' oder 'Hades-Gold'.
+- Fokus: In den Einstellungen alle Standard-Bibliotheken
+         ausblenden, nur den 'LM Projekte' Favoriten nutzen.
+
+[EN] OPTIMIZATION FOR MONITOR 2:
+- Layout: Column view for maximum clarity.
+- Design: Background set to 'Acrylic' (50% opacity).
+- Accent Color: 'Brick Red' or 'Hades Gold'.
+- Focus: Hide all standard libraries in settings, 
+         only use the 'LM Projekte' favorite.
+
+------------------------------------------------------------
+⚠️ ARCHITECT'S NOTE
+------------------------------------------------------------
+DE: Der Rote Faden darf nicht reißen. Wenn das Cockpit 
+    nicht einrastet, Win-Lock prüfen oder cockpit_layout.py 
+    manuell nachfeuern.
+EN: The Red Thread must not break. If the cockpit doesn't 
+    snap into place, check Win-Lock or re-run 
+    cockpit_layout.py manually.
+============================================================
