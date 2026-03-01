@@ -4,7 +4,7 @@ import time
 import asyncio
 import edge_tts
 import subprocess
-import psutil # <--- WICHTIG: Falls Fehler, 'pip install psutil' in der Konsole machen!
+import psutil 
 
 # --- DIE ABSCHIEDS-INJEKTION ---
 async def say_goodbye_internal():
@@ -24,18 +24,21 @@ async def say_goodbye_internal():
         print(f"Fehler beim Abspann: {e}")
 
 def run_shutdown():
+    # --- TARGETS ERWEITERT UM VEGA ---
     targets = [
         "ATSI'S NEXUS", 
         "GEE_AI NEXUS", 
         "VORTEX",
+        "VEGA_NEXUS",           # <--- NEU: Vegas Fenster
         "AUDIO_MASTER_BUTLER", 
         "NEXUS_ALL_SYSTEMS_GO", 
+        "START_VEGA",           # <--- NEU: Falls die .bat noch offen ist
         "cmd.exe"
     ]
     
-    print("[!] Einleiten der Tiefenreinigung (Inklusive Meta-Vortex)...")
+    print("[!] Einleiten der Tiefenreinigung (Inklusive Meta-Vortex & Vega)...")
 
-    # 1. DER ABSCHIED (Hier wird Katjas Stimme gerufen)
+    # 1. DER ABSCHIED
     asyncio.run(say_goodbye_internal())
 
     # 2. DAS AUFRÄUMEN (Fenster schliessen)
@@ -50,24 +53,31 @@ def run_shutdown():
                 except: continue
         except: continue
 
-    # 3. DIE CHIRURGISCHE REINIGUNG (Sich selbst verschonen)
+    # 3. DIE CHIRURGISCHE REINIGUNG
     print("[!] Gezielte Prozess-Terminierung...")
     current_pid = os.getpid() 
     
     for proc in psutil.process_iter(['pid', 'name']):
         try:
-            # Killt alle anderen Python-Skripte (Butler, Router etc.)
+            # Killt alle anderen Python-Skripte (Butler, Router, Vega-Router etc.)
             if proc.info['name'] and "python" in proc.info['name'].lower() and proc.info['pid'] != current_pid:
                 proc.kill()
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             continue
 
-    # Powershell darf komplett sterben (löst Dateisperren)
+    # Powershell darf komplett sterben
     os.system("taskkill /f /im powershell.exe >nul 2>&1")
     
-    # 4. FINALE DATEI-HYGIENE (Der letzte Besenstrich)
+    # 4. FINALE DATEI-HYGIENE (Inklusive Seraphina-Files)
     # Wir löschen alle potenziellen Sprach-Leichen
-    for f in ["current_voice_GEE.mp3", "goodbye_GEE.mp3", "current_voice_META.mp3"]:
+    file_corpses = [
+        "current_voice_GEE.mp3", 
+        "goodbye_GEE.mp3", 
+        "current_voice_META.mp3",
+        "current_voice_VEGA.mp3" # <--- NEU: Vegas Seraphina-Leichen
+    ]
+    
+    for f in file_corpses:
         path = os.path.abspath(f)
         if os.path.exists(path):
             try: 
@@ -76,8 +86,9 @@ def run_shutdown():
             except: 
                 pass
 
-    print("[DONE] Das schallisolierte Zimmer ist gereinigt. Lichter aus.")
+    print("[DONE] Die Trinität und Vega sind offline. Lichter aus.")
 
 if __name__ == "__main__":
     run_shutdown()
+
 

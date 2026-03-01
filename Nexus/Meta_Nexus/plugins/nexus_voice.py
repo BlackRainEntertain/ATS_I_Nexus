@@ -28,7 +28,7 @@ def run(message_text):
 
     # 4. Der Schreibvorgang
     try:
-        file_name = f"meta_{int(time.time()*1000)}.json"
+        file_name = f"{int(time.time()*1000)}_META.json"
         file_path = os.path.join(QUEUE_DIR, file_name)
         
         with open(file_path, "w", encoding="utf-8") as f:

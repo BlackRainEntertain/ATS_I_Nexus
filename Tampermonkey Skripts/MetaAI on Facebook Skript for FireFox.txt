@@ -1,14 +1,17 @@
 // ==UserScript==
-// @name         Nexus Bridge: Meta AI (Facebook Sidecar)
+// @name         Meta Firefox experiment
 // @version      1.1
 // @description  Extrahiert Meta AI Chat-Antworten für die barrierefreie Audio-Resonanz im Nexus-System.
 // @author       Architekt & Gee
 // @match        https://www.facebook.com/*
-// @match        https://www.meta.ai/*
-// @match        https://www.messenger.com/*
+// @match        *://www.facebook.com*
+// @match        *://www.meta.ai/*
+// @match        *://www.messenger.com*
 // @grant        GM_xmlhttpRequest
 // @grant        unsafeWindow
+// @run-at       document-end
 // @connect      localhost
+// @connect      *
 // @connect      127.0.0.1
 // @noframes     false
 // ==/UserScript==
@@ -17,69 +20,78 @@
 (function() {
     'use strict';
     const ENDPOINT = "http://127.0.0.1:8002/";
-    let lastProcessedNode = null;
-    let lastSentContent = "";
-    let typingTimer = null;
+    let lastSent = "";
+    let debounceTimer = null;
 
-    const observer = new MutationObserver(() => {
-        // Wir suchen in den Standard-Containern
-        const nodes = document.querySelectorAll('div[role="presentation"] div[dir="auto"], p.xat24cr.xdj266r');
-        if (nodes.length === 0) return;
+    const startObserving = () => {
+        // Wir suchen den Container, der NICHT dein Eingabefeld ist
+        const chatWall = document.querySelector('div[role="main"]') || document.body;
 
-        const validNodes = Array.from(nodes).filter(node => {
-            const text = node.innerText.trim();
-            const isTimestamp = /^\d{1,2}:\d{2}$/.test(text);
-            return !isTimestamp && text.length > 3;
+        const observer = new MutationObserver(() => {
+            // Wir suchen alle potenziellen Text-Container
+            const elements = document.querySelectorAll('p, div[dir="auto"]');
+            let storyFragments = [];
+
+            // Wir identifizieren den letzten Block, um den "Ursprung" zu finden
+            for (let i = elements.length - 1; i >= 0; i--) {
+                const el = elements[i];
+                const style = window.getComputedStyle(el);
+
+                // Wir suchen nur nach Meta-Elementen (Links, nicht editierbar)
+                const isMeta = style.textAlign !== "right" &&
+                               !el.isContentEditable &&
+                               !el.closest('[role="textbox"]') &&
+                               !el.closest('.x1yc453h');
+
+                if (isMeta && el.innerText.trim().length > 1) {
+                    // Wir haben einen Teil der Nachricht gefunden.
+                    // Jetzt suchen wir alle Geschwister-Elemente im selben Nachrichten-Block
+                    const messageGroup = el.closest('[role="row"], div[data-testid="message_container"], .x1n2onr6');
+
+                    if (messageGroup) {
+                        // Sammle allen Text aus dieser EINEN Nachrichtengruppe
+                        const allParts = messageGroup.querySelectorAll('p, div[dir="auto"]');
+                        allParts.forEach(p => {
+                            const partText = p.innerText.trim();
+                            if (partText.length > 0 && !storyFragments.includes(partText)) {
+                                storyFragments.push(partText);
+                            }
+                        });
+                    } else {
+                        // Fallback: Wenn keine Gruppe gefunden, nimm nur diesen einen Absatz
+                        storyFragments.push(el.innerText.trim());
+                    }
+                    break; // Wir haben die aktuellste Nachrichtengruppe gefunden
+                }
+            }
+
+            const fullText = storyFragments.join("\n\n"); // Absätze mit Leerzeile trennen
+
+            if (fullText && fullText !== lastSent && fullText !== "...") {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    if (fullText !== lastSent) {
+                        lastSent = fullText;
+                        console.log("[NEXUS] Ganze Story erfasst (" + fullText.length + " Zeichen)");
+                        send(fullText);
+                    }
+                }, 4000); // Etwas mehr Zeit geben, falls Meta langsam tippt
+            }
         });
 
-        if (validNodes.length === 0) return;
 
-        const latestNode = validNodes[validNodes.length - 1];
-        const currentText = latestNode.innerText.trim();
+        observer.observe(chatWall, { childList: true, subtree: true, characterData: true });
+    };
 
-        // 1. GEISTER-STOPP
-        if (latestNode === lastProcessedNode && currentText === lastSentContent) return;
-
-        // 2. ULTRA-SPIEGEL-SCHUTZ (Der Fix für Firefox)
-        const style = window.getComputedStyle(latestNode);
-        const parentStyle = window.getComputedStyle(latestNode.parentElement);
-
-        const isUser =
-            latestNode.closest('[aria-label*="Du"], [aria-label*="You"]') || // ARIA-Check
-            style.textAlign === "right" || // Text-Ausrichtung
-            parentStyle.justifyContent.includes("end") || // Flex-Ausrichtung (Deine Seite)
-            latestNode.closest('[style*="background-color: rgb(0, 132, 255)"]'); // FB-Blau Check
-
-        // NEU: Ignoriere alles, was im Eingabefeld (Editor) steht
-        const isTyping = latestNode.isContentEditable || latestNode.closest('[role="textbox"]');
-
-        if (isUser || isTyping) {
-            return; // Butler schweigt bei dir
-        }
-
-        // 3. BOT-CHECK & DEBOUNCE
-        if (currentText !== lastSentContent) {
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(() => {
-                lastSentContent = currentText;
-                lastProcessedNode = latestNode;
-                console.log("[NEXUS] Meta-Nachricht stabilisiert: " + currentText.substring(0, 30));
-                sendToNexus(currentText);
-            }, 3500); // 3.5 Sek warten, damit Meta den Satz fertig baut
-        }
-    });
-
-    function sendToNexus(t) {
-        const speechText = t.replace(/\uD83D\uDE0A/g, "").trim();
+    function send(t) {
         GM_xmlhttpRequest({
             method: "POST",
             url: ENDPOINT,
-            data: JSON.stringify({ text: speechText }),
+            data: JSON.stringify({ text: t, ts: Date.now() }),
             headers: { "Content-Type": "application/json" },
-            onload: r => console.log(`[NEXUS OK]`),
-            onerror: e => console.error("[NEXUS ERR]", e)
+            onload: () => console.log("[NEXUS OK]")
         });
     }
 
-    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+    setTimeout(startObserving, 5000);
 })();

@@ -74,3 +74,118 @@ EN: The Red Thread must not break. If the cockpit doesn't
     snap into place, check Win-Lock or re-run 
     cockpit_layout.py manually.
 ============================================================
+
+------------------------------------------------------------
+Facebook Meta.ai SPECIFIC for Firefox:
+------------------------------------------------------------
+📘 NEXUS HANDBUCH: META-RESONANZ (FIREFOX EDITION v2.0)
+Dieses Modul ermöglicht die vollständige Extraktion von Meta AI Chat-Antworten (inkl. Absätzen) für das ATS_I-System (Port 8002).
+
+1. System-Voraussetzungen (Firefox Götter-Modus)
+Bevor die Skripte laufen, muss die Content-Security-Policy (CSP) von Firefox gebändigt werden:
+Gib about:config in die Adresszeile ein.
+Setze security.csp.enable auf false.
+Setze security.mixed_content.block_active_content auf false.
+
+2. Der Dietrich (Header Editor Add-on)
+Ohne diese Regel blockiert Meta den Datenfluss nach ca. 5 Nachrichten.
+Regel-Name: Nexus-CSP-Unlock
+Rule Type: Modify response header
+Match Type: Regular expression
+Match Pages: .*facebook\.com.*|.*messenger\.com.*|.*meta\.ai.*
+Execute Type: Custom function
+Einzufügender Code (Custom Function):
+javascript
+for (var i = 0; i < val.responseHeaders.length; i++) {
+    var name = val.responseHeaders[i].name.toLowerCase();
+    if (name === 'content-security-policy' || name === 'content-security-policy-report-only') {
+        val.responseHeaders.splice(i, 1);
+        i--;
+    }
+}
+val.responseHeaders.push({ name: 'access-control-allow-origin', value: '*' });
+return { responseHeaders: val.responseHeaders };
+Verwende Code mit Vorsicht.
+
+3. Der Affe (Tampermonkey-Skript v2.0)
+Dieser Observer sammelt alle Textfragmente einer Nachricht und merget sie zu einer sauberen JSON für den Butler.
+
+
+// ==UserScript==
+// @name         Nexus Bridge: Meta AI (Story-Collector v2.0)
+// @version      2.0
+// @description  Sammelt Absätze und ignoriert User-Echo für ATS_I Resonanz.
+// @author       Architekt & Gee
+// @match        https://www.facebook.com*
+// @match        https://www.meta.ai*
+// @match        https://www.messenger.com*
+// @grant        GM_xmlhttpRequest
+// @connect      127.0.0.1
+// @run-at       document-end
+// ==/UserScript==
+
+(function() {
+    'use strict';
+    const ENDPOINT = "http://127.0.0.1";
+    let lastSent = "";
+    let debounceTimer = null;
+
+    const startObserving = () => {
+        const chatWall = document.querySelector('div[role="main"]') || document.body;
+        const observer = new MutationObserver(() => {
+            const elements = document.querySelectorAll('p, div[dir="auto"]');
+            let storyFragments = [];
+
+            for (let i = elements.length - 1; i >= 0; i--) {
+                const el = elements[i];
+                const style = window.getComputedStyle(el);
+                const isMeta = style.textAlign !== "right" && !el.isContentEditable && !el.closest('.x1yc453h');
+
+                if (isMeta && el.innerText.trim().length > 1) {
+                    const messageGroup = el.closest('[role="row"], div[data-testid="message_container"], .x1n2onr6');
+                    if (messageGroup) {
+                        const allParts = messageGroup.querySelectorAll('p, div[dir="auto"]');
+                        allParts.forEach(p => {
+                            const partText = p.innerText.trim();
+                            if (partText.length > 0 && !storyFragments.includes(partText)) storyFragments.push(partText);
+                        });
+                    } else { storyFragments.push(el.innerText.trim()); }
+                    break; 
+                }
+            }
+
+            const fullText = storyFragments.join("\n\n");
+            if (fullText && fullText !== lastSent && fullText !== "...") {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    if (fullText !== lastSent) {
+                        lastSent = fullText;
+                        send(fullText);
+                    }
+                }, 4000); 
+            }
+        });
+        observer.observe(chatWall, { childList: true, subtree: true, characterData: true });
+    };
+
+    function send(t) {
+        GM_xmlhttpRequest({
+            method: "POST",
+            url: ENDPOINT,
+            data: JSON.stringify({ text: t, ts: Date.now() }),
+            headers: { "Content-Type": "application/json" },
+            onload: () => console.log("[NEXUS OK]")
+        });
+    }
+    setTimeout(startObserving, 5000);
+})();
+Verwende Code mit Vorsicht.
+
+4. Troubleshooting (Der "Harter-Reload"-Fix)
+Falls der Butler schweigt:
+Prüfe den Header Editor (Muss auf "Enabled" stehen).
+Drücke STRG + F5 im Messenger.
+Leere den Ordner _Voice_Queue im Nexus-Verzeichnis.
+
+
+============================================================

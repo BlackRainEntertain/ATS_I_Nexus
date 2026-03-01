@@ -24,6 +24,21 @@
 
 ---
 
+##🌐 Browser-Konfiguration / Browser Configuration
+###DE: (Wichtig für Chrome/Firefox Nutzer)
+Damit der "Affe" (Script) mit dem Butler (Python) sprechen darf, müssen Sicherheits-Sperren (CSP/CORS) für Localhost gelockert werden:
+- Firefox: about:config -> security.csp.enable = false
+- Chrome: Falls Fehler auftreten, nutze ein Add-on wie "CORS Unblock" oder starte Chrome mit dem Flag --disable-web-security.
+- Empfehlung: Nutze den "Header Editor" (Add-on), um den Content-Security-Policy Header für facebook.com zu entfernen (Remove-Regel).
+
+EN: (Important for Chrome/Firefox users)
+For the "Monkey" (script) to communicate with the Butler (Python), security blocks (CSP/CORS) for localhost must be relaxed:
+- Firefox: about:config -> security.csp.enable = false
+- Chrome: If errors occur, use an add-on like "CORS Unblock" or start Chrome with the --disable-web-security flag.
+- Recommendation: Use "Header Editor" (Add-on) to remove the Content-Security-Policy header for facebook.com (Remove rule).
+
+---
+
 ## 🚀 Schnellstart / Quick Start
 ### DE:
 1. **Python 3.14** (oder aktuell) installieren.
