@@ -1,9 +1,8 @@
 @echo off
 title --- RESUME_VOICE ---
 color 0a
-echo [SYSTEM] Nexus-Stimme nimmt den Faden wieder auf...
-:: taut alle schlafenden PowerShell-Instanzen wieder auf
-powershell -Command "Get-Process powershell | Resume-Process" >nul 2>&1
-echo [RESUME] Audio-Stream fliesst wieder.
+echo [SYSTEM] Lösche Brems-Signal...
+if exist "%~dp0NEXUS_PAUSE.tmp" del "%~dp0NEXUS_PAUSE.tmp"
+echo [RESUME] Der Butler darf weitermachen.
 timeout /t 2 >nul
 exit

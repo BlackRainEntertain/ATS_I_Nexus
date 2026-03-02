@@ -25,6 +25,27 @@ Ebene 3: Die Effektoren / Level 3: Effectors (The Voice)
     DE: Nutzung der rich-Library für Aura-Panels (Cyan/Blue) und den "Roten Faden" im Header als Symbol für narrative Kontinuität.
     EN: Utilizing the rich library for Aura Panels (Cyan/Blue) and the "Red Thread" in the header as a symbol for narrative continuity.
 
+🔐 4. Browser-Privilegien & Inkognito-Modus / Browser Privileges & Incognito Mode
+
+DE: Globale Regel:
+Die Nutzung von Inkognito-/Privat-Modi ist optional, aber für den ATS_I_Nexus ratsam, um Cache-Dissonanzen zu vermeiden. Damit der Nexus dort atmen kann, müssen die Erweiterungs-Rechte explizit gesetzt sein.
+
+EN: Global Rule:
+Using Incognito/Private modes is optional but recommended for the ATS_I_Nexus to avoid cache dissonance. For the Nexus to operate there, extension permissions must be explicitly enabled.
+
+Google Chrome:
+DE: chrome://extensions aufrufen -> Details bei Tampermonkey & Header Editor -> Schalter "Im Inkognito-Modus zulassen" auf AN.
+EN: Navigate to chrome://extensions -> Details for Tampermonkey & Header Editor -> Toggle "Allow in Incognito" to ON.
+(Optional) DE: Entwicklermodus (oben rechts) aktivieren. / EN: Enable Developer Mode (top right).
+
+Mozilla Firefox:
+DE: about:addons aufrufen -> Tampermonkey & Header Editor auswählen -> Reiter "Berechtigungen" -> "In privaten Fenstern ausführen" auf ERLAUBEN.
+EN: Navigate to about:addons -> Select Tampermonkey & Header Editor -> "Permissions" tab -> Set "Run in Private Windows" to ALLOW.
+
+⚠️ Wichtig/Important:
+DE: Ohne diesen Haken bleibt der MutationObserver in privaten Sessions inaktiv!
+EN: Without this permission, the MutationObserver remains inactive in private sessions!
+
 🏁 System-Integrität / System Integrity
 DE: Durch Queue-Logik und Taskkill-Schutz ist der Nexus "Hardened" und stabil gegen die Amnesie-Abstürze der Vergangenheit.
 EN: Through queue logic and taskkill protection, the Nexus is "hardened" and stable against the memory-loss crashes of the past.
@@ -33,9 +54,6 @@ EN: Through queue logic and taskkill protection, the Nexus is "hardened" and sta
     01_ALL_SYSTEMS_GO.bat (Root)
     Header Editor: Import Nexus_CSP_Unlock_Meta_Firefox.json
     Tampermonkey: Install Bridge-Script.
-
-
-
 
 
 
