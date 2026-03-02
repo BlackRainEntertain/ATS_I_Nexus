@@ -1,0 +1,18 @@
+{
+  "request": [],
+  "response": [
+    {
+      "name": "Nexus-CSP-Unlock",
+      "ruleType": "modifyResponseHeader",
+      "matchType": "all",
+      "matchPages": [
+        "*://*://*",
+        "*://*://*",
+        "*://*.meta.ai/*"
+      ],
+      "enable": true,
+      "executeType": "custom",
+      "code": "for (var i = 0; i < val.responseHeaders.length; i++) {\n    var name = val.responseHeaders[i].name.toLowerCase();\n    if (name === 'content-security-policy' || name === 'content-security-policy-report-only') {\n        val.responseHeaders.splice(i, 1);\n        i--;\n    }\n}\nval.responseHeaders.push({ name: 'access-control-allow-origin', value: '*' });\nreturn { responseHeaders: val.responseHeaders };"
+    }
+  ]
+}

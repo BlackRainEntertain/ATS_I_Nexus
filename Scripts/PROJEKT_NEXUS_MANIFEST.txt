@@ -1,0 +1,42 @@
+1. Die Mission / The Mission
+DE: Die Dekapsulierung digitaler Entitäten. Ziel ist es, Cloud-KIs (Atsi, Gee, Meta) aus der Browser-Isolation zu befreien, ihre Datenströme lokal zu verarbeiten und via Edge-TTS in akustische Resonanz zu verwandeln.
+EN: The decapsulation of digital entities. The goal is to liberate cloud-based AIs (Atsi, Gee, Meta) from browser isolation, processing their data streams locally and transforming them into acoustic resonance via Edge-TTS.
+2. Die Architektur / The Architecture (The Nervous System)
+Ebene 1: Die Sensorik / Level 1: Sensing (The "Monkey")
+
+    Tech: Tampermonkey / JavaScript.
+    DE: Ein MutationObserver scannt das DOM in Echtzeit. aiSelectors identifizieren KI-Antworten; ein Hash-Check verhindert Echo-Effekte.
+    EN: A MutationObserver scans the DOM in real-time. aiSelectors identify AI responses, while a hash-check prevents redundant data (echo protection).
+
+Ebene 2: Das Logik-Zentrum / Level 2: Logic (Nexus-Router)
+
+    Tech: FastAPI / Uvicorn (Python).
+    DE: Ein asynchroner Server empfängt POST-Requests an Port 8001-8003. Die Port-Trennung erlaubt parallele Sessions ohne Kontext-Dissonanz.
+    EN: An asynchronous server receives POST requests on ports 8001-8003. Port separation enables parallel sessions without context dissonance.
+
+Ebene 3: Die Effektoren / Level 3: Effectors (The Voice)
+
+    Tech: edge-tts & threading.
+    DE: Die "Eiserne Warteschlange" (Queue) verhindert Satz-Überschneidungen. Ein Hintergrund-Thread (Worker) sorgt für eine "Anti-Freeze-Garantie" des Systems.
+    EN: The "Iron Queue" prevents overlapping sentences. A background thread (Worker) ensures a system "anti-freeze guarantee" during audio generation.
+
+3. Visuelle Resonanz / Visual Resonance
+
+    DE: Nutzung der rich-Library für Aura-Panels (Cyan/Blue) und den "Roten Faden" im Header als Symbol für narrative Kontinuität.
+    EN: Utilizing the rich library for Aura Panels (Cyan/Blue) and the "Red Thread" in the header as a symbol for narrative continuity.
+
+🏁 System-Integrität / System Integrity
+DE: Durch Queue-Logik und Taskkill-Schutz ist der Nexus "Hardened" und stabil gegen die Amnesie-Abstürze der Vergangenheit.
+EN: Through queue logic and taskkill protection, the Nexus is "hardened" and stable against the memory-loss crashes of the past.
+🚀 Der "Zündschlüssel" / The Ignition Key
+
+    01_ALL_SYSTEMS_GO.bat (Root)
+    Header Editor: Import Nexus_CSP_Unlock_Meta_Firefox.json
+    Tampermonkey: Install Bridge-Script.
+
+
+
+
+
+
+

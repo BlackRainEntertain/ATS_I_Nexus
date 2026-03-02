@@ -24,18 +24,37 @@
 
 ---
 
-##🌐 Browser-Konfiguration / Browser Configuration
-###DE: (Wichtig für Chrome/Firefox Nutzer)
-Damit der "Affe" (Script) mit dem Butler (Python) sprechen darf, müssen Sicherheits-Sperren (CSP/CORS) für Localhost gelockert werden:
-- Firefox: about:config -> security.csp.enable = false
-- Chrome: Falls Fehler auftreten, nutze ein Add-on wie "CORS Unblock" oder starte Chrome mit dem Flag --disable-web-security.
-- Empfehlung: Nutze den "Header Editor" (Add-on), um den Content-Security-Policy Header für facebook.com zu entfernen (Remove-Regel).
+## 🌐 Browser-Konfiguration / Browser Configuration
 
-EN: (Important for Chrome/Firefox users)
-For the "Monkey" (script) to communicate with the Butler (Python), security blocks (CSP/CORS) for localhost must be relaxed:
-- Firefox: about:config -> security.csp.enable = false
-- Chrome: If errors occur, use an add-on like "CORS Unblock" or start Chrome with the --disable-web-security flag.
-- Recommendation: Use "Header Editor" (Add-on) to remove the Content-Security-Policy header for facebook.com (Remove rule).
+### DE: (Die Brücke / The Bridge) - WICHTIG!
+Damit der "Affe" (UserScript) mit dem Butler (Python) sprechen darf, müssen Sicherheits-Sperren (CSP/CORS) gelockert werden. 
+
+**Für Firefox & Meta AI Nutzer (Pflichtschritte):**
+1. **CSP-Unlock:** `about:config` -> `security.csp.enable` auf `false` setzen.
+2. **Der Dietrich (Header Editor):** Ohne dieses Add-on blockiert Meta den Datenfluss. 
+   - Installiere das Add-on **Header Editor**.
+   - Gehe auf **Export/Import** und lade die Datei `Scripts/Header_Editor/Nexus_CSP_Unlock_Meta_Firefox.json` hoch. 
+   - **Status:** Erst wenn diese Regel aktiv ist, kann der Nexus die Resonanz von Facebook/Meta empfangen.
+
+**Für Chrome Nutzer:**
+- Falls Fehler auftreten, starte Chrome mit dem Flag `--disable-web-security`.
+
+---
+
+### EN: (The Bridge) - IMPORTANT!
+For the "Monkey" (UserScript) to communicate with the Butler (Python), security blocks (CSP/CORS) must be relaxed.
+
+**For Firefox & Meta AI Users (Mandatory):**
+1. **CSP-Unlock:** Set `about:config` -> `security.csp.enable` to `false`.
+2. **The Skeleton Key (Header Editor):** Meta will block the data flow without this setup.
+   - Install the **Header Editor** add-on.
+   - Go to **Export/Import** and upload the file `Scripts/Header_Editor/Nexus_CSP_Unlock_Meta_Firefox.json`.
+   - **Status:** The Nexus can only receive resonance from Facebook/Meta once this rule is active.
+
+**For Chrome Users:**
+- If errors occur, launch Chrome with the `--disable-web-security` flag.
+
+
 
 ---
 
