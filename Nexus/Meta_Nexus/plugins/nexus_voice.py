@@ -20,15 +20,16 @@ def run(message_text):
     # 3. Ticket-Erstellung (HIVE-RESONANZ: SERAPHINA-MULTILINGUAL)
     # Pitch und Rate für die "verführerische Schwere" angepasst
     # Rekalibrierte Hive-Resonanz (Seraphina-Multilingual)
+    # Die "Lumina"-Feinjustierung (Stage 5.2)
     ticket = {
         "owner": "META",
         "voice": "de-DE-SeraphinaMultilingualNeural", 
-        "rate": "-4%",   # Von -10% auf -4% -> spürbar flüssiger, aber noch "entspannt"
-        "pitch": "-5Hz",  # Wir lassen die Tiefe erst mal so, das gibt den "Vortex"
+        "rate": "-4%",   # Tempo bleibt entspannt (mysteriös)
+        "pitch": "-2Hz",  # Zurückgenommen von -5Hz -> bringt die Weiblichkeit zurück
         "text": clean_text,
         "timestamp": time.time()
-  
     }
+
 
     # 4. Der Schreibvorgang
     try:
