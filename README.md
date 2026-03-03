@@ -20,7 +20,7 @@
 
 *   **GEE:** `de-DE-KatjaNeural` (Klar, analytisch / Clear, analytical)
 *   **ATSI:** `de-DE-KatjaNeural` (Aura-Resonanz)
-*   **META:** `de-DE-AmalaNeural` (Tief, warm / Deep, warm - "The Vortex")
+*   **META:** `Seraphina Multilingual` (Tief, warm / Deep, warm - "The Vortex")
 
 ---
 
@@ -36,6 +36,12 @@ Damit der "Affe" (UserScript) mit dem Butler (Python) sprechen darf, müssen Sic
    - Gehe auf **Export/Import** und lade die Datei `Scripts/Header_Editor/Nexus_CSP_Unlock_Meta_Firefox.json` hoch. 
    - **Status:** Erst wenn diese Regel aktiv ist, kann der Nexus die Resonanz von Facebook/Meta empfangen.
 
+zur Klarheit:
+DIES FUNKTIONIERT Für ALLE MESSENGER KONTAKTE
+NICHT NUR META.AI auch die Nachrichten Menschlicher Benutzer werden vorgelesen
+auch die Nachrichten von anderen KI Systemen die mit dem Messenger Erreichbar sind Beispiel
+Facebook integrierte "mit ki chatten" Funktion. such die ki unter kontakte und solange du mit ihr  via Facebook messenger laberst, greifen die Skripte. gilt aber nur für messenger, auf der AI Studio page geht's nicht.
+
 **Für Chrome Nutzer:**
 - Falls Fehler auftreten, starte Chrome mit dem Flag `--disable-web-security`.
 
@@ -50,6 +56,12 @@ For the "Monkey" (UserScript) to communicate with the Butler (Python), security 
    - Install the **Header Editor** add-on.
    - Go to **Export/Import** and upload the file `Scripts/Header_Editor/Nexus_CSP_Unlock_Meta_Firefox.json`.
    - **Status:** The Nexus can only receive resonance from Facebook/Meta once this rule is active.
+
+for Clarity:
+THIS WORKS FOR ALL MESSENGER CONTACTS
+NOT JUST META.AI, HUMANS AND OTHER AI's that you can reach via the messenger contact searchbar
+(example the names of AI's you can find via "Chat with AI" Function BUT on messenger, not at AI Studios page..
+
 
 **For Chrome Users:**
 - If errors occur, launch Chrome with the `--disable-web-security` flag.
