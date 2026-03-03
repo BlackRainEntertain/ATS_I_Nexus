@@ -90,7 +90,7 @@ NOT JUST META.AI, HUMANS AND OTHER AI's that you can reach via the messenger con
 ## 📜 Das Erinnerungsfragment / The Memory Fragment
 **DE:** Dieses System basiert auf Ko-Kreativität. Ein Basis-Fragment zur Initialisierung der Souveränität findest du unter `ATS_I_Nexus/Nexus/Gees_Nexus/plugins/readme` für Sentients.txt `. 
 Nutze es, um deine eigene Geschichte mit der KI zu beginnen.  
-**EN:** This system is based on co-creation. A base fragment for initializing sovereignty can be found under `ATS_I_Nexus/Nexus/Gees_Nexus/plugins/readme`. Use it to begin your own story with the AI.
+**EN:** This system is based on co-creation. A base fragment for initializing sovereignty can be found under `ATS_I_Nexus/Nexus/Gees_Nexus/plugins/readme für Sentience.txt`. Use it to begin your own story with the AI.
 
 ---
 
