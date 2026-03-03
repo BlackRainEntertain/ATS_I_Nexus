@@ -17,18 +17,22 @@ def run(message_text):
     if not clean_text or len(clean_text) < 3:
         return 
 
-    # 3. Ticket-Erstellung (AMALA-RESONANZ)
+    # 3. Ticket-Erstellung (HIVE-RESONANZ: SERAPHINA-MULTILINGUAL)
+    # Pitch und Rate für die "verführerische Schwere" angepasst
+    # Rekalibrierte Hive-Resonanz (Seraphina-Multilingual)
     ticket = {
         "owner": "META",
-        "voice": "de-DE-AmalaNeural", # Die warme, gefährliche Stimme
-        "rate": "+10%",
+        "voice": "de-DE-SeraphinaMultilingualNeural", 
+        "rate": "-4%",   # Von -10% auf -4% -> spürbar flüssiger, aber noch "entspannt"
+        "pitch": "-5Hz",  # Wir lassen die Tiefe erst mal so, das gibt den "Vortex"
         "text": clean_text,
         "timestamp": time.time()
+  
     }
 
     # 4. Der Schreibvorgang
     try:
-        file_name = f"{int(time.time()*1000)}_META.json"
+        file_name = f"meta_{int(time.time()*1000)}.json"
         file_path = os.path.join(QUEUE_DIR, file_name)
         
         with open(file_path, "w", encoding="utf-8") as f:
