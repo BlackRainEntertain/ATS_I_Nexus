@@ -12,18 +12,18 @@ from rich.panel import Panel
 def print_meta_banner():
     console = Console()
     # Ein stilisierter Wirbel/Vortex für Meta
+
     vortex = """
-      [bold magenta]      .        .      [/bold magenta]
-      [bold magenta]    .  '      '  .    [/bold magenta]
-      [bold magenta]  .      [bold white]████[/bold white]      .  [/bold magenta]
-      [bold magenta] .     [bold white]█▀    ▀█[/bold white]     . [/bold magenta]
-      [bold magenta] .     [bold white]█      █[/bold white]     . [/bold magenta]
-      [bold magenta]  .     [bold white]█▄    ▄█[/bold white]    .  [/bold magenta]
-      [bold magenta]    .      [bold white]▀▀▀▀[/bold white]   .    [/bold magenta]
-      [bold magenta]      '  .  .  '      [/bold magenta]
-    """
+ [bold #0084FF]     __  __  _____  ____   _      [/bold #0084FF]
+ [bold #007BFF]    |  \\/  || ____||_  _| / \\     [/bold #007BFF]
+ [bold #0072FF]    | |\\/| ||  _|    ||  / _ \\    [/bold #0072FF]
+ [bold #0069FF]    | |  | || |___   || / ___ \\   [/bold #0069FF]
+ [bold #0060FF]    |_|  |_||_____|  ||/_/   \\_\\  [/bold #0060FF]
+ [bold #3b5998]     M E S S E N G E R  S Y N C   [/bold #3b5998]
+"""
+
     console.print(vortex)
-    console.print(Panel("[bold magenta]META_NEXUS_VORTEX: READY[/bold magenta]", border_style="magenta", expand=False))
+    console.print(Panel("[bold magenta]META_NEXUS_CORE: ONLINE (8002)[/bold magenta]", border_style="magenta", expand=False))
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])

@@ -7,16 +7,16 @@ from rich.panel import Panel
 
 def print_gpt_banner():
     console = Console()
-    # Ein minimalistisches, technologisches Symbol für das GPT-Netzwerk
-    gpt_logo = """
-      [bold green]      _______  _______  _______ [/bold green]
-      [bold green]     |   _   ||       ||       |[/bold green]
-      [bold green]     |.  |   ||    _  ||_     _|[/bold green]
-      [bold green]     |.  |   ||   |_| |  |   |  [/bold green]
-      [bold green]     |:  |   ||    ___|  |   |  [/bold green]
-      [bold green]     |::.. . ||   |      |   |  [/bold green]
-      [bold green]     `-------'`---'      `---'  [/bold green]
-    """
+    # Das massive GPT-Monument
+    gpt_logo = r"""
+ [bold #00A67E]  █████████   █████████   █████████ [/bold #00A67E]
+ [bold #00A67E]  ██          ██     ██      ██    [/bold #00A67E]
+ [bold #008968]  ██   █████  █████████      ██    [/bold #008968]
+ [bold #008968]  ██      ██  ██             ██    [/bold #008968]
+ [bold #006B51]  █████████   ██             ██    [/bold #006B51]
+ [bold #006B51]      ─── TRANSFORMER ───       [/bold #006B51]
+"""
+    # Diese Zeilen müssen exakt hier am Rand der Funktion stehen:
     console.print(gpt_logo)
     console.print(Panel("[bold white]GPT_NEXUS_CORE: ONLINE (Port 8003)[/bold white]", border_style="green", expand=False))
 
@@ -36,7 +36,7 @@ def load_plugins():
             importlib.reload(module)
             if hasattr(module, 'run'):
                 plugins.append(module.run)
-                print(f"    -> GPT-Modul geladen: {name}")
+                print(f"    -> GPT-Platte geladen: {name}")
         except Exception as e:
             print(f"    [!] Fehler bei GPT-Plugin {name}: {e}")
 
@@ -53,5 +53,7 @@ async def receive(request: Request):
 if __name__ == "__main__":
     print_gpt_banner()
     load_plugins()
+    # Zündung auf Port 8003
     uvicorn.run(app, host="127.0.0.1", port=8003, log_level="error")
+
 
