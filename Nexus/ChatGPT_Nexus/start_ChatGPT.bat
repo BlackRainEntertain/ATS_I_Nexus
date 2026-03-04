@@ -1,6 +1,6 @@
 @echo off
 title GPT_NEXUS
 color 0a
-echo [!] Initialisiere GPT-Resonanz-Kern...
-echo [!] Lade Edge-Voice-Engine auf Port 8003.
+echo Zünde ChatGPTs Nervensystem...
 python chatgpt_router.py
+:: Hier darf KEIN pause stehen!
