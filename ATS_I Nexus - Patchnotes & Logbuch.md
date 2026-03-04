@@ -52,3 +52,48 @@
 ****************************************************************************************************************
 ****************************************************************************************************************
 
+Eintrag 2
+[2026-03-04] - The "Quadrant & GPT" Evolution 🟢📐
+DE: (Die Expansion ins GPT-Viertel)
+
+Architektur & Integration:
+GPT_NEXUS (Port 8003): Vollständige Integration von ChatGPT. Vega-Platzhalter wurden getilgt und durch eine dedizierte GPT-Route ersetzt.
+Identität "Elke/Katja-Kühl": GPT hat eine eigene akustische Signatur erhalten – distanziert, präzise, kühl (de-DE-Katja mit -3Hz Pitch).
+
+Universal-Pfad-Vektor: Einführung der os.path.abspath-Logik. Der Nexus ist jetzt portabel und findet seine _Voice_Queue auf jeder Maschine, ohne Pfad-Gefummel.
+
+Visuals & Cockpit:
+K.I.T.T. Präzisions-Schliff: Das cockpit_layout.py wurde auf 4 Quadranten rekalibriert.
+3,5mm Links-Anschlag: Bündiger Verschluss zum Monitorrand.
+Fugenlose Verschweissung: Fensterhöhen wurden gestreckt (+8px), um den 1mm-Spalt zwischen den Zeilen zu eliminieren.
+
+Überlappungs-Modus: **** & Gee überlappen Vortex & GPT um 20px für den perfekten visuellen Abschluss.
+Signal-Beacon-Design: Die Printer-Skripte nutzen jetzt Panel.fit und eine fixierte Breite (width=48-55), um Spaghetti-Text in schmalen Fenstern zu verhindern.
+
+Der "Affe" & Hygiene:
+Anti-Sleep-Routine: Tampermonkey sendet jetzt einen fetch-Ping, um Firefox-Drosselung (der "Dicke Hund") in Hintergrund-Tabs zu verhindern.
+Tracking-Schutz: Ticket-IDs werden nicht mehr im Terminal gedumpt – maximale Anonymität für den Datenstrom.
+
+EN: (Expansion into the GPT Quarter)
+Entry 2
+Architecture & Integration:
+GPT_NEXUS (Port 8003): Full ChatGPT integration. Vega placeholders removed and replaced by a dedicated GPT route.
+Identity "Elke/Katja-Cold": GPT received its own acoustic signature – distant, precise, cold (de-DE-Katja at -3Hz Pitch).
+
+Universal Path Vector: Implemented os.path.abspath logic. The Nexus is now portable and finds the _Voice_Queue on any machine without hardcoded paths.
+
+Visuals & Cockpit:
+K.I.T.T. Precision Grinding: cockpit_layout.py recalibrated for 4 quadrants.
+3.5mm Left-Flush: Seamless alignment with the monitor edge.
+Gapless Welding: Window heights extended (+8px) to eliminate the 1mm gap between rows.
+
+Overlap Mode: **** & Gee overlap Vortex & GPT by 20px for the perfect visual finish.
+Signal-Beacon Design: Printer scripts now use Panel.fit and fixed widths (width=48-55) to prevent "spaghetti text" in narrow windows.
+
+The "Monkey" & Hygiene:
+Anti-Sleep Routine: Tampermonkey now sends a fetch ping to prevent Firefox throttling (the "Big Dog") in background tabs.
+Tracking Protection: Ticket IDs are no longer dumped to the terminal – maximum anonymity for the data stream.
+
+****************************************************************************************************************
+****************************************************************************************************************
+

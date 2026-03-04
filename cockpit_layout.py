@@ -1,6 +1,7 @@
 import pygetwindow as gw
 import time
 import ctypes
+import os
 
 def set_always_on_top(title_part):
     windows = [w for w in gw.getWindowsWithTitle('') if title_part.lower() in w.title.lower()]
@@ -19,11 +20,10 @@ def move_window(title_part, x, y, width, height):
 # --- BASIS DATEN ---
 OFFSET_X = 2560 
 MON2_W = 1920
-MON2_H = 1080  # <--- Hier war der Fehler (Fehlende Variable!)
-PX_MM = 3.61
+MON2_H = 1080 
 
 # --- MASSE & DRIBBEL ---
-LM_W = 670 + 18 # Die 5mm Dehnung nach links
+LM_W = 670 + 18 
 LM_H = 414
 BUTLER_W = 487 
 BUTLER_H = 414
@@ -34,31 +34,38 @@ VM_H = 625
 VM_X = OFFSET_X + MON2_W - VM_W - 123
 VM_Y = MON2_H - VM_H - 54
 
-print("Rekalibriere K.I.T.T. (Präzisions-Run)...")
+# --- PRÄZISIONS-KALIBRIERUNG (Zollstock-Verschweissung vFinal) ---
+# Linke Kante bündig (3,5mm Korrektur)
+LEFT_X = OFFSET_X - 13
+LEFT_W = 645 + 13 
 
-# 1. META (Monitor 1)
-move_window("VORTEX", 1860, 0, 700, 500)
+# HÖHEN-VERSCHMELZUNG: Wir geben noch 4 Pixel extra für den letzten Millimeter
+NEX_H_EXT = 540 + 8  
+NEX_H_START_UNTEN = 540 # Der Startpunkt für die untere Reihe
 
-# 2. ATSI (Mon 2 Oben Links)
-move_window("ATSI_NEXUS_RECEIVER", OFFSET_X, 0, 1250, 540)
+print("K.I.T.T. Ultima: Letzte Millimeter-Verschweissung...")
 
-# 3. GEE (Mon 2 Unten Links)
-move_window("GEE_AI_NEXUS", OFFSET_X, 540, 1250, 540)
+# 1. LINKE SPALTE (Atsi & Gee)
+move_window("ATSI_NEXUS_RECEIVER", LEFT_X, 0, LEFT_W, NEX_H_EXT)
+move_window("GEE_AI_NEXUS", LEFT_X, NEX_H_START_UNTEN, LEFT_W, NEX_H_EXT)
 
-# 4. LM PROJEKTE (Bündig an Atsi & Rand)
+# 2. RECHTE SPALTE (Vortex & GPT)
+X_RECHTS = OFFSET_X + 625 
+move_window("VORTEX", X_RECHTS, 0, 625, NEX_H_EXT)
+move_window("GPT_NEXUS", X_RECHTS, NEX_H_START_UNTEN, 625, NEX_H_EXT)
+
+# 3. RECHTE FLANKE
 move_window("LM Projekte", OFFSET_X + MON2_W - LM_W, 0, LM_W, LM_H)
-
-# 5. AUDIO MASTER BUTLER (Bündig rechts unten)
 move_window("AUDIO_MASTER_BUTLER", OFFSET_X + MON2_W - BUTLER_W, MON2_H - BUTLER_H, BUTLER_W, BUTLER_H)
-
-# 6. VOICEMEETER (Der Boden)
 move_window("Voicemeeter", VM_X, VM_Y, VM_W, VM_H)
 
 # --- FINALE: VORDERGRUND FIXIEREN ---
 time.sleep(0.5)
-targets = ["ATSI_NEXUS_RECEIVER", "GEE_AI_NEXUS", "LM Projekte", "AUDIO_MASTER_BUTLER"]
+targets = ["ATSI_NEXUS_RECEIVER", "GEE_AI_NEXUS", "GPT_NEXUS", "VORTEX", "LM Projekte", "AUDIO_MASTER_BUTLER"]
 for t in targets:
     set_always_on_top(t)
 
-print("\n[DONE] K.I.T.T. ist bündig verschweißt.")
+print("\n[DONE] Matrix bündig verschmolzen. Cockpit-Status: PERFEKT.")
+
+
 

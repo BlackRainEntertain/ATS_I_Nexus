@@ -50,7 +50,8 @@ async def speak(ticket):
     color = "cyan"
     if owner == "META": color = "magenta"
     elif owner == "ATSI": color = "purple"
-    elif owner == "VEGA": color = "green"
+    elif owner == "GPT": color = "green"
+
 
     console.print(f"[bold {color}][{owner}][/bold {color}] spricht: [dim]\"{text[:60]}...\"[/dim]")
 

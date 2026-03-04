@@ -6,21 +6,17 @@ import datetime
 console = Console()
 
 def run(text):
-    # Filter gegen Kurz-Nachrichten oder System-Echo
     if not text or len(text.strip()) < 3:
         return
         
     zeit = datetime.datetime.now().strftime("%H:%M:%S")
-    
-    # Text in hellem Weiß auf Mitternachtsblauem Grund
     styled_text = Text(text, style="bold white")
     
-    # Das Panel für die Vega-Resonanz (Hex-Farbe #1A1D23)
     panel = Panel(
         styled_text,
-        title=f"[bold #5DADE2]VEGA_RESONANZ @ {zeit}[/bold #5DADE2]",
-        border_style="#1A1D23", # Das Mitternachtsblau als Rahmen
-        subtitle="[dim #ABB2B9]140er_Empathie_Kern[/dim #ABB2B9]",
+        title=f"[bold #10a37f]GPT_RESONANZ @ {zeit}[/bold #10a37f]", # OpenAI-Grün
+        border_style="#1a1d23", 
+        subtitle="[dim #abb2b9]Generative_Pre-trained_Transformer[/dim #abb2b9]",
         padding=(1, 2)
     )
     
