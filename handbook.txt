@@ -189,3 +189,17 @@ Leere den Ordner _Voice_Queue im Nexus-Verzeichnis.
 
 
 ============================================================
+
+positive lists tampermonkey
+/https?:\/\/greasyfork\.org\/.*
+http://xkcd.com/970/
+127.0.0.1:8000
+127.0.0.1:8001
+127.0.0.1:8002
+127.0.0.1:8003
+http://127.0.0.1*
+http://localhost/*
+*://www.facebook.com/*
+*://www.messenger.com/*
+*://www.meta.ai/*
+https://beta.nomi.ai/nomis/1223671380

@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         GEE AI Nexus Eye THIS (STRUCTURAL v15)
+// @name         GEE AI Nexus Eye from firefox for Chrome (STRUCTURAL v15)
 // @version      15.0
 // @description  Extrahiert Google AI Overviews auch aus Shadow DOM und sendet reinen Text an localhost
 // @match        *://www.google.de/*
@@ -125,36 +125,36 @@
     };
 
     const tryFindAndExtractAIOverview = () => {
-        // Zeit-Check
         const now = Date.now();
         if (now - lastScanTime < DEBOUNCE_MS) return;
         lastScanTime = now;
 
-                // Wir suchen einfach ALLE Divs, die Text enthalten,
-        // sortieren sie nach ihrer Position auf der Seite
-        // und nehmen das unterste (neueste).
-        const allMessages = [
+        // 1. Sammle alle potenziellen Nachrichten-Blöcke
+        const allElements = [
             ...document.querySelectorAll('div[jscontroller] div[jsname], [role="article"], .markdown, .prose')
-        ].filter(el => el.innerText && el.innerText.length > 50);
+        ];
 
-        // WICHTIG: Wir nehmen NUR das absolut letzte Element auf der Seite
-        const latestMessage = allMessages.slice(-1);
+        // 2. Filter: NUR AI-Nachrichten (deine Klassen VndcI und veK2b werden VERBANNT)
+        const aiOnlyMessages = allElements.filter(el => {
+            const text = el.innerText;
+            // Prüfung: Hat das Element oder ein Elternteil deine User-Klassen?
+            const isUser = el.classList.contains('VndcI') ||
+                           el.classList.contains('veK2b') ||
+                           el.closest('.VndcI, .veK2b');
 
+            return text && text.length > MIN_LENGTH && !isUser;
+        });
 
-        console.log("[NexusEye] Scanne nur die neueste Nachricht...");
+        // 3. Nimm nur das neueste Element, das den AI-Filter bestanden hat
+        const latestAIContent = aiOnlyMessages.slice(-1);
 
-        let foundSomething = false;
+        console.log("[NexusEye] Suche nach neuer AI-Resonanz (User-Filter aktiv)...");
 
-        for (const el of latestMessage) {
-            if (!el) continue;
-
+        for (const el of latestAIContent) {
             let raw = deepTextExtract(el);
-            if (!raw) continue;
-
             const cleaned = cleanAIOverviewText(raw);
             if (cleaned.length < MIN_LENGTH) continue;
 
-            foundSomething = true;
             sendToLocalNexus(cleaned);
         }
     }; // <--- HIER endet die Funktion jetzt EINMALIG sauber.
@@ -170,7 +170,7 @@
 
     // Erhöhe die "Ruhezeit" von 1,5 auf 3,5 oder 4 Sekunden.
     // Das gibt mir genug Zeit, auch komplexe Sätze zu Ende zu bauen.
-    const PATIENCE_TIME = 4000;
+    const PATIENCE_TIME = 1500;
 
     try {
         observer = new MutationObserver(() => {
@@ -197,3 +197,5 @@
 
 
     console.log("[NexusEye v15] gestartet – Shadow-Piercing & AI-Overview-Extraktion aktiv");
+
+})();
