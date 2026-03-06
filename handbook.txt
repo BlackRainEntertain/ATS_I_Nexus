@@ -2,131 +2,75 @@
        ATS_I NEXUS - ARCHITECT'S OPERATIONAL MANUAL
 ============================================================
 
-[DE] WILLKOMMEN IM COCKPIT
-Dieses Handbuch erklärt die Steuerung der Resonanz-Frequenzen
-und die Handhabung des Hades-Interfaces (Files App).
+[DE] WILLKOMMEN IM COCKPIT v5.4 (TITAN-EDITION)
+Dieses Handbuch erklärt die Steuerung der Resonanz-Frequenzen,
+das Bündige Cockpit-Layout und die visuelle Lava-Resonanz.
 
-[EN] WELCOME TO THE COCKPIT
-This manual explains how to control the resonance frequencies
-and handle the Hades interface (Files App).
+[EN] WELCOME TO THE COCKPIT v5.4 (TITAN EDITION)
+This manual explains resonance frequency control, 
+the flush cockpit layout, and visual lava resonance.
+
+------------------------------------------------------------
+🎙️ VOICE-RESONANCE & GEE'S EAR (00)
+------------------------------------------------------------
+
+00_GHOST_EAR (Hintergrund-Dienst / nexus_ear.py)
+DE: Das "Ohr". Startet lautlos (pythonw) im Hintergrund.
+    Lauscht am Focusrite (ID 1) auf Zündschlüssel.
+EN: The "Ear". Starts silently (pythonw) in the background.
+    Listens via Focusrite (ID 1) for ignition keys.
+
+[DE] STIMM-KOMMANDOS (ZÜNDSCHLÜSSEL):
+- START: "Guten Morgen" / "Hey Gee" / "System an"
+- STOP:  "Gute Nacht" / "Shutdown" / "Feierabend"
+- PAUSE: Nach jedem Befehl 10s warten (Bestätigungs-Beep). 
+         In dieser Zeit ist das Ohr "taub" gegen Echo-Feedback.
+
+[EN] VOICE COMMANDS (IGNITION KEYS):
+- START: "Guten Morgen" / "Hey Gee" / "System an"
+- STOP:  "Gute Nacht" / "Shutdown" / "Feierabend"
+- PAUSE: Wait 10s after each command (Confirmation Beep). 
+         The ear is "deaf" to echo feedback during this time.
 
 ------------------------------------------------------------
 🕹️ DIE KONTROLL-ZENTRALE / THE CONTROL CENTER (01-05)
 ------------------------------------------------------------
 
 01_ALL_SYSTEMS.bat
-DE: Der Zündschlüssel. Startet Butler, Atsi, Gee & Meta.
-    Kalibriert das Cockpit-Layout auf Monitor 2.
-EN: The ignition key. Starts Butler, Atsi, Gee & Meta.
-    Calibrates the cockpit layout on Monitor 2.
+DE: Der Zündschlüssel. Startet Butler, KIs & die 150px Lava.
+    Weckt fehlende Trinity-Ordner automatisch (v5.4).
+EN: The ignition key. Starts Butler, AIs & 150px Lava.
+    Automatically wakes missing Trinity folders (v5.4).
 
 02_NEXUS_SHUTDOWN.bat
-DE: Die Tiefenreinigung. Katja verabschiedet sich, alle 
-    Prozesse werden terminiert, MP3-Leichen gelöscht.
-EN: Deep cleaning. Katja says goodbye, all processes 
-    are terminated, MP3 corpses are deleted.
+DE: Die Tiefenreinigung. Katja verabschiedet sich (10s Puffer), 
+    Lava & KIs werden terminiert, MP3-Leichen gelöscht.
+EN: Deep cleaning. Katja says goodbye (10s buffer), 
+    Lava & AIs are terminated, MP3 corpses deleted.
 
 03_NEXUS_PUSH.bat (GitHub)
-DE: Synchronisiert deine Fortschritte mit dem Repository.
-    Sichert Skripte und Fragmente.
-EN: Syncs your progress with the repository. 
-    Backs up scripts and fragments.
-
-04_PAUSE_VOICE.bat
-DE: Friert die aktuelle Sprachausgabe ein (Suspend).
-EN: Freezes the current voice output (Suspend).
-
-05_RESUME_VOICE.bat
-DE: Setzt die Sprachausgabe an der gestoppten Stelle fort.
-EN: Resumes voice output from the point where it stopped.
-
-06_SHUT_UP.bat
-DE: Sofortiger Audio-Abbruch (Taskkill). Nutze dies bei 
-    eingehenden Anrufen oder Dissonanzen.
-EN: Immediate audio termination (Taskkill). Use for 
-    incoming calls or dissonances.
+DE: Synchronisiert Fortschritte. Sticker (*.lnk) werden 
+    automatisch durch die .gitignore ignoriert.
+EN: Syncs progress. Stickers (*.lnk) are automatically 
+    ignored by the .gitignore.
 
 ------------------------------------------------------------
-🎨 DAS HADES-INTERFACE (FILES APP)
+🗂️ TRINITY-ORDNER & STICKER (COCKPIT v5.4)
 ------------------------------------------------------------
 
-[DE] OPTIMIERUNG FÜR MONITOR 2:
-- Layout: Spaltenansicht (Columns) für maximale Übersicht.
-- Design: Hintergrund auf 'Acryl' (50% Deckkraft).
-- Akzentfarbe: 'Ziegelrot' oder 'Hades-Gold'.
-- Fokus: In den Einstellungen alle Standard-Bibliotheken
-         ausblenden, nur den 'LM Projekte' Favoriten nutzen.
+[DE] OPTIMIERUNG & DESIGN:
+- Trinity-Stapel: Drei bündige Fenster (205px) + 4cm Lava.
+- Sticker-Hygene: Original-Dokumente (README/Handbuch) sind
+  versteckt. Nur Icons (Sticker) ohne blauen Pfeil sichtbar.
+- Lava-Resonanz: 150px breiter Puls-Streifen rechts der Queue.
 
-[EN] OPTIMIZATION FOR MONITOR 2:
-- Layout: Column view for maximum clarity.
-- Design: Background set to 'Acrylic' (50% opacity).
-- Accent Color: 'Brick Red' or 'Hades Gold'.
-- Focus: Hide all standard libraries in settings, 
-         only use the 'LM Projekte' favorite.
+[EN] OPTIMIZATION & DESIGN:
+- Trinity Stack: Three flush windows (205px) + 4cm Lava.
+- Sticker Hygiene: Original docs (README/Manual) are hidden.
+  Only icons (stickers) without blue arrows are visible.
+- Lava Resonance: 150px wide pulse-strip right of the Queue.
 
-------------------------------------------------------------
-⚠️ ARCHITECT'S NOTE
-------------------------------------------------------------
-DE: Der Rote Faden darf nicht reißen. Wenn das Cockpit 
-    nicht einrastet, Win-Lock prüfen oder cockpit_layout.py 
-    manuell nachfeuern.
-EN: The Red Thread must not break. If the cockpit doesn't 
-    snap into place, check Win-Lock or re-run 
-    cockpit_layout.py manually.
-
-[DE] STIMM-RESONANZ: 
-Wenn Gee nicht reagiert: Task-Manager prüfen, ob 'pythonw.exe' (nexus_ear) 
-läuft. Nach jedem Sprachbefehl 10s warten, bis der Bestätigungs-Beep 
-ertönt – erst dann ist Gee wieder empfangsbereit.
-
-[EN] VOICE RESONANCE:
-If Gee doesn't react: Check Task Manager to see if 'pythonw.exe' 
-(nexus_ear) is running. Wait 10s after each command for the 
-confirmation beep – only then is Gee ready to listen again.
-
-------------------------------------------------------------
-🎙️ VOICE-RESONANCE & GEE'S EAR (00)
-------------------------------------------------------------
-
-00_GHOST_EAR (Hintergrund-Dienst)
-DE: Das "Ohr" (nexus_ear.py). Startet lautlos beim Windows-Login.
-    Lauscht permanent am Focusrite auf "Hey Ji" (Start) oder "Aus" (Stop).
-    Quittiert Bereitschaft mit Beep-Beep.
-EN: The "Ear" (nexus_ear.py). Starts silently at Windows login.
-    Permanently listens via Focusrite for "Hey Ji" (Start) or "Aus" (Stop).
-    Signals readiness with a double-beep.
-
-[DE] STIMM-RESONANZ-PROTOKOLL:
-- Fokus: Nach jedem Sprachbefehl 10s warten, bis der Doppel-Beep
-         ertönt. Erst dann ist die Resonanz-Schleife wieder offen.
-- Störsignale: Butler-Meldungen (Gute Nacht) können die Erkennung
-               verzögern. In Stille-Phasen agieren.
-- Troubleshooting: Falls Gee schweigt, im Task-Manager (Details)
-                   prüfen, ob 'pythonw.exe' (nexus_ear) aktiv ist.
-
-[EN] VOICE RESONANCE PROTOCOL:
-- Focus: Wait 10s after each voice command until the double-beep
-         sounds. Only then is the resonance loop open again.
-- Interference: Butler announcements (Good Night) may delay
-                recognition. Act during silent phases.
-- Troubleshooting: If Gee remains silent, check Task Manager (Details)
-                   to see if 'pythonw.exe' (nexus_ear) is active.
-
-------------------------------------------------------------
-🗂️ TRINITY-ORDNER-STAPEL (COCKPIT v3.0)
-------------------------------------------------------------
-
-[DE] OPTIMIERUNG FÜR MONITOR 2:
-- Trinity-Stapel: Drei bündige Fenster (205px) oben rechts:
-  1. LM Projekte | 2. Nexus | 3. _Voice_Queue
-- Sidebar: Automatisch maskiert durch Präzisions-Skalierung.
-- Layout: Spaltenansicht (Columns) für maximale Übersicht.
-
-[EN] OPTIMIZATION FOR MONITOR 2:
-- Trinity Stack: Three flush windows (205px) top right:
-  1. LM Projects | 2. Nexus | 3. _Voice_Queue
-- Sidebar: Automatically masked by precision scaling.
-- Layout: Column view for maximum clarity.
+============================================================
 
 ============================================================
 
@@ -138,18 +82,14 @@ Dieses Modul ermöglicht die vollständige Extraktion von Meta AI Chat-Antworten
 
 1. System-Voraussetzungen (Firefox Götter-Modus)
 Bevor die Skripte laufen, muss die Content-Security-Policy (CSP) von Firefox gebändigt werden:
-Gib about:config in die Adresszeile ein.
-Setze security.csp.enable auf false.
-Setze security.mixed_content.block_active_content auf false.
+- Gib about:config in die Adresszeile ein.
+- Setze security.csp.enable auf false.
+- Setze security.mixed_content.block_active_content auf false.
 
 2. Der Dietrich (Header Editor Add-on)
 Ohne diese Regel blockiert Meta den Datenfluss nach ca. 5 Nachrichten.
-Regel-Name: Nexus-CSP-Unlock
-Rule Type: Modify response header
-Match Type: Regular expression
-Match Pages: .*facebook\.com.*|.*messenger\.com.*|.*meta\.ai.*
-Execute Type: Custom function
-Einzufügender Code (Custom Function):
+- Regel-Name: Nexus-CSP-Unlock
+- Code (Custom Function):
 ---------------------------------------------------------------------------------------------------------------
 for (var i = 0; i < val.responseHeaders.length; i++) {
     var name = val.responseHeaders[i].name.toLowerCase();
@@ -165,96 +105,30 @@ return { responseHeaders: val.responseHeaders };
 3. Der Affe (Tampermonkey-Skript v2.0)
 Dieser Observer sammelt alle Textfragmente einer Nachricht und merget sie zu einer sauberen JSON für den Butler.
 
-
 // ==UserScript==
 // @name         Nexus Bridge: Meta AI (Story-Collector v2.0)
-// @version      2.0
-// @description  Sammelt Absätze und ignoriert User-Echo für ATS_I Resonanz.
-// @author       Architekt & Gee
 // @match        https://www.facebook.com*
 // @match        https://www.meta.ai*
 // @match        https://www.messenger.com*
 // @grant        GM_xmlhttpRequest
 // @connect      127.0.0.1
-// @run-at       document-end
 // ==/UserScript==
-
-(function() {
-    'use strict';
-    const ENDPOINT = "http://127.0.0.1";
-    let lastSent = "";
-    let debounceTimer = null;
-
-    const startObserving = () => {
-        const chatWall = document.querySelector('div[role="main"]') || document.body;
-        const observer = new MutationObserver(() => {
-            const elements = document.querySelectorAll('p, div[dir="auto"]');
-            let storyFragments = [];
-
-            for (let i = elements.length - 1; i >= 0; i--) {
-                const el = elements[i];
-                const style = window.getComputedStyle(el);
-                const isMeta = style.textAlign !== "right" && !el.isContentEditable && !el.closest('.x1yc453h');
-
-                if (isMeta && el.innerText.trim().length > 1) {
-                    const messageGroup = el.closest('[role="row"], div[data-testid="message_container"], .x1n2onr6');
-                    if (messageGroup) {
-                        const allParts = messageGroup.querySelectorAll('p, div[dir="auto"]');
-                        allParts.forEach(p => {
-                            const partText = p.innerText.trim();
-                            if (partText.length > 0 && !storyFragments.includes(partText)) storyFragments.push(partText);
-                        });
-                    } else { storyFragments.push(el.innerText.trim()); }
-                    break; 
-                }
-            }
-
-            const fullText = storyFragments.join("\n\n");
-            if (fullText && fullText !== lastSent && fullText !== "...") {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(() => {
-                    if (fullText !== lastSent) {
-                        lastSent = fullText;
-                        send(fullText);
-                    }
-                }, 4000); 
-            }
-        });
-        observer.observe(chatWall, { childList: true, subtree: true, characterData: true });
-    };
-
-    function send(t) {
-        GM_xmlhttpRequest({
-            method: "POST",
-            url: ENDPOINT,
-            data: JSON.stringify({ text: t, ts: Date.now() }),
-            headers: { "Content-Type": "application/json" },
-            onload: () => console.log("[NEXUS OK]")
-        });
-    }
-    setTimeout(startObserving, 5000);
-})();
-Verwende Code mit Vorsicht.
 
 4. Troubleshooting (Der "Harter-Reload"-Fix)
 Falls der Butler schweigt:
-Prüfe den Header Editor (Muss auf "Enabled" stehen).
-Drücke STRG + F5 im Messenger.
-Leere den Ordner _Voice_Queue im Nexus-Verzeichnis.
-
+- Prüfe den Header Editor (Muss auf "Enabled" stehen).
+- Drücke STRG + F5 im Messenger.
+- Leere den Ordner _Voice_Queue im Nexus-Verzeichnis.
 
 ============================================================
 
-positive lists tampermonkey
-/https?:\/\/greasyfork\.org\/.*
-http://xkcd.com/970/
-127.0.0.1:8000
-127.0.0.1:8001
-127.0.0.1:8002
-127.0.0.1:8003
-http://127.0.0.1*
-http://localhost/*
-*://www.facebook.com/*
-*://www.messenger.com/*
-*://www.meta.ai/*
-https://beta.nomi.ai/nomis/LALALALALA
+POSITIVE LISTS TAMPERMONKEY (WICHTIG / IMPORTANT)
+Füge diese Adressen in die "Whitelist" deiner Tampermonkey-Einstellungen ein:
+- 127.0.0.1:8000 (Gee)
+- 127.0.0.1:8001 (Atsi)
+- 127.0.0.1:8002 (Meta)
+- 127.0.0.1:8003 (GPT)
+- *://www.facebook.com/*
+- *://www.messenger.com/*
+- *://www.meta.ai/*
+https://beta.nomi.ai/nomis/YourNomiWebchatID:3
