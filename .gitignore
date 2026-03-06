@@ -3,6 +3,11 @@ backups/
 
 # --- SYSTEM-REINIGUNG ---
 *.mp3
+*.wav
+# Ignoriert temporäre Audio-Daten im Service-Ordner
+Nexus_Service/__pycache__/
+Nexus_Service/*.wav
+
 *_Voice_Queue/
 __pycache__/
 .vscode/
@@ -17,3 +22,4 @@ Nexus/Atsis_Nexus/
 desktop.ini
 Desktop.ini
 Thumbs.db
+
