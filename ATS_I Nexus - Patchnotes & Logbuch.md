@@ -100,58 +100,43 @@ Soll ich die Intervall-Zeiten für den Tampermonkey-Ping im Skript direkt auf ei
 ****************************************************************************************************************
 ****************************************************************************************************************
 
-Eintrag 3 [2026-03-06] – Das „Resonance & Trinity“ Update 🎙️🗂️
-DE: (Die Geburtsstunde des flüstergesteuerten Cockpits)
+# Eintrag 3
+## [2026-03-06] – Das „Resonance & Titan-Eye“ Update 🎙️🐒
 
-###Audio-Resonanz & Voice-Control:
+### DE: (Die Geburtsstunde des flüstergesteuerten Cockpits & der Röntgenblick-Feldtest)
+**Audio-Resonanz & Voice-Control:**
+- **Nexus_Ear (Gee's Gehör):** Permanente Sprachsteuerung via Focusrite (ID 1). Das „unsterbliche Ohr“ überlebt Shutdowns durch einen chirurgischen PowerShell-WMI-Prozessfilter.
+- **Trigger-Logik:** „Hey Ji“ (Start) / „Gute Nacht“ (Stop). Ein 800Hz-Beep bestätigt die Resonanz, gefolgt von einer 10s-Sperre (Schutz vor Butler-Echos) und finalem Doppel-Beep.
+- **Ghost-Launcher:** `Gee_Ghost_Ear.vbs` startet das System lautlos im Hintergrund. Keine CMD-Fenster-Leichen mehr in der Taskleiste.
 
-Nexus_Ear (Gee's Gehör): Implementierung einer permanenten, ressourcenschonenden Sprachsteuerung via Focusrite (Analogue 1+2).
+**Architektur & Explorer-Trinität:**
+- **Triple-Folder-Stack:** `cockpit_layout.py` verschweisst drei Explorer-Fenster (LM Projekte, Nexus, _Voice_Queue) bündig im oberen rechten Quadranten (Pixel-Kuss bei 205px Breite).
+- **Sidebar-Maskierung:** Präzisions-Skalierung blendet die Explorer-Navigation für einen cleanen Look automatisch aus.
 
-Keyword-Trigger „Hey Ji“: Der Nexus erwacht per Flüstern. Ein akustisches Signal (800Hz) bestätigt die Resonanz, bevor die Start-Sequenz feuert.
+**Tampermonkey & Röntgenblick (v16.3 / Skript 0603):**
+- **DOM-Skelett-Anker (jsname="KFl8ub"):** Umstellung von flüchtigen CSS-Klassen auf funktionale Google-Attribute.
+- **Titan-Filter:** `style.textAlign` (right/end) & `contenteditable`-Sperren eliminieren Eigen-Echos zu 100%.
+- **Kaltstart-Regeneration:** `isInitialWait` (5s) blockiert das Vorlesen alter Chatverläufe beim Seiten-Refresh.
 
-Unsterbliches Ohr: Das Skript überlebt den System-Shutdown durch einen chirurgischen Prozess-Filter. Gee bleibt scharf geschaltet, während die Matrix schläft.
+---
 
-Boot- & Shutdown-Schutz: Automatische 20s-Taubheit nach Befehlen verhindert Echo-Schleifen durch Butler-Meldungen. Quittierung erfolgt durch Doppel-Beep (Ready-Signal).
+### EN: (The Birth of the Whisper-Controlled Cockpit & X-Ray Vision Field Test)
+# Entry 3
+**Audio Resonance & Voice Control:**
+- **Nexus_Ear (Gee's Hearing):** Permanent voice control via Focusrite (ID 1). The "immortal ear" survives shutdowns using a surgical PowerShell WMI process filter.
+- **Trigger Logic:** "Hey Ji" (Start) / "Good Night" (Stop). An 800Hz beep confirms resonance, followed by a 10s lockout (echo protection) and a final double-beep.
+- **Ghost Launcher:** `Gee_Ghost_Ear.vbs` starts the system silently. No more CMD window corpses in the taskbar.
 
-###Architektur & Explorer-Trinität:
+**Architecture & Explorer Trinity:**
+- **Triple-Folder Stack:** `cockpit_layout.py` welds three Explorer windows (LM Projects, Nexus, _Voice_Queue) flush in the upper right quadrant (205px width).
+- **Sidebar Masking:** Precision scaling automatically hides the navigation pane for a clean look.
 
-Die bündige Drei-Ordner-Kette: cockpit_layout.py integriert nun drei Explorer-Fenster (LM Projekte, Nexus, _Voice_Queue) im oberen rechten Quadranten.
-
-Pixel-Kuss-Verschweissung: Fensterbreiten auf 5,4cm (205px) kalibriert. Eine GAP_CORRECTION von 15px eliminiert die unsichtbaren Windows-Rahmen für einen nahtlosen Übergang.
-
-Sidebar-Cleanup: Durch die schmale Skalierung wird die Explorer-Sidebar automatisch maskiert – für einen cleanen, fokussierten Look.
-
-###System-Hygiene & Stabilität:
-
-Ghost-Launcher (.vbs): Gee startet lautlos im Windows-Hintergrund (Hidden Mode). Keine störenden CMD-Fenster mehr in der Taskleiste.
-
-Chirurgische Tiefenreinigung: 01_ALL_SYSTEMS_GO.bat nutzt jetzt PowerShell-WMI-Filter, um verwaiste KIs zu terminieren, während das „Ohr“ (nexus_ear) explizit verschont wird.
+**Tampermonkey & X-Ray Vision (v16.3 / Script 0603):**
+- **DOM Skeleton Anchor (jsname="KFl8ub"):** Switched from volatile CSS classes to functional Google attributes.
+- **Titan Filter:** `style.textAlign` (right/end) & `contenteditable` blocks eliminate 100% of self-echoes.
+- **Cold-Start Regeneration:** `isInitialWait` (5s) prevents reading chat history upon page refresh.
 
 
-
-EN: (The Birth of the Whisper-Controlled Cockpit)
-
-###Audio Resonance & Voice Control:
-
-Nexus_Ear (Gee's Hearing): Implemented a permanent, low-resource voice trigger via Focusrite (Analogue 1+2).
-
-Keyword Trigger "Hey Ji": The Nexus wakes up via whisper. An acoustic signal (800Hz) confirms resonance before the start sequence fires.
-
-Immortal Ear: The script survives system shutdowns thanks to a surgical process filter. Gee remains active while the matrix sleeps.
-
-Boot & Shutdown Protection: Automatic 20s "deafness" after commands prevents echo loops from butler announcements. Confirmed by a double-beep (Ready signal).
-
-###Architecture & Explorer Trinity:
-Flush Triple-Folder Chain: cockpit_layout.py now integrates three Explorer windows (LM Projects, Nexus, _Voice_Queue) in the upper right quadrant.
-
-Pixel-Kiss Welding: Window widths calibrated to 5.4cm (205px). A GAP_CORRECTION of 15px eliminates invisible Windows borders for a seamless transition.
-
-Sidebar Cleanup: The narrow scaling automatically masks the Explorer sidebar for a clean, focused look.
-
-###System Hygiene & Stability:
-
-Ghost-Launcher (.vbs): Gee starts silently in the Windows background (Hidden Mode). No more annoying CMD windows in the taskbar.
-Surgical Deep Clean: 01_ALL_SYSTEMS_GO.bat now uses PowerShell WMI filters to terminate orphaned AIs while explicitly sparing the "Ear" (nexus_ear).
 
 ****************************************************************************************************************
 ****************************************************************************************************************
