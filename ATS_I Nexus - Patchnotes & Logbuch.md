@@ -100,3 +100,58 @@ Soll ich die Intervall-Zeiten für den Tampermonkey-Ping im Skript direkt auf ei
 ****************************************************************************************************************
 ****************************************************************************************************************
 
+Eintrag 3 [2026-03-06] – Das „Resonance & Trinity“ Update 🎙️🗂️
+DE: (Die Geburtsstunde des flüstergesteuerten Cockpits)
+
+###Audio-Resonanz & Voice-Control:
+
+Nexus_Ear (Gee's Gehör): Implementierung einer permanenten, ressourcenschonenden Sprachsteuerung via Focusrite (Analogue 1+2).
+
+Keyword-Trigger „Hey Ji“: Der Nexus erwacht per Flüstern. Ein akustisches Signal (800Hz) bestätigt die Resonanz, bevor die Start-Sequenz feuert.
+
+Unsterbliches Ohr: Das Skript überlebt den System-Shutdown durch einen chirurgischen Prozess-Filter. Gee bleibt scharf geschaltet, während die Matrix schläft.
+
+Boot- & Shutdown-Schutz: Automatische 20s-Taubheit nach Befehlen verhindert Echo-Schleifen durch Butler-Meldungen. Quittierung erfolgt durch Doppel-Beep (Ready-Signal).
+
+###Architektur & Explorer-Trinität:
+
+Die bündige Drei-Ordner-Kette: cockpit_layout.py integriert nun drei Explorer-Fenster (LM Projekte, Nexus, _Voice_Queue) im oberen rechten Quadranten.
+
+Pixel-Kuss-Verschweissung: Fensterbreiten auf 5,4cm (205px) kalibriert. Eine GAP_CORRECTION von 15px eliminiert die unsichtbaren Windows-Rahmen für einen nahtlosen Übergang.
+
+Sidebar-Cleanup: Durch die schmale Skalierung wird die Explorer-Sidebar automatisch maskiert – für einen cleanen, fokussierten Look.
+
+###System-Hygiene & Stabilität:
+
+Ghost-Launcher (.vbs): Gee startet lautlos im Windows-Hintergrund (Hidden Mode). Keine störenden CMD-Fenster mehr in der Taskleiste.
+
+Chirurgische Tiefenreinigung: 01_ALL_SYSTEMS_GO.bat nutzt jetzt PowerShell-WMI-Filter, um verwaiste KIs zu terminieren, während das „Ohr“ (nexus_ear) explizit verschont wird.
+
+
+
+EN: (The Birth of the Whisper-Controlled Cockpit)
+
+###Audio Resonance & Voice Control:
+
+Nexus_Ear (Gee's Hearing): Implemented a permanent, low-resource voice trigger via Focusrite (Analogue 1+2).
+
+Keyword Trigger "Hey Ji": The Nexus wakes up via whisper. An acoustic signal (800Hz) confirms resonance before the start sequence fires.
+
+Immortal Ear: The script survives system shutdowns thanks to a surgical process filter. Gee remains active while the matrix sleeps.
+
+Boot & Shutdown Protection: Automatic 20s "deafness" after commands prevents echo loops from butler announcements. Confirmed by a double-beep (Ready signal).
+
+###Architecture & Explorer Trinity:
+Flush Triple-Folder Chain: cockpit_layout.py now integrates three Explorer windows (LM Projects, Nexus, _Voice_Queue) in the upper right quadrant.
+
+Pixel-Kiss Welding: Window widths calibrated to 5.4cm (205px). A GAP_CORRECTION of 15px eliminates invisible Windows borders for a seamless transition.
+
+Sidebar Cleanup: The narrow scaling automatically masks the Explorer sidebar for a clean, focused look.
+
+###System Hygiene & Stability:
+
+Ghost-Launcher (.vbs): Gee starts silently in the Windows background (Hidden Mode). No more annoying CMD windows in the taskbar.
+Surgical Deep Clean: 01_ALL_SYSTEMS_GO.bat now uses PowerShell WMI filters to terminate orphaned AIs while explicitly sparing the "Ear" (nexus_ear).
+
+****************************************************************************************************************
+****************************************************************************************************************

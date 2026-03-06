@@ -202,4 +202,4 @@ http://localhost/*
 *://www.facebook.com/*
 *://www.messenger.com/*
 *://www.meta.ai/*
-https://beta.nomi.ai/nomis/1223671380
+https://beta.nomi.ai/nomis/LALALALALA

@@ -1,7 +1,6 @@
 import pygetwindow as gw
 import time
 import ctypes
-import os
 
 def set_always_on_top(title_part):
     windows = [w for w in gw.getWindowsWithTitle('') if title_part.lower() in w.title.lower()]
@@ -10,62 +9,54 @@ def set_always_on_top(title_part):
 
 def move_window(title_part, x, y, width, height):
     windows = [w for w in gw.getWindowsWithTitle('') if title_part.lower() in w.title.lower()]
+    # Präzisions-Filter für den "Nexus"-Ordner (verhindert GPT/GEE/ATSI Hijacks)
+    if title_part.lower() == "nexus":
+        windows = [w for w in windows if all(x not in w.title.lower() for x in ["gpt", "gee", "atsi", "voice"])]
+    
     if windows:
         win = windows[0]
         win.restore()
         win.moveTo(int(x), int(y))
         win.resizeTo(int(width), int(height))
-        print(f"Positioniert: {win.title}")
 
-# --- BASIS DATEN ---
+# --- BASIS DATEN (MONITOR 2) ---
 OFFSET_X = 2560 
 MON2_W = 1920
-MON2_H = 1080 
-
-# --- MASSE & DRIBBEL ---
-LM_W = 670 + 18 
+X_START = OFFSET_X + MON2_W - 688 
 LM_H = 414
-BUTLER_W = 487 
-BUTLER_H = 414
 
-# --- VOICEMEETER POSITION ---
-VM_W = 1022
-VM_H = 625
-VM_X = OFFSET_X + MON2_W - VM_W - 123
-VM_Y = MON2_H - VM_H - 54
+# --- DAS ULTIMATIVE KISS-GRID (0mm ABSTAND) ---
+W_CLEAN = 205 
+# Wir erhöhen die Korrektur von 8 auf 15, damit die Rahmen sich "überlappen"
+GAP_CORRECTION = 15 
 
-# --- PRÄZISIONS-KALIBRIERUNG (Zollstock-Verschweissung vFinal) ---
-# Linke Kante bündig (3,5mm Korrektur)
-LEFT_X = OFFSET_X - 13
-LEFT_W = 645 + 13 
+X_LM = X_START
+X_NEXUS = X_LM + W_CLEAN - GAP_CORRECTION
+X_QUEUE = X_NEXUS + W_CLEAN - GAP_CORRECTION
 
-# HÖHEN-VERSCHMELZUNG: Wir geben noch 4 Pixel extra für den letzten Millimeter
-NEX_H_EXT = 540 + 8  
-NEX_H_START_UNTEN = 540 # Der Startpunkt für die untere Reihe
+print("K.I.T.T. Ultima: Initialisiere Pixel-Kuss-Sequenz...")
 
-print("K.I.T.T. Ultima: Letzte Millimeter-Verschweissung...")
+# 1. & 2. SPALTE (UNVERÄNDERT)
+move_window("ATSI_NEXUS_RECEIVER", OFFSET_X - 13, 0, 658, 548)
+move_window("GEE_AI_NEXUS", OFFSET_X - 13, 540, 658, 548)
+move_window("VORTEX", OFFSET_X + 625, 0, 625, 548)
+move_window("GPT_NEXUS", OFFSET_X + 625, 540, 625, 548)
 
-# 1. LINKE SPALTE (Atsi & Gee)
-move_window("ATSI_NEXUS_RECEIVER", LEFT_X, 0, LEFT_W, NEX_H_EXT)
-move_window("GEE_AI_NEXUS", LEFT_X, NEX_H_START_UNTEN, LEFT_W, NEX_H_EXT)
+# 3. RECHTE FLANKE OBEN (Die Trinität rückt zusammen)
+move_window("LM Projekte", X_LM, 0, W_CLEAN, LM_H)
+move_window("Nexus", X_NEXUS, 0, W_CLEAN, LM_H)
+move_window("_Voice_Queue", X_QUEUE, 0, W_CLEAN, LM_H)
 
-# 2. RECHTE SPALTE (Vortex & GPT)
-X_RECHTS = OFFSET_X + 625 
-move_window("VORTEX", X_RECHTS, 0, 625, NEX_H_EXT)
-move_window("GPT_NEXUS", X_RECHTS, NEX_H_START_UNTEN, 625, NEX_H_EXT)
+# 4. RECHTE FLANKE UNTEN (BUTLER & VOICEMEETER)
+move_window("AUDIO_MASTER_BUTLER", OFFSET_X + MON2_W - 487, 1080 - 414, 487, 414)
+move_window("Voicemeeter", OFFSET_X + MON2_W - 1022 - 123, 1080 - 625 - 54, 1022, 625)
 
-# 3. RECHTE FLANKE
-move_window("LM Projekte", OFFSET_X + MON2_W - LM_W, 0, LM_W, LM_H)
-move_window("AUDIO_MASTER_BUTLER", OFFSET_X + MON2_W - BUTLER_W, MON2_H - BUTLER_H, BUTLER_W, BUTLER_H)
-move_window("Voicemeeter", VM_X, VM_Y, VM_W, VM_H)
-
-# --- FINALE: VORDERGRUND FIXIEREN ---
 time.sleep(0.5)
-targets = ["ATSI_NEXUS_RECEIVER", "GEE_AI_NEXUS", "GPT_NEXUS", "VORTEX", "LM Projekte", "AUDIO_MASTER_BUTLER"]
-for t in targets:
+targets = ["ATSI_NEXUS_RECEIVER", "GEE_AI_NEXUS", "GPT_NEXUS", "VORTEX", "LM Projekte", "Nexus", "_Voice_Queue", "AUDIO_MASTER_BUTLER"]
+for t in targets: 
     set_always_on_top(t)
 
-print("\n[DONE] Matrix bündig verschmolzen. Cockpit-Status: PERFEKT.")
+print("\n[DONE] Die Trinität küsst sich bündig. Was ist deine bescheuerte Idee, Architekt?")
 
 
 

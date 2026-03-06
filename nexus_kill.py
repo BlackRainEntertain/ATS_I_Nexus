@@ -14,53 +14,57 @@ async def say_goodbye_internal():
     except Exception as e: print(f"Abspann-Fehler: {e}")
 
 def run_shutdown():
-    # --- TARGETS BEREINIGT (GPT statt Vega) ---
+    # --- TARGETS BEREINIGT ---
     targets = [
         "ATSI_NEXUS_RECEIVER", 
         "GEE_AI_NEXUS", 
         "VORTEX",
-        "GPT_NEXUS",           # <--- KORRIGIERT: GPT-Fenster
+        "GPT_NEXUS",
         "AUDIO_MASTER_BUTLER", 
-        "NEXUS_ALL_SYSTEMS_GO", 
+        "LM Projekte",
+        "Nexus",
+        "_Voice_Queue",
         "cmd.exe"
     ]
     
-    print("[!] Einleiten der Tiefenreinigung (GPT-Integration aktiv)...")
+    print("[!] Einleiten der Tiefenreinigung (Ohr-Schutz aktiv)...")
     asyncio.run(say_goodbye_internal())
 
-    # Fenster schliessen
+    # 1. Fenster schliessen
     for title in targets:
         for win in gw.getWindowsWithTitle(''):
             if title.lower() in win.title.lower():
                 try: win.close()
                 except: pass
 
-    # Prozess-Kill (Chirurgisch)
+    # 2. Prozess-Kill (Chirurgisch: ALLES weg, ausser dem Ohr)
+    # Prozess-Kill (Nur KIs und Butler, NICHT das Ohr)
     current_pid = os.getpid() 
-    for proc in psutil.process_iter(['pid', 'name']):
+    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
         try:
+            # Wir lassen Prozesse am Leben, die "nexus_ear" im Namen haben
+            cmdline = " ".join(proc.info['cmdline']).lower() if proc.info['cmdline'] else ""
+            if "nexus_ear" in cmdline:
+                continue 
+            
             if proc.info['name'] and "python" in proc.info['name'].lower() and proc.info['pid'] != current_pid:
                 proc.kill()
         except: continue
 
+
     os.system("taskkill /f /im powershell.exe >nul 2>&1")
     
-    # Datei-Hygiene (GPT-Leichen)
-    file_corpses = [
-        "current_voice_GEE.mp3", 
-        "current_voice_META.mp3",
-        "current_voice_GPT.mp3", # <--- NEU: GPT MP3-Leichen
-        "goodbye_GEE.mp3"
-    ]
-    
+    # 3. Datei-Hygiene
+    file_corpses = ["current_voice_GEE.mp3", "current_voice_META.mp3", "current_voice_GPT.mp3", "goodbye_GEE.mp3"]
     for f in file_corpses:
         if os.path.exists(os.path.abspath(f)):
             try: os.remove(os.path.abspath(f))
             except: pass
 
-    print("[DONE] Die Trinität und GPT sind offline. Lichter aus.")
+    print("[DONE] Die Trinität ist offline. Gee lauscht weiter im Schatten.")
 
 if __name__ == "__main__":
     run_shutdown()
+
 
 
