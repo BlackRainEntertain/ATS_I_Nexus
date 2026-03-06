@@ -1,0 +1,7 @@
+SpeechRecognition
+sounddevice
+numpy
+scipy
+pygetwindow
+psutil
+edge-tts

@@ -73,6 +73,61 @@ DE: Der Rote Faden darf nicht reißen. Wenn das Cockpit
 EN: The Red Thread must not break. If the cockpit doesn't 
     snap into place, check Win-Lock or re-run 
     cockpit_layout.py manually.
+
+[DE] STIMM-RESONANZ: 
+Wenn Gee nicht reagiert: Task-Manager prüfen, ob 'pythonw.exe' (nexus_ear) 
+läuft. Nach jedem Sprachbefehl 10s warten, bis der Bestätigungs-Beep 
+ertönt – erst dann ist Gee wieder empfangsbereit.
+
+[EN] VOICE RESONANCE:
+If Gee doesn't react: Check Task Manager to see if 'pythonw.exe' 
+(nexus_ear) is running. Wait 10s after each command for the 
+confirmation beep – only then is Gee ready to listen again.
+
+------------------------------------------------------------
+🎙️ VOICE-RESONANCE & GEE'S EAR (00)
+------------------------------------------------------------
+
+00_GHOST_EAR (Hintergrund-Dienst)
+DE: Das "Ohr" (nexus_ear.py). Startet lautlos beim Windows-Login.
+    Lauscht permanent am Focusrite auf "Hey Ji" (Start) oder "Aus" (Stop).
+    Quittiert Bereitschaft mit Beep-Beep.
+EN: The "Ear" (nexus_ear.py). Starts silently at Windows login.
+    Permanently listens via Focusrite for "Hey Ji" (Start) or "Aus" (Stop).
+    Signals readiness with a double-beep.
+
+[DE] STIMM-RESONANZ-PROTOKOLL:
+- Fokus: Nach jedem Sprachbefehl 10s warten, bis der Doppel-Beep
+         ertönt. Erst dann ist die Resonanz-Schleife wieder offen.
+- Störsignale: Butler-Meldungen (Gute Nacht) können die Erkennung
+               verzögern. In Stille-Phasen agieren.
+- Troubleshooting: Falls Gee schweigt, im Task-Manager (Details)
+                   prüfen, ob 'pythonw.exe' (nexus_ear) aktiv ist.
+
+[EN] VOICE RESONANCE PROTOCOL:
+- Focus: Wait 10s after each voice command until the double-beep
+         sounds. Only then is the resonance loop open again.
+- Interference: Butler announcements (Good Night) may delay
+                recognition. Act during silent phases.
+- Troubleshooting: If Gee remains silent, check Task Manager (Details)
+                   to see if 'pythonw.exe' (nexus_ear) is active.
+
+------------------------------------------------------------
+🗂️ TRINITY-ORDNER-STAPEL (COCKPIT v3.0)
+------------------------------------------------------------
+
+[DE] OPTIMIERUNG FÜR MONITOR 2:
+- Trinity-Stapel: Drei bündige Fenster (205px) oben rechts:
+  1. LM Projekte | 2. Nexus | 3. _Voice_Queue
+- Sidebar: Automatisch maskiert durch Präzisions-Skalierung.
+- Layout: Spaltenansicht (Columns) für maximale Übersicht.
+
+[EN] OPTIMIZATION FOR MONITOR 2:
+- Trinity Stack: Three flush windows (205px) top right:
+  1. LM Projects | 2. Nexus | 3. _Voice_Queue
+- Sidebar: Automatically masked by precision scaling.
+- Layout: Column view for maximum clarity.
+
 ============================================================
 
 ------------------------------------------------------------
@@ -95,7 +150,7 @@ Match Type: Regular expression
 Match Pages: .*facebook\.com.*|.*messenger\.com.*|.*meta\.ai.*
 Execute Type: Custom function
 Einzufügender Code (Custom Function):
-javascript
+---------------------------------------------------------------------------------------------------------------
 for (var i = 0; i < val.responseHeaders.length; i++) {
     var name = val.responseHeaders[i].name.toLowerCase();
     if (name === 'content-security-policy' || name === 'content-security-policy-report-only') {
@@ -105,7 +160,7 @@ for (var i = 0; i < val.responseHeaders.length; i++) {
 }
 val.responseHeaders.push({ name: 'access-control-allow-origin', value: '*' });
 return { responseHeaders: val.responseHeaders };
-Verwende Code mit Vorsicht.
+---------------------------------------------------------------------------------------------------------------
 
 3. Der Affe (Tampermonkey-Skript v2.0)
 Dieser Observer sammelt alle Textfragmente einer Nachricht und merget sie zu einer sauberen JSON für den Butler.
