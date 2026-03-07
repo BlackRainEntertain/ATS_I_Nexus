@@ -5,3 +5,4 @@ scipy
 pygetwindow
 psutil
 edge-tts
+rich

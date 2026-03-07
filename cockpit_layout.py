@@ -77,8 +77,3 @@ if __name__ == "__main__":
     targets = ["ATSI_NEXUS_RECEIVER", "GEE_AI_NEXUS", "GPT_NEXUS", "VORTEX", "LM Projekte", "Nexus", "_Voice_Queue", "NEXUS_LAVA", "AUDIO_MASTER_BUTLER"]
     for t in targets: set_always_on_top(t)
     print("\n[DONE] Matrix bündig. Keine Hydra-Brut mehr.")
-
-
-
-
-

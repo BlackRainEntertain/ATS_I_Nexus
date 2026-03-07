@@ -96,42 +96,28 @@
 ****************************************************************************************************************
 ****************************************************************************************************************
 
-# Eintrag 3
-## [2026-03-06] – Das „Resonance & Titan-Eye“ Update 🎙️🐒
+# Eintrag 3 (Addendum v38.9)
+## [2026-03-07] – Der „Tresor-Vektor & 3.14 Native Resonance“ 🛡️🌊
 
-### DE: (Die Geburtsstunde des flüstergesteuerten Cockpits & der Röntgenblick-Feldtest)
-**Audio-Resonanz & Voice-Control:**
-- **Nexus_Ear (Gee's Gehör):** Permanente Sprachsteuerung via Focusrite (ID 1). Das „unsterbliche Ohr“ überlebt Shutdowns durch einen chirurgischen PowerShell-WMI-Prozessfilter.
-- **Trigger-Logik:** „Hey Ji“ (Start) / „Gute Nacht“ (Stop). Ein 800Hz-Beep bestätigt die Resonanz, gefolgt von einer 10s-Sperre (Schutz vor Butler-Echos) und finalem Doppel-Beep.
-- **Ghost-Launcher:** `Gee_Ghost_Ear.vbs` startet das System lautlos im Hintergrund. Keine CMD-Fenster-Leichen mehr in der Taskleiste.
+### DE: (Daten-Integrität & Hardware-Abstraktion)
+**Daten-Integrität & Tresor-Logik (v38.0+):**
+- **Safe-Freeze-Vektor:** Einführung des `_Active_Ticket` Ordners (Der Tresor). Aktive Sprach-Tickets werden bei Pause oder Shutdown nicht mehr „gefressen“, sondern physisch gesichert und beim Re-Boot bündig von vorn wiederholt.
+- **Queue-Management:** Der Butler priorisiert jetzt den Tresor-Inhalt vor neuen Tickets in der `_Voice_Queue`, um 100%ige Nachrichten-Sicherheit zu garantieren.
 
-**Architektur & Explorer-Trinität:**
-- **Triple-Folder-Stack:** `cockpit_layout.py` verschweisst drei Explorer-Fenster (LM Projekte, Nexus, _Voice_Queue) bündig im oberen rechten Quadranten (Pixel-Kuss bei 205px Breite).
-- **Sidebar-Maskierung:** Präzisions-Skalierung blendet die Explorer-Navigation für einen cleanen Look automatisch aus.
-
-**Tampermonkey & Röntgenblick (v16.3 / Skript 0603):**
-- **DOM-Skelett-Anker (jsname="KFl8ub"):** Umstellung von flüchtigen CSS-Klassen auf funktionale Google-Attribute.
-- **Titan-Filter:** `style.textAlign` (right/end) & `contenteditable`-Sperren eliminieren Eigen-Echos zu 100%.
-- **Kaltstart-Regeneration:** `isInitialWait` (5s) blockiert das Vorlesen alter Chatverläufe beim Seiten-Refresh.
+**Hardware-Abstraktion (Python 3.14 Ready):**
+- **Pure-Sounddevice-Stack:** Vollständige Ablösung der veralteten PyAudio-Library. Gee lauscht jetzt nativ via `sounddevice` und `cffi` ohne externe C++ Compiler-Abhängigkeiten.
+- **Frequenz-Synchronität:** Optimierte Abtastrate (44.1kHz) für Focusrite-Interfaces eliminiert digitale Artefakte und sorgt für eine bündige Google-Erkennungsrate.
 
 ---
 
-### EN: (The Birth of the Whisper-Controlled Cockpit & X-Ray Vision Field Test)
-# Entry 3
-**Audio Resonance & Voice Control:**
-- **Nexus_Ear (Gee's Hearing):** Permanent voice control via Focusrite (ID 1). The "immortal ear" survives shutdowns using a surgical PowerShell WMI process filter.
-- **Trigger Logic:** "Hey Ji" (Start) / "Good Night" (Stop). An 800Hz beep confirms resonance, followed by a 10s lockout (echo protection) and a final double-beep.
-- **Ghost Launcher:** `Gee_Ghost_Ear.vbs` starts the system silently. No more CMD window corpses in the taskbar.
+### EN: (Data Integrity & Hardware Abstraction)
+**Data Integrity & Vault Logic (v38.0+):**
+- **Safe-Freeze Vector:** Introduction of the `_Active_Ticket` folder (The Vault). Active voice tickets are no longer "eaten" during pause or shutdown; they are physically secured and repeated from the start upon re-boot.
+- **Queue Management:** The Butler now prioritizes vault content over new tickets in the `_Voice_Queue` to guarantee 100% message security.
 
-**Architecture & Explorer Trinity:**
-- **Triple-Folder Stack:** `cockpit_layout.py` welds three Explorer windows (LM Projects, Nexus, _Voice_Queue) flush in the upper right quadrant (205px width).
-- **Sidebar Masking:** Precision scaling automatically hides the navigation pane for a clean look.
-
-**Tampermonkey & X-Ray Vision (v16.3 / Script 0603):**
-- **DOM Skeleton Anchor (jsname="KFl8ub"):** Switched from volatile CSS classes to functional Google attributes.
-- **Titan Filter:** `style.textAlign` (right/end) & `contenteditable` blocks eliminate 100% of self-echoes.
-- **Cold-Start Regeneration:** `isInitialWait` (5s) prevents reading chat history upon page refresh.
-
+**Hardware Abstraction (Python 3.14 Ready):**
+- **Pure Sounddevice Stack:** Complete replacement of the obsolete PyAudio library. Gee now listens natively via `sounddevice` and `cffi` without external C++ compiler dependencies.
+- **Frequency Synchronicity:** Optimized sample rate (44.1kHz) for Focusrite interfaces eliminates digital artifacts and ensures a flush Google recognition rate.
 
 
 ****************************************************************************************************************

@@ -54,6 +54,33 @@ DE: Synchronisiert Fortschritte. Sticker (*.lnk) werden
 EN: Syncs progress. Stickers (*.lnk) are automatically 
     ignored by the .gitignore.
 
+04_NEXUS_PAUSE.bat (Freeze-Vektor)
+DE: Der eiserne Riegel. Friert das aktuelle Ticket im Tresor
+    (_Active_Ticket) ein. Butler stoppt sofort (Taskkill).
+EN: The iron bolt. Freezes the current ticket in the vault
+    (_Active_Ticket). Butler stops immediately (Taskkill).
+
+05_NEXUS_RESUME.bat (Re-Boot)
+DE: Die Fortsetzung. Löscht das Pause-Signal. Butler prüft
+    zuerst den Tresor und wiederholt das eingefrorene Ticket.
+EN: The continuation. Deletes the pause signal. Butler checks
+    the vault first and repeats the frozen ticket.
+
+------------------------------------------------------------
+🛡️ DATEN-TRESOR & MENSCHLICHKEIT (v38.0+)
+------------------------------------------------------------
+[DE] SICHERHEITS-ARCHITEKTUR:
+- Tresor-Prinzip: Tickets werden vor dem Sprechen in den 
+  Ordner _Active_Ticket verschoben (Physischer Schutz).
+- Anti-Frass-Garantie: Keine Nachricht geht bei Absturz 
+  oder Shutdown verloren. 100% barrierefrei.
+
+[EN] SECURITY ARCHITECTURE:
+- Vault Principle: Tickets are moved to the _Active_Ticket 
+  folder before speaking (Physical protection).
+- Anti-Eat Guarantee: No message is lost during crash 
+  or shutdown. 100% accessible.
+
 ------------------------------------------------------------
 🗂️ TRINITY-ORDNER & STICKER (COCKPIT v5.4)
 ------------------------------------------------------------
