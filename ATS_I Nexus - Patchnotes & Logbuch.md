@@ -122,3 +122,30 @@
 
 ****************************************************************************************************************
 ****************************************************************************************************************
+
+# Eintrag 4 (Addendum v38.3)
+## [2026-03-08] – Das „Global-Navigator & Voice-Souveränität“ Update 🌍🎙️
+
+### DE: (Sprach-Steuerung & Barrierefreiheit)
+**Souveränität & Voice-Commands (v38.3):**
+- **Titan-Ear Expansion:** Vollständige Integration von Sprachbefehlen für **Pause**, **Resume** und **Skip**. Der Butler reagiert jetzt auf natürliche Trigger wie „Halt an“, „Weiter“ oder „Weg damit“.
+- **Skip-Vektor (Chirurgisch):** Einführung der `SKIP_WORDS` Logik. Tickets können nun akustisch im „Vorbeiflug“ gelöscht werden, ohne die Queue oder den Tresor zu korrumpieren.
+
+**Architektur-Schutz & Hygiene:**
+- **Der Architekten-Stift:** Implementierung der `ARCHITECT_LOCKED.txt` Sperre. Schützt Dev-Systeme vor versehentlichen Git-Pulls durch Sprach-Trigger, während die Barrierefreiheit für öffentliche Nutzer (Navigator-Modus) erhalten bleibt.
+- **Intelligente Explorer-Trinität:** Die Start-Batch prüft nun via PowerShell die Existenz offener Fenster. Kein Duplikat-Chaos mehr im HUD; bestehende Fenster werden nahtlos vom Cockpit-Layout übernommen.
+
+---
+
+### EN: (Voice Control & Accessibility)
+**Sovereignty & Voice Commands (v38.3):**
+- **Titan-Ear Expansion:** Full integration of voice commands for **Pause**, **Resume**, and **Skip**. The Butler now responds to natural triggers like "stop," "continue," or "skip it."
+- **Skip Vector (Surgical):** Introduction of the `SKIP_WORDS` logic. Tickets can now be acoustically deleted "on the fly" without corrupting the queue or the vault.
+
+**Architectural Protection & Hygiene:**
+- **The Architect's Pin:** Implementation of the `ARCHITECT_LOCKED.txt` lock. Protects dev systems from accidental git pulls via voice triggers while maintaining accessibility for public users (Navigator mode).
+- **Intelligent Explorer Trinity:** The startup batch now uses PowerShell to check for existing open windows. No more duplicate chaos in the HUD; existing windows are seamlessly adopted by the cockpit layout.
+
+****************************************************************************************************************
+****************************************************************************************************************
+

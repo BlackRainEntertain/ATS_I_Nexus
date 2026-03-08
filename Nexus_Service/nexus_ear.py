@@ -4,11 +4,15 @@ import numpy as np
 import io, os, subprocess, time, winsound
 from scipy.io.wavfile import write
 
-# --- KONFIGURATION (v38.1 TITAN-EAR) ---
+# --- KONFIGURATION (v38.2 TITAN-EAR) ---
 MIC_ID = 1  # Dein Focusrite
 FS = 44100
 START_WORDS = ["hey ji", "moin moin", "lg", "guten tag", "hey gee", "guten morgen"]
 STOP_WORDS = ["gute nacht", "shutdown", "feierabend"]
+PAUSE_WORDS = ["pause", "stopp", "warte mal", "halt an"]
+RESUME_WORDS = ["weiter", "fortsetzen", "sprich weiter", "go"]
+SKIP_WORDS = ["nächste", "nächstes", "überspringen", "skip", "weg damit"] # Neu & Eindeutig
+
 BASE_PATH = r"C:\Users\René\Desktop\LM Projekte"
 
 r = sr.Recognizer()
@@ -16,17 +20,18 @@ r = sr.Recognizer()
 def execute_batch(batch_file):
     try:
         subprocess.Popen(f'cmd /c start "" "{batch_file}"', shell=True, cwd=BASE_PATH)
-    except: pass
+    except:
+        pass
 
 def listen_loop():
-    print(f"[EAR] v38.1 Resonanz aktiv (Pure Sounddevice). Warte...")
+    print(f"[EAR] v38.2 Resonanz aktiv (Pause/Resume bereit). Warte...")
     while True:
         try:
-            # 1. 4 Sekunden Audio-Snapshot (Kein PyAudio nötig!)
+            # 1. 4 Sekunden Audio-Snapshot
             recording = sd.rec(int(4 * FS), samplerate=FS, channels=1, dtype='int16')
             sd.wait()
 
-            # 2. In den RAM schreiben für Google
+            # 2. In den RAM schreiben (Chirurgisch eingerückt!)
             byte_io = io.BytesIO()
             write(byte_io, FS, recording)
             byte_io.seek(0)
@@ -36,14 +41,38 @@ def listen_loop():
                 command = r.recognize_google(audio, language="de-DE").lower().strip()
                 if command:
                     print(f"\n[VOICE] Erkannt: '{command}'")
+                    
+                    # START & STOP
                     if any(word in command for word in START_WORDS):
-                        winsound.Beep(1000, 400); execute_batch("01_ALL_SYSTEMS_GO.bat")
+                        winsound.Beep(1000, 400)
+                        execute_batch("01_ALL_SYSTEMS_GO.bat")
                         time.sleep(15)
                     elif any(word in command for word in STOP_WORDS):
-                        winsound.Beep(500, 600); execute_batch("02_NEXUS_SHUTDOWN.bat")
+                        winsound.Beep(500, 600)
+                        execute_batch("02_NEXUS_SHUTDOWN.bat")
                         time.sleep(15)
-        except: pass
+                    
+                    # --- NEU: PAUSE & RESUME ---
+                    elif any(word in command for word in PAUSE_WORDS):
+                        winsound.Beep(600, 200)
+                        execute_batch("Nexus\\03_PAUSE_VOICE.bat")
+                        time.sleep(5)
+                    elif any(word in command for word in RESUME_WORDS):
+                        winsound.Beep(900, 200)
+                        execute_batch("Nexus\\04_RESUME_VOICE.bat")
+                        time.sleep(5)
+                    # --- NEU: SKIP / NEXT ---
+                    elif any(word in command for word in SKIP_WORDS):
+                        winsound.Beep(400, 300) # Tieferer, kurzer Bestätigungs-Beep
+                        execute_batch("Nexus\\02_NEXT_SPOKE.bat")
+                        time.sleep(5)
+
+        except Exception as e:
+            # Falls mal was schiefgeht, kurz warten und weiterlauschen
+            time.sleep(0.1)
 
 if __name__ == "__main__":
-    winsound.Beep(800, 200); listen_loop()
+    winsound.Beep(800, 200)
+    listen_loop()
+
 

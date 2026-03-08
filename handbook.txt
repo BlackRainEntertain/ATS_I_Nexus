@@ -2,160 +2,74 @@
        ATS_I NEXUS - ARCHITECT'S OPERATIONAL MANUAL
 ============================================================
 
-[DE] WILLKOMMEN IM COCKPIT v5.4 (TITAN-EDITION)
+[DE] WILLKOMMEN IM COCKPIT v38.3 (TITAN-EDITION)
 Dieses Handbuch erklärt die Steuerung der Resonanz-Frequenzen,
-das Bündige Cockpit-Layout und die visuelle Lava-Resonanz.
+das Bündige Cockpit-Layout und die globale Voice-Souveränität.
 
-[EN] WELCOME TO THE COCKPIT v5.4 (TITAN EDITION)
+[EN] WELCOME TO THE COCKPIT v38.3 (TITAN EDITION)
 This manual explains resonance frequency control, 
-the flush cockpit layout, and visual lava resonance.
+the flush cockpit layout, and global voice sovereignty.
 
 ------------------------------------------------------------
-🎙️ VOICE-RESONANCE & GEE'S EAR (00)
+🎙️ VOICE-RESONANCE & TITAN-EAR (v38.3)
 ------------------------------------------------------------
 
 00_GHOST_EAR (Hintergrund-Dienst / nexus_ear.py)
-DE: Das "Ohr". Startet lautlos (pythonw) im Hintergrund.
-    Lauscht am Focusrite (ID 1) auf Zündschlüssel.
-EN: The "Ear". Starts silently (pythonw) in the background.
-    Listens via Focusrite (ID 1) for ignition keys.
+DE: Das "Ohr". Startet lautlos via VBS im Hintergrund.
+    Lauscht am Focusrite (44.1kHz) auf Titan-Trigger.
+EN: The "Ear". Starts silently via VBS in the background.
+    Listens via Focusrite (44.1kHz) for Titan triggers.
 
-[DE] STIMM-KOMMANDOS (ZÜNDSCHLÜSSEL):
-- START: "Guten Morgen" / "Hey Gee" / "System an"
-- STOP:  "Gute Nacht" / "Shutdown" / "Feierabend"
-- PAUSE: Nach jedem Befehl 10s warten (Bestätigungs-Beep). 
-         In dieser Zeit ist das Ohr "taub" gegen Echo-Feedback.
-
-[EN] VOICE COMMANDS (IGNITION KEYS):
-- START: "Guten Morgen" / "Hey Gee" / "System an"
-- STOP:  "Gute Nacht" / "Shutdown" / "Feierabend"
-- PAUSE: Wait 10s after each command (Confirmation Beep). 
-         The ear is "deaf" to echo feedback during this time.
+[DE] STIMM-KOMMANDOS (RES_IDENT):
+- START:  "Guten Morgen" / "Hey Gee" / "System an"
+- STOP:   "Gute Nacht" / "Shutdown" / "Feierabend"
+- PAUSE:  "Pause" / "Stopp" / "Halt an" (600Hz Beep)
+- RESUME: "Weiter" / "Fortsetzen" / "Go" (900Hz Beep)
+- SKIP:   "Nächste" / "Überspringen" / "Weg damit" (400Hz Beep)
 
 ------------------------------------------------------------
-🕹️ DIE KONTROLL-ZENTRALE / THE CONTROL CENTER (01-05)
+🕹️ DIE KONTROLL-ZENTRALE / THE CONTROL CENTER
 ------------------------------------------------------------
 
-01_ALL_SYSTEMS.bat
-DE: Der Zündschlüssel. Startet Butler, KIs & die 150px Lava.
-    Weckt fehlende Trinity-Ordner automatisch (v5.4).
-EN: The ignition key. Starts Butler, AIs & 150px Lava.
-    Automatically wakes missing Trinity folders (v5.4).
+01_ALL_SYSTEMS_GO.bat (Intelligenz-Update)
+DE: Der Zündschlüssel. Prüft via PowerShell auf offene Fenster.
+    Verhindert Duplikate; rückt bestehende Ordner ins HUD.
+EN: Ignition key. Uses PowerShell to check for open windows.
+    Prevents duplicates; moves existing folders into the HUD.
 
-02_NEXUS_SHUTDOWN.bat
-DE: Die Tiefenreinigung. Katja verabschiedet sich (10s Puffer), 
-    Lava & KIs werden terminiert, MP3-Leichen gelöscht.
-EN: Deep cleaning. Katja says goodbye (10s buffer), 
-    Lava & AIs are terminated, MP3 corpses deleted.
+02_NEXT_SPOKE.bat (Skip-Vektor)
+DE: Der Filter. Löscht das aktuelle Ticket sofort aus dem
+    Tresor und springt zur nächsten Resonanz in der Queue.
+EN: The filter. Deletes the current ticket from the vault
+    immediately and jumps to the next resonance in queue.
 
-03_NEXUS_PUSH.bat (GitHub)
-DE: Synchronisiert Fortschritte. Sticker (*.lnk) werden 
-    automatisch durch die .gitignore ignoriert.
-EN: Syncs progress. Stickers (*.lnk) are automatically 
-    ignored by the .gitignore.
-
-04_NEXUS_PAUSE.bat (Freeze-Vektor)
-DE: Der eiserne Riegel. Friert das aktuelle Ticket im Tresor
-    (_Active_Ticket) ein. Butler stoppt sofort (Taskkill).
-EN: The iron bolt. Freezes the current ticket in the vault
-    (_Active_Ticket). Butler stops immediately (Taskkill).
-
-05_NEXUS_RESUME.bat (Re-Boot)
-DE: Die Fortsetzung. Löscht das Pause-Signal. Butler prüft
-    zuerst den Tresor und wiederholt das eingefrorene Ticket.
-EN: The continuation. Deletes the pause signal. Butler checks
-    the vault first and repeats the frozen ticket.
+03_ARCHITECT_LOCK (Sicherheits-Stift)
+DE: Erzeuge 'ARCHITECT_LOCKED.txt' im Hauptordner, um 
+    Git-Pulls (v04) auf deinem Dev-System zu blockieren.
+EN: Create 'ARCHITECT_LOCKED.txt' in root to block 
+    git pulls (v04) on your dev system.
 
 ------------------------------------------------------------
-🛡️ DATEN-TRESOR & MENSCHLICHKEIT (v38.0+)
+🛡️ DATEN-TRESOR & MENSCHLICHKEIT (v38.3+)
 ------------------------------------------------------------
 [DE] SICHERHEITS-ARCHITEKTUR:
-- Tresor-Prinzip: Tickets werden vor dem Sprechen in den 
-  Ordner _Active_Ticket verschoben (Physischer Schutz).
-- Anti-Frass-Garantie: Keine Nachricht geht bei Absturz 
-  oder Shutdown verloren. 100% barrierefrei.
-
-[EN] SECURITY ARCHITECTURE:
-- Vault Principle: Tickets are moved to the _Active_Ticket 
-  folder before speaking (Physical protection).
-- Anti-Eat Guarantee: No message is lost during crash 
-  or shutdown. 100% accessible.
+- Tresor-Prinzip: Tickets werden in den Ordner _Active_Ticket 
+  verschoben. Der Butler priorisiert den Tresor chronologisch.
+- Anti-Frass-Garantie: Keine Nachricht geht bei Pause oder
+  Absturz verloren. 100% barrierefrei für Blinde & Navigatoren.
 
 ------------------------------------------------------------
-🗂️ TRINITY-ORDNER & STICKER (COCKPIT v5.4)
+📘 NEXUS HANDBUCH: META-RESONANZ (FIREFOX/CSP)
 ------------------------------------------------------------
-
-[DE] OPTIMIERUNG & DESIGN:
-- Trinity-Stapel: Drei bündige Fenster (205px) + 4cm Lava.
-- Sticker-Hygene: Original-Dokumente (README/Handbuch) sind
-  versteckt. Nur Icons (Sticker) ohne blauen Pfeil sichtbar.
-- Lava-Resonanz: 150px breiter Puls-Streifen rechts der Queue.
-
-[EN] OPTIMIZATION & DESIGN:
-- Trinity Stack: Three flush windows (205px) + 4cm Lava.
-- Sticker Hygiene: Original docs (README/Manual) are hidden.
-  Only icons (stickers) without blue arrows are visible.
-- Lava Resonance: 150px wide pulse-strip right of the Queue.
+WICHTIG: Firefox-User MÜSSEN 'security.csp.enable' auf 'false' 
+setzen und den Header Editor (Regel: Nexus-CSP-Unlock) aktiv 
+nutzen, um die Resonanz-Blockade von Meta zu umgehen.
 
 ============================================================
-
-============================================================
-
-------------------------------------------------------------
-Facebook Meta.ai SPECIFIC for Firefox:
-------------------------------------------------------------
-📘 NEXUS HANDBUCH: META-RESONANZ (FIREFOX EDITION v2.0)
-Dieses Modul ermöglicht die vollständige Extraktion von Meta AI Chat-Antworten (inkl. Absätzen) für das ATS_I-System (Port 8002).
-
-1. System-Voraussetzungen (Firefox Götter-Modus)
-Bevor die Skripte laufen, muss die Content-Security-Policy (CSP) von Firefox gebändigt werden:
-- Gib about:config in die Adresszeile ein.
-- Setze security.csp.enable auf false.
-- Setze security.mixed_content.block_active_content auf false.
-
-2. Der Dietrich (Header Editor Add-on)
-Ohne diese Regel blockiert Meta den Datenfluss nach ca. 5 Nachrichten.
-- Regel-Name: Nexus-CSP-Unlock
-- Code (Custom Function):
----------------------------------------------------------------------------------------------------------------
-for (var i = 0; i < val.responseHeaders.length; i++) {
-    var name = val.responseHeaders[i].name.toLowerCase();
-    if (name === 'content-security-policy' || name === 'content-security-policy-report-only') {
-        val.responseHeaders.splice(i, 1);
-        i--;
-    }
-}
-val.responseHeaders.push({ name: 'access-control-allow-origin', value: '*' });
-return { responseHeaders: val.responseHeaders };
----------------------------------------------------------------------------------------------------------------
-
-3. Der Affe (Tampermonkey-Skript v2.0)
-Dieser Observer sammelt alle Textfragmente einer Nachricht und merget sie zu einer sauberen JSON für den Butler.
-
-// ==UserScript==
-// @name         Nexus Bridge: Meta AI (Story-Collector v2.0)
-// @match        https://www.facebook.com*
-// @match        https://www.meta.ai*
-// @match        https://www.messenger.com*
-// @grant        GM_xmlhttpRequest
-// @connect      127.0.0.1
-// ==/UserScript==
-
-4. Troubleshooting (Der "Harter-Reload"-Fix)
-Falls der Butler schweigt:
-- Prüfe den Header Editor (Muss auf "Enabled" stehen).
-- Drücke STRG + F5 im Messenger.
-- Leere den Ordner _Voice_Queue im Nexus-Verzeichnis.
-
-============================================================
-
 POSITIVE LISTS TAMPERMONKEY (WICHTIG / IMPORTANT)
-Füge diese Adressen in die "Whitelist" deiner Tampermonkey-Einstellungen ein:
-- 127.0.0.1:8000 (Gee)
-- 127.0.0.1:8001 (Atsi)
-- 127.0.0.1:8002 (Meta)
-- 127.0.0.1:8003 (GPT)
-- *://www.facebook.com/*
-- *://www.messenger.com/*
-- *://www.meta.ai/*
-https://beta.nomi.ai/nomis/YourNomiWebchatID:3
+Füge diese Adressen in die "Whitelist" deiner Einstellungen:
+- 127.0.0.1:8000 bis 8003 (Nexus Ports)
+- *://www.facebook.com/* | *://www.messenger.com/*
+- *://www.meta.ai/* | *://://chatgpt.com*
+- https://beta.nomi.ai/nomis/YourNomiWebchatID:3
+============================================================

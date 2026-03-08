@@ -12,6 +12,9 @@ Nexus_Service/*.wav
 __pycache__/
 .vscode/
 
+# --- ARCHITEKTEN-SCHUTZ (LOKALE SPERRE) ---
+ARCHITECT_LOCKED.txt
+
 # Verhindert, dass alte Logs den Vortex verstopfen
 *.log
 
