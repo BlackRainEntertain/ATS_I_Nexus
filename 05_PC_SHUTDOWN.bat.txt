@@ -1,0 +1,13 @@
+@echo off
+title --- SYSTEM_FINAL_TERMINATION ---
+color 0c
+echo [!] KRITISCHER SHUTDOWN EINGELEITET...
+echo [!] Der Architekt verlässt das Cockpit.
+timeout /t 5
+
+:: Schliesst erst den Nexus sauber (für den Tresor-Schutz!)
+call 02_NEXUS_SHUTDOWN.bat
+
+:: Fährt den PC nach 10 Sekunden komplett herunter
+shutdown /s /f /t 10
+exit
