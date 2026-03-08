@@ -18,184 +18,83 @@
     const TARGET_PORT = "8001";
     const ENDPOINT = `http://127.0.0.1:${TARGET_PORT}/webhook`;
     const MIN_LENGTH = 65;
-    const SCAN_INTERVAL_MS = 1800;
-    const DEBOUNCE_MS = 400;
+    const PATIENCE_TIME = 1500;
 
     let lastSentHash = "";
-    let lastScanTime = 0;
-    let observer = null;
-    let debounceTimer = null; // Das ist der "Parkplatz" für den Timer
+    let debounceTimer = null;
+    let isInitialWait = true; // Blockiert nur die ersten Sekunden nach Laden
 
-    // Sehr einfache, aber effektive Hash-Funktion (für Duplikatscheck)
     const simpleHash = str => {
         let h = 0;
-        for (let i = 0; i < str.length; i++) {
-            h = ((h << 5) - h + str.charCodeAt(i)) | 0;
-        }
+        for (let i = 0; i < str.length; i++) h = ((h << 5) - h + str.charCodeAt(i)) | 0;
         return h.toString(36);
     };
 
-    // Bereinigt typischen Google-Müll aus dem extrahierten Text
-    const cleanAIOverviewText = text => {
-    if (!text) return "";
-    return text
-        // 1. Löscht nur die harten Code-Blöcke (alles in Backticks)
-        .replace(/`[\s\S]*?`/g, '')
-        // 2. Löscht nur spezifische Keywords, NICHT die ganze Zeile
-        .replace(/\b(const|let|var|function|import|python|javascript|setTimeout)\b/gi, '')
-        // 3. Google-UI Cut-off
-        .replace(/(Öffentlicher Link|Gute Antwort|Schlechte Antwort|Vielen Dank|Feedback|Teilen).*$/gsi, '')
-        // 4. Cleanup von Sonderzeichen, die Katja verwirren
-        .replace(/[\*\#\{\}\[\]]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-};
+const cleanText = t => t.replace(/`[\s\S]*?`/g, '').replace(/\b(const|let|var|function|import|python|javascript|setTimeout)\b/gi, '').replace(/(Kopieren|Gute Antwort|Schlechte Antwort|Vielen Dank|Feedback|Diese Antwort|Weitere Informationen|Problem melden|Schließen).*$/gsi, '').replace(/[`#{}\\]/g, '').replace(/\s+/g, ' ').trim();
 
-    // Rekursiv alle shadow roots + light DOM durchlaufen und Text sammeln
+
     const deepTextExtract = (node, depth = 0) => {
-        if (depth > 12) return ""; // Schutz vor extrem tiefen DOMs
-
+        if (depth > 12) return "";
         let text = "";
-
-        // Textknoten direkt sammeln
-        if (node.nodeType === Node.TEXT_NODE) {
-            text += node.textContent;
-        }
-        // Elementknoten
+        if (node.nodeType === Node.TEXT_NODE) text += node.textContent;
         else if (node.nodeType === Node.ELEMENT_NODE) {
-            // Wir ignorieren bestimmte Elemente mit hoher Trefferquote auf UI-Müll
-            const tag = node.tagName.toLowerCase();
-            if (tag === "script" || tag === "style" || tag === "noscript") {
-                return "";
-            }
-
-            // Shadow Root betreten
-            if (node.shadowRoot) {
-                text += deepTextExtract(node.shadowRoot, depth + 1);
-            }
-
-            // Kinder durchlaufen
-            for (const child of node.childNodes) {
-                text += deepTextExtract(child, depth + 1);
-            }
+            if (["script", "style", "noscript"].includes(node.tagName.toLowerCase())) return "";
+            if (node.shadowRoot) text += deepTextExtract(node.shadowRoot, depth + 1);
+            for (const child of node.childNodes) text += deepTextExtract(child, depth + 1);
         }
-
         return text;
     };
 
-    const sendToLocalNexus = (text) => {
-        if (!text || text.length < MIN_LENGTH) return;
-
+    const send = (text) => {
+        if (!text || text.length < MIN_LENGTH || isInitialWait) return;
         const hash = simpleHash(text);
-
-        if (hash === lastSentHash) {
-            return;
-        }
+        if (hash === lastSentHash) return;
 
         lastSentHash = hash;
-
-        console.log("[NexusEye] Sende AI-Text (Länge " + text.length + ") → " + ENDPOINT);
+        console.log("[NexusEye] Sende Resonanz → " + TARGET_PORT);
 
         GM_xmlhttpRequest({
             method: "POST",
             url: ENDPOINT,
-            data: JSON.stringify({
-                text: text,
-                url: location.href,
-                ts: Date.now(),
-                hash: hash
-            }),
-            headers: {
-                "Content-Type": "application/json; charset=UTF-8"
-            },
-            timeout: 4000,
-            onload: res => {
-                if (res.status >= 200 && res.status < 300) {
-                    console.log("[NexusEye] OK → " + res.status);
-                } else {
-                    console.warn("[NexusEye] Antwort nicht 2xx → " + res.status);
-                }
-            },
-            onerror:   () => console.error("[NexusEye] Verbindungsfehler zu localhost:" + TARGET_PORT),
-            ontimeout: () => console.warn ("[NexusEye] Timeout localhost:" + TARGET_PORT)
+            data: JSON.stringify({ text: text, ts: Date.now(), hash: hash }),
+            headers: { "Content-Type": "application/json; charset=UTF-8" }
         });
-
-        // Optional: ganz kurzes lokales Feedback
-        // speechSynthesis.speak(new SpeechSynthesisUtterance("AI-Text erkannt"));
     };
 
-    const tryFindAndExtractAIOverview = () => {
-        const now = Date.now();
-        if (now - lastScanTime < DEBOUNCE_MS) return;
-        lastScanTime = now;
+    const harvest = () => {
+        // Wir suchen jetzt gezielt nach dem neuen Container-Anker KFl8ub
+        const elements = [...document.querySelectorAll('div[jsname="KFl8ub"]')];
 
-        // 1. Sammle alle potenziellen Nachrichten-Blöcke
-        const allElements = [
-            ...document.querySelectorAll('div[jscontroller] div[jsname], [role="article"], .markdown, .prose')
-        ];
+        const aiMessages = elements.filter(el => {
+            const style = window.getComputedStyle(el);
+            // Wir filtern ALLES aus, was rechts steht oder editierbar ist
+            const isUser = el.closest('[contenteditable="true"]') ||
+                           style.textAlign === 'right' ||
+                           style.textAlign === 'end';
 
-        // 2. Filter: NUR AI-Nachrichten (deine Klassen VndcI und veK2b werden VERBANNT)
-        const aiOnlyMessages = allElements.filter(el => {
-            const text = el.innerText;
-            // Prüfung: Hat das Element oder ein Elternteil deine User-Klassen?
-            const isUser = el.classList.contains('VndcI') ||
-                           el.classList.contains('veK2b') ||
-                           el.closest('.VndcI, .veK2b');
-
-            return text && text.length > MIN_LENGTH && !isUser;
+            return el.innerText && el.innerText.length > MIN_LENGTH && !isUser;
         });
 
-        // 3. Nimm nur das neueste Element, das den AI-Filter bestanden hat
-        const latestAIContent = aiOnlyMessages.slice(-1);
-
-        console.log("[NexusEye] Suche nach neuer AI-Resonanz (User-Filter aktiv)...");
-
-        for (const el of latestAIContent) {
-            let raw = deepTextExtract(el);
-            const cleaned = cleanAIOverviewText(raw);
-            if (cleaned.length < MIN_LENGTH) continue;
-
-            sendToLocalNexus(cleaned);
+        const latest = aiMessages.slice(-1)[0]; // Das wirklich letzte Element
+        if (latest) {
+            const rawText = deepTextExtract(latest);
+            const cleaned = cleanText(rawText);
+            if (cleaned.length >= MIN_LENGTH) send(cleaned);
         }
-    }; // <--- HIER endet die Funktion jetzt EINMALIG sauber.
+    };
 
 
-    // === Initialisierung ===
+    // Initialer Timer: Nach 5 Sekunden ist der Affe erst "scharf"
+    setTimeout(() => {
+        isInitialWait = false;
+        console.log("[NexusEye] Initial-Sperre aufgehoben. Gee lauscht.");
+    }, 5000);
 
-    // Einmalig beim Laden kurz warten
-    setTimeout(tryFindAndExtractAIOverview, 2000);
+    const observer = new MutationObserver(() => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(harvest, PATIENCE_TIME);
+    });
 
-    // DEAKTIVIERT: Das hier hat den Nexus-Spam verursacht!
-    // setInterval(tryFindAndExtractAIOverview, SCAN_INTERVAL_MS);
-
-    // Erhöhe die "Ruhezeit" von 1,5 auf 3,5 oder 4 Sekunden.
-    // Das gibt mir genug Zeit, auch komplexe Sätze zu Ende zu bauen.
-    const PATIENCE_TIME = 1500;
-
-    try {
-        observer = new MutationObserver(() => {
-            // Jedes Mal wenn ein neues Zeichen von mir erscheint,
-            // schlagen wir dem Affen auf die Finger: "Warte!"
-            clearTimeout(debounceTimer);
-
-            debounceTimer = setTimeout(() => {
-                console.log("[NexusEye] Absolute Stille für " + PATIENCE_TIME + "ms. Jetzt wird geerntet.");
-                tryFindAndExtractAIOverview();
-            }, PATIENCE_TIME);
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-            characterData: true, // WICHTIG: Reagiert auf Textänderungen im Stream
-            attributes: false // Weniger Rauschen durch UI-Animationen
-        });
-    } catch (e) {
-        console.warn("[NexusEye] MutationObserver Fehler", e);
-    }
-
-
-
-    console.log("[NexusEye v15] gestartet – Shadow-Piercing & AI-Overview-Extraktion aktiv");
-
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+    console.log("[NexusEye v16.2] TITAN-Modus aktiv.");
 })();

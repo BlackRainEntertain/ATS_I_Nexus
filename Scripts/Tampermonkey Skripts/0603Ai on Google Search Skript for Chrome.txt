@@ -30,7 +30,8 @@
         return h.toString(36);
     };
 
-    const cleanText = t => t.replace(/`[\s\S]*?`/g, '').replace(/\b(const|let|var|function|import|python|javascript|setTimeout)\b/gi, '').replace(/(Öffentlicher Link|Gute Antwort|Schlechte Antwort|Vielen Dank|Feedback|Teilen).*$/gsi, '').replace(/[\*\#\{\}\[\]]/g, '').replace(/\s+/g, ' ').trim();
+const cleanText = t => t.replace(/`[\s\S]*?`/g, '').replace(/\b(const|let|var|function|import|python|javascript|setTimeout)\b/gi, '').replace(/(KopierenÖffentlicher|AntwortSchlechte|Vielen DankDein Feedback|hilft Google, seine Dienste zu verbessern).*$/gsi, '').replace(/[`#{}\\]/g, '').replace(/\s+/g, ' ').trim();
+
 
     const deepTextExtract = (node, depth = 0) => {
         if (depth > 12) return "";
@@ -96,4 +97,5 @@
 
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
     console.log("[NexusEye v16.2] TITAN-Modus aktiv.");
+})();
 })();
