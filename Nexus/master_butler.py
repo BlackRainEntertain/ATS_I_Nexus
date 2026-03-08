@@ -46,18 +46,21 @@ async def main_loop():
                 await asyncio.sleep(0.5); continue
 
             # 1. Zuerst im Tresor nachsehen (Unterbrochene Nachrichten)
-            active_files = [f for f in os.listdir(SAFE_DIR) if f.endswith(".json")]
+            active_files = sorted([f for f in os.listdir(SAFE_DIR) if f.endswith(".json")])
             if active_files:
                 file_path = os.path.join(SAFE_DIR, active_files[0])
+                console.print(f"[TRESOR] Lade unterbrochenes Ticket: {active_files[0]}")
             else:
                 # 2. Wenn Tresor leer, nimm neues Ticket aus der Queue
                 queue_files = sorted([f for f in os.listdir(Q_DIR) if f.endswith(".json")])
                 if queue_files:
                     source = os.path.join(Q_DIR, queue_files[0])
                     file_path = os.path.join(SAFE_DIR, queue_files[0])
-                    shutil.move(source, file_path) # VERSCHIEBEN STATT LÖSCHEN
+                    # Falls Datei im Tresor schon existiert, wird sie überschrieben
+                    shutil.move(source, file_path) 
                 else:
                     await asyncio.sleep(0.5); continue
+
 
             with open(file_path, "r", encoding="utf-8-sig") as j:
                 ticket = json.load(j)

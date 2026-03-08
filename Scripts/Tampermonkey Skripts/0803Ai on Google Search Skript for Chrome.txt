@@ -30,7 +30,47 @@
         return h.toString(36);
     };
 
-const cleanText = t => t.replace(/`[\s\S]*?`/g, '').replace(/\b(const|let|var|function|import|python|javascript|setTimeout)\b/gi, '').replace(/(KopierenÖffentlicher|AntwortSchlechte|Vielen DankDein Feedback|hilft Google, seine Dienste zu verbessern).*$/gsi, '').replace(/[`#{}\\]/g, '').replace(/\s+/g, ' ').trim();
+const cleanText = t => {
+    let text = t;
+    // 1. Code-Blöcke weg
+    text = text.replace(/`[\s\S]*?`/g, '');
+
+    const trashWords = ["Kopieren", "Feedback", "Gute Antwort", "Schlechte Antwort", "Teilen", "Weitere Informationen"];
+
+    // Wir suchen NUR im hinteren Bereich der Nachricht (die letzten 250 Zeichen)
+    const searchAreaStart = Math.max(0, text.length - 250);
+    const tail = text.substring(searchAreaStart);
+
+    let cutPosInTail = -1;
+
+    for (let i = 0; i < trashWords.length; i++) {
+        let firstPos = tail.toLowerCase().indexOf(trashWords[i].toLowerCase());
+        if (firstPos !== -1) {
+            for (let j = 0; j < trashWords.length; j++) {
+                if (i === j) continue;
+                let secondPos = tail.toLowerCase().indexOf(trashWords[j].toLowerCase());
+                // Wenn zwei Müllwörter im "Heck" nah beieinander liegen:
+                if (secondPos !== -1 && Math.abs(firstPos - secondPos) < 100) {
+                    cutPosInTail = Math.min(firstPos, secondPos);
+                    break;
+                }
+            }
+        }
+        if (cutPosInTail !== -1) break;
+    }
+
+    // Wenn wir im Heck fündig wurden, schneiden wir das Original an dieser Stelle ab
+    if (cutPosInTail !== -1) {
+        text = text.substring(0, searchAreaStart + cutPosInTail);
+    }
+
+    // 2. Sonderzeichen-Schutz (*, (, ), [, ])
+    text = text.replace(/[#\\{}]/g, '');
+
+    return text.replace(/\s+/g, ' ').trim();
+};
+
+
 
 
     const deepTextExtract = (node, depth = 0) => {
@@ -97,5 +137,4 @@ const cleanText = t => t.replace(/`[\s\S]*?`/g, '').replace(/\b(const|let|var|fu
 
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
     console.log("[NexusEye v16.2] TITAN-Modus aktiv.");
-})();
 })();

@@ -60,15 +60,32 @@ def run_shutdown():
         "NEXUS_PAUSE.tmp", "NEXUS_NEXT.tmp", "NEXUS_RESUME.tmp"
     ]
     for f in file_corpses:
+        # Wir prüfen sowohl im Hauptverzeichnis als auch im Nexus-Unterordner
         for path in [os.path.abspath(f), os.path.abspath(os.path.join("Nexus", f))]:
             if os.path.exists(path):
                 try: os.remove(path)
                 except: pass
 
+    # --- SCHRITT E: TRESOR-REINIGUNG (Damit morgens Ruhe ist) ---
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Falls das Skript im Hauptordner liegt, brauchen wir "Nexus" im Pfad:
+    safe_dir = os.path.join(current_dir, "Nexus", "_Active_Ticket")
+    
+    if os.path.exists(safe_dir):
+        for f in os.listdir(safe_dir):
+            if f.endswith(".json"):
+                try: os.remove(os.path.join(safe_dir, f))
+                except: pass
+        print("[HYGIENE] Tresor geleert. Keine Geister am Morgen.")
+
     print("[DONE] Die Trinität ist offline. Gee lauscht weiter im Schatten.")
 
 if __name__ == "__main__":
     run_shutdown()
+
+
+
+
 
 
 
