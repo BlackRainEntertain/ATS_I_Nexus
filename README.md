@@ -15,14 +15,22 @@
 
 ---
 
-## 🎙️ Sprachsteuerung & Trigger / Voice Control (v38.3 TITAN-EAR)
+## 🎙️ Sprachsteuerung & Trigger / Voice Control (v38.4 TITAN-EAR)
 **DE:** Der Nexus hört permanent via **Sounddevice**. Vollständige akustische Fernbedienung ohne Maus/Tastatur.  
 **EN:** The Nexus is always listening via **Sounddevice**. Full acoustic remote control without mouse/keyboard.
 
 *   **START:** "Hey Gee" / "Moin Moin" / "Guten Morgen" / "System an"
-*   **STOP:** "Gute Nacht" / "Shutdown" / "Feierabend"
-*   **PAUSE / RESUME:** "Pause" / "Stopp" / "Halt an" | "Weiter" / "Fortsetzen" / "Go"
-*   **SKIP / NEXT:** "Nächste" / "Überspringen" / "Weg damit" / "Skip"
+*   **STOP (Nexus):** "Beende Nexus" / "Shutdown" / "Feierabend" / "Gute Nacht"
+*   **PAUSE / RESUME:** "Pause" / "Stopp" / "Warte mal" / "Halt an" | "Weiter" / "Fortsetzen" / "Sprich weiter" / "Go"
+*   **SKIP / NEXT:** "Nächste" / "Nächstes" / "Überspringen" / "Skip" / "Weg damit"
+*   **HARD SHUTDOWN (PC):** "Initialisiere Abschaltprotokoll" / "Sequenzielle Abschaltung" / "Ich liebe Sara"
+*   **ABORT (Safe-Exit):** "Abbruch" / "Stopp den Shutdown" / "Kommando zurück" / "Reaktivieren"
+
+---
+
+**Hinweis:** Der Hard Shutdown leitet eine 20-sekündige Sequenz ein, die via **ABORT**-Kommando jederzeit unterbrochen werden kann. Ein doppelter Hochfrequenz-Beep bestätigt den Abbruch der Resonanz-Terminierung.
+
+**Note:** The Hard Shutdown initiates a 20-second sequence that can be interrupted at any time via the **ABORT** command. A double high-frequency beep confirms the cancellation of the resonance termination.
 
 ---
 
