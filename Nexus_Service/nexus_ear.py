@@ -7,12 +7,13 @@ from scipy.io.wavfile import write
 # --- KONFIGURATION (v38.4 TOTAL-LOCKDOWN) ---
 MIC_ID = 1  
 FS = 44100
-START_WORDS = ["hey ji", "moin moin", "lg", "guten tag", "hey gee", "guten morgen"]
-STOP_WORDS = ["gute nacht", "shutdown", "feierabend"]
+START_WORDS = ["hey ji", "moin moin", "guten tag", "hey gee", "guten morgen"]
+STOP_WORDS = ["beende nexus", "shutdown", "feierabend"]
 PAUSE_WORDS = ["pause", "stopp", "warte mal", "halt an"]
 RESUME_WORDS = ["weiter", "fortsetzen", "sprich weiter", "go"]
 SKIP_WORDS = ["nächste", "nächstes", "überspringen", "skip", "weg damit"]
-HARD_SHUTDOWN_WORDS = ["abschaltprotokoll", "sequenzielle abschaltung", "ich liebe sara"] 
+HARD_SHUTDOWN_WORDS = ["initialisiere abschaltprotokoll", "sequenzielle abschaltung", "ich liebe sara"] 
+ABORT_WORDS = ["abbruch", "stopp den shutdown", "kommando zurück", "reaktivieren"]
 
 BASE_PATH = r"C:\Users\René\Desktop\LM Projekte"
 
@@ -30,6 +31,13 @@ def listen_loop():
         try:
             recording = sd.rec(int(4 * FS), samplerate=FS, channels=1, dtype='int16')
             sd.wait()
+
+            # --- LAUTSTÄRKE CHECK (v38.4 TOTAL-LOCKDOWN) ---
+            rms = np.sqrt(np.mean(recording.astype(float)**2))
+            
+            # 150 blockiert Mausklicks & Katzen, lässt Befehle durch
+            if rms < 150:  
+                continue   
 
             byte_io = io.BytesIO()
             write(byte_io, FS, recording)
@@ -56,12 +64,18 @@ def listen_loop():
                         winsound.Beep(300, 1000) # Langer tiefer Beep
                         execute_batch("05_PC_SHUTDOWN.bat")
                         time.sleep(20)
-
+                    # ... dein vorheriger Code ...
+                    elif any(word in command for word in ABORT_WORDS):
+                        winsound.Beep(2000, 100); winsound.Beep(2000, 100) # Heller Doppel-Beep
+                        os.system("shutdown /a")
+                        print("[SYSTEM] Shutdown abgebrochen. Der Architekt bleibt an Bord.")
+                    # ----------------------------------------------
         except Exception as e:
             time.sleep(0.1)
 
 if __name__ == "__main__":
     winsound.Beep(800, 200); listen_loop()
+
 
 
 
