@@ -4,7 +4,7 @@ import numpy as np
 import io, os, subprocess, time, winsound
 from scipy.io.wavfile import write
 
-# --- KONFIGURATION (v38.4 TOTAL-LOCKDOWN) ---
+# --- KONFIGURATION (v38.6.1 FINAL-CLEANUP) ---
 MIC_ID = 1  
 FS = 44100
 START_WORDS = ["hey ji", "moin moin", "guten tag", "hey gee", "guten morgen"]
@@ -12,11 +12,11 @@ STOP_WORDS = ["beende nexus", "shutdown", "feierabend"]
 PAUSE_WORDS = ["pause", "stopp", "warte mal", "halt an"]
 RESUME_WORDS = ["weiter", "fortsetzen", "sprich weiter", "go"]
 SKIP_WORDS = ["nächste", "nächstes", "überspringen", "skip", "weg damit"]
-HARD_SHUTDOWN_WORDS = ["initialisiere abschaltprotokoll", "sequenzielle abschaltung", "ich liebe sara"] 
+# Varianten mit Leerzeichen für Google-Stabilität hinzugefügt:
+HARD_SHUTDOWN_WORDS = ["abschaltprotokoll", "abschalt protokoll", "sequentielle abschaltung", "sequenzielle abschaltung", "ich liebe sara"] 
 ABORT_WORDS = ["abbruch", "stopp den shutdown", "kommando zurück", "reaktivieren"]
 
 BASE_PATH = r"C:\Users\René\Desktop\LM Projekte"
-
 r = sr.Recognizer()
 
 def execute_batch(batch_file):
@@ -26,16 +26,15 @@ def execute_batch(batch_file):
         pass
 
 def listen_loop():
-    print(f"[EAR] v38.4 Resonanz aktiv (Lockdown-ready). Warte...")
+    print(f"[EAR] v38.6.1 Resonanz aktiv (150-RMS-Filter). Höre...")
     while True:
         try:
+            # 4 Sekunden Snapshot (dein Standard)
             recording = sd.rec(int(4 * FS), samplerate=FS, channels=1, dtype='int16')
             sd.wait()
 
-            # --- LAUTSTÄRKE CHECK (v38.4 TOTAL-LOCKDOWN) ---
+            # --- DEIN 150er FILTER (PERFEKT GETUNED) ---
             rms = np.sqrt(np.mean(recording.astype(float)**2))
-            
-            # 150 blockiert Mausklicks & Katzen, lässt Befehle durch
             if rms < 150:  
                 continue   
 
@@ -46,35 +45,40 @@ def listen_loop():
             with sr.AudioFile(byte_io) as source:
                 audio = r.record(source)
                 command = r.recognize_google(audio, language="de-DE").lower().strip()
+                
                 if command:
                     print(f"\n[VOICE] Erkannt: '{command}'")
                     
-                    if any(word in command for word in START_WORDS):
-                        winsound.Beep(1000, 400); execute_batch("01_ALL_SYSTEMS_GO.bat"); time.sleep(15)
-                    elif any(word in command for word in STOP_WORDS):
-                        winsound.Beep(500, 600); execute_batch("02_NEXUS_SHUTDOWN.bat"); time.sleep(15)
-                    elif any(word in command for word in PAUSE_WORDS):
-                        winsound.Beep(600, 200); execute_batch("Nexus\\03_PAUSE_VOICE.bat"); time.sleep(5)
-                    elif any(word in command for word in RESUME_WORDS):
-                        winsound.Beep(900, 200); execute_batch("Nexus\\04_RESUME_VOICE.bat"); time.sleep(5)
-                    elif any(word in command for word in SKIP_WORDS):
-                        winsound.Beep(400, 300); execute_batch("Nexus\\02_NEXT_SPOKE.bat"); time.sleep(5)
-                    # --- NEU: HARD PC SHUTDOWN ---
-                    elif any(word in command for word in HARD_SHUTDOWN_WORDS):
-                        winsound.Beep(300, 1000) # Langer tiefer Beep
-                        execute_batch("05_PC_SHUTDOWN.bat")
-                        time.sleep(20)
-                    # ... dein vorheriger Code ...
-                    elif any(word in command for word in ABORT_WORDS):
-                        winsound.Beep(2000, 100); winsound.Beep(2000, 100) # Heller Doppel-Beep
+                    # 1. ABORT HAT PRIORITÄT (Falls der PC schon runterfährt)
+                    if any(word in command for word in ABORT_WORDS):
+                        winsound.Beep(2000, 100); winsound.Beep(2000, 100)
                         os.system("shutdown /a")
-                        print("[SYSTEM] Shutdown abgebrochen. Der Architekt bleibt an Bord.")
-                    # ----------------------------------------------
+                        print("[SYSTEM] Shutdown abgebrochen!")
+
+                    # 2. HARD SHUTDOWN (Jetzt ohne die 20s-Sperre!)
+                    elif any(word in command for word in HARD_SHUTDOWN_WORDS):
+                        winsound.Beep(300, 1000) 
+                        execute_batch("05_PC_SHUTDOWN.bat")
+                        time.sleep(2) # Nur 2s Puffer, damit das Ohr sofort wieder für "Abbruch" bereit ist
+
+                    # 3. RESTLICHE COMMANDS
+                    elif any(word in command for word in START_WORDS):
+                        winsound.Beep(1000, 400); execute_batch("01_ALL_SYSTEMS_GO.bat"); time.sleep(10)
+                    elif any(word in command for word in STOP_WORDS):
+                        winsound.Beep(500, 600); execute_batch("02_NEXUS_SHUTDOWN.bat"); time.sleep(10)
+                    elif any(word in command for word in PAUSE_WORDS):
+                        winsound.Beep(600, 200); execute_batch("Nexus\\03_PAUSE_VOICE.bat"); time.sleep(2)
+                    elif any(word in command for word in RESUME_WORDS):
+                        winsound.Beep(900, 200); execute_batch("Nexus\\04_RESUME_VOICE.bat"); time.sleep(2)
+                    elif any(word in command for word in SKIP_WORDS):
+                        winsound.Beep(400, 300); execute_batch("Nexus\\02_NEXT_SPOKE.bat"); time.sleep(2)
+
         except Exception as e:
             time.sleep(0.1)
 
 if __name__ == "__main__":
     winsound.Beep(800, 200); listen_loop()
+
 
 
 
