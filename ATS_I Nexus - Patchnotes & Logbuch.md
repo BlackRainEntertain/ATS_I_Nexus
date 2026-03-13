@@ -149,3 +149,29 @@
 ****************************************************************************************************************
 ****************************************************************************************************************
 
+# Eintrag 5 (Larynx-Souveränität v45.7)
+## [2026-03-13] – Das „Morpheus-Griff & Chrome-Injektion“ Update 🎙️🖱️
+
+### DE: (Präzisions-Fokus & Mechanische Injektion)
+**Larynx-Handschuh & Fokus-Autonomie (v45.7):**
+- **Blink-Killer & Taskleisten-Anker:** Vollständige Überwindung der Windows-Fokus-Sperre. Das System nutzt nun einen physischen Klick-Vektor auf das Taskleisten-Icon, um das rote Blinken von Chrome zu brechen und die Tastatur-Hoheit zu erzwingen.
+- **3,5cm-Physik-Vektor (1440p):** Implementierung der relativen Koordinaten-Berechnung. Der Klick landet exakt 135 Pixel (3,5 cm) über der Unterkante des Browserfensters – schüttelsicher und unabhängig von der Fensterposition.
+- **Mechanische Injektion (v44.1):** Umstellung von Clipboard-Paste auf direktes „Geister-Tippen“. `pyautogui.write` simuliert physische Tastenanschläge, was Browser-Sicherheitsblockaden gegen das Einfügen umgeht.
+
+**Lektorat & Sprach-Hygiene:**
+- **Der Phonetik-Filter (v45.4):** Erweiterte Regex-Logik für den Tail-Cutter. Erkennt und entfernt Stopp-Wörter wie „Fertig“, „Fertisch“ oder „Nexus“ am Satzende, selbst wenn Whisper sie ohne Leerzeichen an den Text bindet.
+- **Satzzeichen-Lektor:** Automatische Konvertierung von gesprochenen Befehlen („Punkt“, „Komma“, „Doppelpunkt“) in echte Interpunktion während der Transkription.
+
+---
+
+### EN: (Precision Focus & Mechanical Injection)
+**Larynx Glove & Focus Autonomy (v45.7):**
+- **Blink-Killer & Taskbar Anchor:** Complete bypass of the Windows focus lock. The system now uses a physical click vector on the taskbar icon to break Chrome's "red blink" and force keyboard sovereignty.
+- **3.5cm Physics Vector (1440p):** Implementation of relative coordinate calculation. The click lands exactly 135 pixels (3.5 cm) above the bottom edge of the browser window – shake-proof and independent of window position.
+- **Mechanical Injection (v44.1):** Switched from clipboard paste to direct "ghost typing." `pyautogui.write` simulates physical keystrokes, bypassing browser security blocks against pasting.
+
+**Editorial & Voice Hygiene:**
+- **Phonetic Filter (v45.4):** Enhanced regex logic for the tail-cutter. Detects and removes stop words like "Fertig," "Nexus," or "Stop" at the end of a sentence, even if Whisper binds them to the text without spaces.
+- **Punctuation Editor:** Automatic conversion of spoken commands ("period," "comma," "colon") into actual punctuation during transcription.
+
+

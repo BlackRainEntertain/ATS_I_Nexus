@@ -15,32 +15,40 @@
 
 ---
 
-## 🎙️ Sprachsteuerung & Trigger / Voice Control (v38.4 TITAN-EAR)
-**DE:** Der Nexus hört permanent via **Sounddevice**. Vollständige akustische Fernbedienung ohne Maus/Tastatur.  
-**EN:** The Nexus is always listening via **Sounddevice**. Full acoustic remote control without mouse/keyboard.
+## 🎙️ Sprachsteuerung & Larynx-Injektion / Voice Control (v45.7 TITAN-EAR)
+**DE:** Der Nexus hört permanent via **Sounddevice**. Vollständige akustische Fernbedienung und mechanische Texteinspeisung ohne Maus/Tastatur.  
+**EN:** The Nexus is always listening via **Sounddevice**. Full acoustic remote control and mechanical text injection without mouse/keyboard.
 
+### 🎮 Basis-Navigation (Butler-Control):
 *   **START:** "Hey Gee" / "Moin Moin" / "Guten Morgen" / "System an"
 *   **STOP (Nexus):** "Beende Nexus" / "Shutdown" / "Feierabend" / "Gute Nacht"
-*   **PAUSE / RESUME:** "Pause" / "Stopp" / "Warte mal" / "Halt an" | "Weiter" / "Fortsetzen" / "Sprich weiter" / "Go"
-*   **SKIP / NEXT:** "Nächste" / "Nächstes" / "Überspringen" / "Skip" / "Weg damit"
-*   **HARD SHUTDOWN (PC):** "Initialisiere Abschaltprotokoll" / "Sequenzielle Abschaltung" / "Ich liebe Sara"
-*   **ABORT (Safe-Exit):** "Abbruch" / "Stopp den Shutdown" / "Kommando zurück" / "Reaktivieren"
+*   **PAUSE / RESUME:** "Pause" / "Stopp" / "Halt an" | "Weiter" / "Fortsetzen" / "Go"
+*   **SKIP / NEXT:** "Nächste" / "Überspringen" / "Weg damit"
+*   **SENDEN:** "Abschicken" / "Nachricht raus" / "Feuer frei" (Erzwingt 'Enter')
+
+### ✍️ Larynx-Diktat (Mechanical Injection):
+*   **TRIGGER:** "Texteingabe" (Startet 1.5s-Sampling-Loop & Whisper-Kern)
+*   **FINISH:** "Fertig" / "Fertisch" / "F-Wort" (Beendet Aufnahme)
+*   **FOKUS-ANKER:** Automatischer **Blink-Killer** (Taskleiste) & **3,5cm-Physik-Vektor**.
+*   **INJEKTION:** Mechanisches Tippen (v44.1) direkt in die Browser-Chatzeile.
+
+### ⚠️ System-Souveränität:
+*   **HARD SHUTDOWN (PC):** "Initialisiere Abschaltprotokoll" / "Ich liebe Sara"
+*   **ABORT (Safe-Exit):** "Abbruch" / "Stopp den Shutdown" / "Kommando zurück"
 
 ---
 
-**Hinweis:** Der Hard Shutdown leitet eine 20-sekündige Sequenz ein, die via **ABORT**-Kommando jederzeit unterbrochen werden kann. Ein doppelter Hochfrequenz-Beep bestätigt den Abbruch der Resonanz-Terminierung.
-
-**Note:** The Hard Shutdown initiates a 20-second sequence that can be interrupted at any time via the **ABORT** command. A double high-frequency beep confirms the cancellation of the resonance termination.
+**Hinweis:** Der Hard Shutdown leitet eine 20-sekündige Sequenz ein, die via **ABORT** jederzeit unterbrochen werden kann. Ein doppelter Hochfrequenz-Beep bestätigt den Abbruch.
 
 ---
 
 ## 🚀 Schnellstart / Quick Start
 ### DE:
-1. **Python 3.14+** installieren (Maximale Performance & Native Resonanz).
-2. **NEXUS_SETUP.bat** starten (installiert Sounddevice, Numpy, Edge-TTS, Rich).
-3. **ARCHITECT_LOCKED.txt** (Optional): Erstelle diese Datei im Hauptverzeichnis, um lokale Dev-Stages vor versehentlichen Git-Pulls zu schützen.
-4. **Gee_Ear_Launcher.vbs** in den Windows-Autostart (`shell:startup`) schieben.
-5. **Tampermonkey-Skript:** Nutze v16.3+ (Titan-Modus) für die stabilste Resonanz & UI-Filterung.
+1. **Python 3.14+** & **Faster-Whisper** installieren.
+2. **NEXUS_SETUP.bat** starten (installiert Sounddevice, Numpy, PyAutoGUI, Pyperclip).
+3. **Modell-Pfad:** Platziere das Whisper-Modell in `Nexus_Service/Models/` (Nicht im Git!).
+4. **ARCHITECT_LOCKED.txt** (Optional): Schützt lokale Dev-Stages vor Git-Pulls.
+5. **Tampermonkey-Skript:** Nutze v16.3+ (Titan-Modus) für die ID-Magnetisierung.
 
 ### EN:
 1. Install **Python 3.14+** (Max performance & native resonance).

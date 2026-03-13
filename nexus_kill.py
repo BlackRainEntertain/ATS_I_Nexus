@@ -19,12 +19,12 @@ async def say_goodbye_internal():
     except Exception as e: print(f"Abspann-Fehler: {e}")
 
 def run_shutdown():
-    # --- TARGETS BEREINIGT ---
     targets = [
         "ATSI_NEXUS_RECEIVER", "GEE_AI_NEXUS", "VORTEX", "GPT_NEXUS",
         "AUDIO_MASTER_BUTLER", "NEXUS_LAVA", "LM Projekte", "Nexus",
-        "_Voice_Queue", "cmd.exe"
+        "_Voice_Queue", "cmd.exe", "--- NEXUS_EAR ---" # <--- HIER HINZUFÜGEN
     ]
+
     
     print("[!] Einleiten der Tiefenreinigung (Ohr-Schutz aktiv)...")
 

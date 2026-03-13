@@ -11,7 +11,7 @@ This manual explains resonance frequency control,
 the flush cockpit layout, and global voice sovereignty.
 
 ------------------------------------------------------------
-🎙️ VOICE-RESONANCE & TITAN-EAR (v38.3)
+🎙️ VOICE-RESONANCE & TITAN-EAR (v45.7)
 ------------------------------------------------------------
 
 00_GHOST_EAR (Hintergrund-Dienst / nexus_ear.py)
@@ -21,12 +21,19 @@ EN: The "Ear". Starts silently via VBS in the background.
     Listens via Focusrite (44.1kHz) for Titan triggers.
 
 [DE] STIMM-KOMMANDOS (RES_IDENT):
-- START:  "Guten Morgen" / "Hey Gee" / "System an"
-- STOP:   "Gute Nacht" / "Shutdown" / "Feierabend"
-- PAUSE:  "Pause" / "Stopp" / "Halt an" (600Hz Beep)
-- RESUME: "Weiter" / "Fortsetzen" / "Go" (900Hz Beep)
-- SKIP:   "Nächste" / "Überspringen" / "Weg damit" (400Hz Beep)
+- START:   "Guten Morgen" / "Hey Gee" / "System an"
+- STOP:    "Gute Nacht" / "Shutdown" / "Feierabend"
+- PAUSE:   "Pause" / "Stopp" / "Halt an" (600Hz Beep)
+- RESUME:  "Weiter" / "Fortsetzen" / "Go" (900Hz Beep)
+- SKIP:    "Nächste" / "Überspringen" / "Weg damit" (400Hz Beep)
+- SENDEN:  "Abschicken" / "Nachricht raus" / "Feuer frei" (1200Hz Beep)
 
+[DE] DIKTAT-MODUS (LARYNX-INJEKTION):
+1. TRIGGER: "Texteingabe" sagen (Warten auf 1200Hz Kern-Beep)
+2. DIKTAT:  Freies Sprechen (Whisper transkribiert im Hintergrund)
+3. FINISH:  "Fertig" / "Fertisch" / "F-Wort" (Löst Injektion aus)
+4. FOKUS:   Automatischer Taskleisten-Blink-Killer & 3,5cm-Anker.
+            Der Text wird mechanisch (v44.1) in die Schätzeile getippt.
 ------------------------------------------------------------
 🕹️ DIE KONTROLL-ZENTRALE / THE CONTROL CENTER
 ------------------------------------------------------------

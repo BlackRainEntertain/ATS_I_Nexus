@@ -6,3 +6,6 @@ pygetwindow
 psutil
 edge-tts
 rich
+faster-whisper
+pyautogui
+pyperclip

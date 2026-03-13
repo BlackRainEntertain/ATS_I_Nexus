@@ -28,3 +28,11 @@ Thumbs.db
 
 # --- STICKER-SCHUTZ (Verknüpfungen ignorieren) ---
 *.lnk
+
+# --- ERGÄNZUNG LARYNX (v45.7) ---
+# Ignoriert die Feedback-Tickets für den Butler
+*_Voice_Queue/*.json
+
+# Verhindert, dass Whisper-Modelle ins Repo rutschen
+**/Models/faster-whisper-*
+Nexus_Service/temp_larynx.wav
