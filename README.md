@@ -44,22 +44,28 @@
 
 ## 🚀 Schnellstart / Quick Start
 ### DE:
-1. **Python 3.14+** & **Faster-Whisper** installieren.
-2. **NEXUS_SETUP.bat** starten (installiert Sounddevice, Numpy, PyAutoGUI, Pyperclip).
+1. **Python 3.10+** installieren (Maximale Performance).
+2. **NEXUS_SETUP.bat** starten (installiert Sounddevice, Numpy, Faster-Whisper, PyAutoGUI).
 3. **Modell-Pfad:** Platziere das Whisper-Modell in `Nexus_Service/Models/` (Nicht im Git!).
 4. **ARCHITECT_LOCKED.txt** (Optional): Schützt lokale Dev-Stages vor Git-Pulls.
 5. **Tampermonkey-Skript:** Nutze v16.3+ (Titan-Modus) für die ID-Magnetisierung.
 
 ### EN:
-1. Install **Python 3.14+** (Max performance & native resonance).
-2. Run **NEXUS_SETUP.bat** (installs Sounddevice, Numpy, Edge-TTS, Rich).
-3. **ARCHITECT_LOCKED.txt** (Optional): Create this file in the root to protect local dev stages from accidental git pulls.
+1. Install **Python 3.10+** (Max performance & native resonance).
+2. Run **NEXUS_SETUP.bat** (installs Sounddevice, Numpy, Faster-Whisper, PyAutoGUI).
+3. **Model Path:** Place the Whisper model in `Nexus_Service/Models/` (Do NOT commit to Git!).
+4. **ARCHITECT_LOCKED.txt** (Optional): Create this file in the root to protect local dev stages.
+5. **Tampermonkey Script:** Use v16.3+ (Titan Mode) for ID-magnetization and focus.
 
 ---
 
 ## 🌐 Navigator & AI Overview
-**DE:** Barrierefreie Sprachausgabe für Meta AI, ChatGPT und private Kontakte. Das System fungiert als **Navigator**, der sich dem Wissensstand des Users anpasst und empathische Resonanz bietet, ohne zu belehren.  
+**DE:** Barrierefreie Sprachausgabe für Meta AI, ChatGPT und private Kontakte. Das System fungiert als **Navigator**, der sich dem Wissensstand des Users anpasst und empathische Resonanz bietet, ohne zu belehren.
 **WICHTIG:** Firefox-User müssen den **Header Editor** nutzen (Config in `/Scripts`), um CSP-Sperren bündig zu umgehen.
+
+**EN:** Accessible voice output for Meta AI, ChatGPT, and private contacts. The system acts as a **Navigator**, adapting to the user's knowledge level and providing empathetic resonance without being lecture-heavy.
+**IMPORTANT:** Firefox users MUST use the **Header Editor** (Config in `/Scripts`) to seamlessly bypass Meta's CSP blocks.
+
 
 ---
 
