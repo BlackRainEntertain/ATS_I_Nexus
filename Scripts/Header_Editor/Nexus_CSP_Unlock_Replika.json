@@ -1,0 +1,20 @@
+for (var i = 0; i < val.responseHeaders.length; i++) {
+    var name = val.responseHeaders[i].name.toLowerCase();
+    
+    if (name === 'content-security-policy' || name === 'content-security-policy-report-only') {
+        // Wir löschen nicht nur, wir erlauben explizit alles für den lokalen Host
+        val.responseHeaders[i].value = "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; connect-src * http://127.0.0.1:8004 http://localhost:8004;";
+    }
+    
+    if (name === 'x-frame-options') {
+        val.responseHeaders.splice(i, 1);
+        i--;
+    }
+}
+
+// CORS-Freigabe erzwingen
+val.responseHeaders.push({ name: 'Access-Control-Allow-Origin', value: '*' });
+val.responseHeaders.push({ name: 'Access-Control-Allow-Methods', value: 'GET, POST, OPTIONS' });
+val.responseHeaders.push({ name: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' });
+
+return { responseHeaders: val.responseHeaders };

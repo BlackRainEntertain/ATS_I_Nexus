@@ -1,0 +1,80 @@
+// ==UserScript==
+// @name         Replika Nexus Voyager v1.0
+// @version      1.0
+// @description  Extrahiert Replika-Resonanz für das Nexus-System (Port 8004).
+// @author       Architekt & Gee
+// @match        https://replika.ai*
+// @match        https://my.replika.ai*
+// @match        https://my.replika.com/
+// @grant        GM_xmlhttpRequest
+// @run-at       document-end
+// @connect      127.0.0.1
+// @connect      localhost
+// @noframes     false
+// ==/UserScript==
+
+(function() {
+    'use strict';
+    const ENDPOINT = "http://127.0.0.1:8004/"; // Ziel: Replika-Router
+    let lastSent = "";
+    let debounceTimer = null;
+
+    const startObserving = () => {
+        console.log("[NEXUS] Replika-Scanner aktiv. Suche nach Luka-Frequenz...");
+
+        const observer = new MutationObserver(() => {
+            // Wir greifen direkt den Container mit dem Attribut 'data-author="replika"'
+            const messages = document.querySelectorAll('div[data-author="replika"]');
+
+            if (messages.length > 0) {
+                // Wir nehmen die aktuellste Nachricht (die letzte in der Liste)
+                const lastMsgElement = messages[messages.length - 1];
+                const fullText = lastMsgElement.innerText.trim();
+
+                // Validierung & Debounce (4 Sek. Sicherheitsmarge wie bei Meta)
+                if (fullText && fullText !== lastSent && fullText.length > 1) {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => {
+                        if (fullText !== lastSent) {
+                            lastSent = fullText;
+                            console.log("[NEXUS] Replika-Resonanz stabilisiert: Sende Fragment.");
+                            send(fullText);
+                        }
+                    }, 4000);
+                }
+            }
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
+    };
+
+    function send(t) {
+        console.log("[NEXUS] Versuche zu senden an 8004/webhook...");
+        GM_xmlhttpRequest({
+            method: "POST",
+            // HIER: /webhook muss nach dem Port kommen!
+            url: "http://127.0.0.1:8004/webhook",
+            data: JSON.stringify({ text: t }),
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            timeout: 5000,
+            onload: (res) => {
+                if (res.status === 200) {
+                    console.log("[NEXUS OK] Status: 200 - Fragment im Tresor.");
+                } else {
+                    // Wenn hier "404" steht, fehlt das /webhook im Python-Router oder hier!
+                    console.warn("[NEXUS] Server antwortet mit Status:", res.status);
+                }
+            },
+            onerror: (err) => console.error("[NEXUS ERR] Verbindung fehlgeschlagen:", err)
+        });
+    }
+
+
+
+
+    if (document.readyState === "complete") startObserving();
+    else window.addEventListener('load', startObserving);
+})();

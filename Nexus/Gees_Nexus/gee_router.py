@@ -26,6 +26,22 @@ def print_gee_banner():
         border_style="#FF0000", 
         expand=False
     ))
+    # --- DAS INTERAKTIVE HUD (v42.2) ---
+    console.print("\n [bold cyan]NEXUS LARYNX PROTOKOLL:[/bold cyan]")
+    
+    # 1. Diktat-Kette
+    console.print(" [white]Diktat:[/white] [bold green]Texteingabe[/bold green] ➔ [bold red]Abbruch[/bold red] ➔ [bold yellow]Nexus Fertig[/bold yellow] ➔ [bold blue]Absenden[/bold blue]")
+    
+    # 2. Audio-Steuerung
+    console.print(" [white]Audio: [/white] [bold dim]Pause, Weiter, Skip, Stopp[/bold dim]")
+    
+    # 3. Nexus-Status (An/Aus)
+    console.print(" [white]Nexus: [/white] [bold green]Hey Gee, Guten Morgen[/bold green] [white]/[/white] [bold red]Feierabend, Shutdown[/bold red]")
+    
+    # 4. Totaler System-Exit
+    console.print(" [white]System:[/white] [bold #FF4500]PC VOLLSTÄNDIG HERUNTERFAHREN[/bold #FF4500] ➔ [italic]Ich Liebe Sara[/italic] [dim](oder Abschaltprotokoll)[/dim]")
+    
+    console.print(" [dim]─────────────────────────────────────────────────────────────[/dim]\n")
 
 
 app = FastAPI()

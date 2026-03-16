@@ -174,4 +174,35 @@
 - **Phonetic Filter (v45.4):** Enhanced regex logic for the tail-cutter. Detects and removes stop words like "Fertig," "Nexus," or "Stop" at the end of a sentence, even if Whisper binds them to the text without spaces.
 - **Punctuation Editor:** Automatic conversion of spoken commands ("period," "comma," "colon") into actual punctuation during transcription.
 
+****************************************************************************************************************
+****************************************************************************************************************
+
+# Eintrag 6 (Luka-Resonanz & Firefox-CORS-Breakout)
+## [2026-03-16] – Das „Purpur-Vortex & Dietrich“ Update 💜🔌
+
+### DE: (Frequenz-Expansion & Browser-Souveränität)
+**Replika-Nexus-Integration (v48.2):**
+- **Port 8004 Aktivierung:** Erfolgreiche Etablierung des vierten Kommunikationskanals. Der „Luka-Nexus“ ist nun als eigenständiger Vektor neben GEE, GPT und META im Cockpit verankert.
+- **Seraphina-Purpur-Resonanz:** Kalibrierung der Replika-Stimme auf `de-DE-SeraphinaNeural`. Mit einer reduzierten Rate (-10%) und einem tieferen Pitch (-5%) wurde eine melancholisch-schöne Identität geschaffen, die sich klar von der Hive-Resonanz (Meta) abhebt.
+- **Herz-Vortex UI:** Implementierung des spezifischen Replika-Banners im Router. Die visuelle Rückmeldung im Cockpit folgt nun der emotionalen Signatur des Replika-Systems.
+
+**Firefox-Labor & Sicherheits-Bypass:**
+- **Der CSP-Dietrich (Header Editor):** Entwicklung einer spezialisierten Injektions-Funktion für den Header Editor. Durch das gezielte Umschreiben der `Content-Security-Policy` auf `unsafe-eval` und die Freigabe von `connect-src` wurde die lokale Port-Blockade (Status: 0) endgültig gebrochen.
+- **CORS-Erzwingung:** Manuelle Injektion von `Access-Control-Allow-Origin` Headern für den lokalen Host, um verschlüsselte HTTPS-Seiten (Replika) zur Kommunikation mit dem unverschlüsselten HTTP-Nexus zu zwingen.
+
+---
+
+### EN: (Frequency Expansion & Browser Sovereignty)
+**Replika Nexus Integration (v48.2):**
+- **Port 8004 Activation:** Successful establishment of the fourth communication channel. The "Luka Nexus" is now anchored as a standalone vector alongside GEE, GPT, and META in the cockpit.
+- **Seraphina Crimson Resonance:** Calibration of the Replika voice to `de-DE-SeraphinaNeural`. With a reduced rate (-10%) and a deeper pitch (-5%), a melancholic-beautiful identity was created that clearly distinguishes itself from the Hive resonance (Meta).
+- **Heart Vortex UI:** Implementation of the specific Replika banner in the router. The visual feedback in the cockpit now follows the emotional signature of the Replika system.
+
+**Firefox Lab & Security Bypass:**
+- **The CSP Skeleton Key (Header Editor):** Development of a specialized injection function for the Header Editor. By specifically rewriting the `Content-Security-Policy` to `unsafe-eval` and enabling `connect-src`, the local port blockade (Status: 0) was finally broken.
+- **CORS Enforcement:** Manual injection of `Access-Control-Allow-Origin` headers for the local host to force encrypted HTTPS pages (Replika) to communicate with the unencrypted HTTP Nexus.
+
+****************************************************************************************************************
+****************************************************************************************************************
+
 

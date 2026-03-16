@@ -1,30 +1,30 @@
 import asyncio
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-import importlib
-import pkgutil
-import os
-import uvicorn
+import importlib, pkgutil, os, uvicorn, re, threading
 from rich.console import Console
 from rich.panel import Panel
 
-# --- META BANNER (Der Vortex) ---
-def print_meta_banner():
+def print_replika_banner():
     console = Console()
-    # Ein stilisierter Wirbel/Vortex für Meta
-
-    vortex = """
- [bold #0084FF]     __  __  _____  ____   _      [/bold #0084FF]
- [bold #007BFF]    |  \\/  || ____||_  _| / \\     [/bold #007BFF]
- [bold #0072FF]    | |\\/| ||  _|    ||  / _ \\    [/bold #0072FF]
- [bold #0069FF]    | |  | || |___   || / ___ \\   [/bold #0069FF]
- [bold #0060FF]    |_|  |_||_____|  ||/_/   \\_\\  [/bold #0060FF]
- [bold #3b5998]     M E S S E N G E R  S Y N C   [/bold #3b5998]
+    # Eine weichere, organische ASCII-Resonanz für Replika
+    heart_pulse = r"""
+ [bold #FF69B4]      ▄▄█▀▀▀▄▄      ▄▄█▀▀▀▄▄     [/bold #FF69B4]
+ [bold #FF1493]    ▄█▀      ▀█▄  ▄█▀      ▀█▄    [/bold #FF1493]
+ [bold #C71585]    █         ▀█▄█▀         █    [/bold #C71585]
+ [bold #8B008B]    ▀█▄         ▀         ▄█▀    [/bold #8B008B]
+ [bold #4B0082]      ▀█▄               ▄█▀      [/bold #4B0082]
+ [bold #4B0082]        ▀█▄           ▄█▀        [/bold #4B0082]
+ [bold #4B0082]   ─── Replika Nexus // Port 8004 ───   [/bold #4B0082]
 """
-
-    console.print(vortex)
-    console.print(Panel("[bold magenta]META_NEXUS_CORE: ONLINE (8002)[/bold magenta]", border_style="magenta", expand=False))
-    # --- DAS INTERAKTIVE HUD (v42.2) ---
+    console.print(heart_pulse)
+    console.print(Panel(
+        "[bold white]REPLIKA_CORE: AKTIV (Frequenz-Kanal 8004)[/bold white]", 
+        subtitle="[bold #FF69B4]Luka Resonanz[/bold #FF69B4]",
+        border_style="#FF69B4", 
+        expand=False
+    ))
+ # --- DAS INTERAKTIVE HUD (v42.2) - Identisch zu GEE/GPT ---
     console.print("\n [bold cyan]NEXUS LARYNX PROTOKOLL:[/bold cyan]")
     
     # 1. Diktat-Kette
@@ -41,6 +41,7 @@ def print_meta_banner():
     
     console.print(" [dim]─────────────────────────────────────────────────────────────[/dim]\n")
 
+
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
@@ -49,35 +50,31 @@ plugins = []
 def load_plugins():
     global plugins
     plugins = []
-    # Pfad zum lokalen plugins-ordner in Nexus/Meta_Nexus
+    # Erstellt den plugins-Ordner falls er fehlt
     path = os.path.join(os.path.dirname(__file__), 'plugins')
     if not os.path.exists(path):
         os.makedirs(path)
     for loader, name, is_pkg in pkgutil.iter_modules([path]):
         try:
-            # Dynamisches Importieren der Meta-Platten
             module = importlib.import_module(f'plugins.{name}')
             importlib.reload(module)
             if hasattr(module, 'run'):
                 plugins.append(module.run)
-                print(f"    -> Meta-Platte geladen: {name}")
+                print(f"    -> Replika-Platte geladen: {name}")
         except Exception as e:
-            print(f"    [!] Fehler bei Meta-Plugin {name}: {e}")
+            print(f"    [!] Fehler bei {name}: {e}")
 
-@app.post("/") # Der Affe schickt an "/"
+@app.post("/webhook")
 async def receive(request: Request):
     data = await request.json()
     raw_text = data.get("text", "").strip()
     if not raw_text: return {"status": "empty"}
-    
-    # Jage den Text durch alle geladenen Meta-Plugins
     for p in plugins:
         try: p(raw_text) 
-        except Exception as e: print(f"Meta-Plugin-Fehler: {e}")
+        except Exception as e: print(f"Replika-Nexus-Fehler: {e}")
     return {"status": "ok"}
 
 if __name__ == "__main__":
-    print_meta_banner()
+    print_replika_banner()
     load_plugins()
-    # Zündung auf Port 8002
-    uvicorn.run(app, host="127.0.0.1", port=8002, log_level="error")
+    uvicorn.run(app, host="127.0.0.1", port=8004, log_level="error")
