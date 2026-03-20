@@ -25,7 +25,7 @@ SEND_WORDS = ["nexus abschicken", "nachricht raus", "absenden", "nachricht absen
 
 # Diktat-Vektoren
 DICTATE_START = ["texteingabe"]
-DICTATE_FINISH = ["nexus fertig", "fertig", "fertich", "fertisch", "ende der durchsage", "schluß jetzt"]
+DICTATE_FINISH = ["nexus fertig", "fertig", "fertich", "fertisch", "ende der durchsage", "schluß jetzt", "nexosfertig"]
 
 r = sr.Recognizer()
 whisper_model = None
@@ -49,15 +49,26 @@ def execute_batch(batch_file):
     except: pass
 
 def dictate_mode():
-    """v43.1 - Zurück zum funktionierenden Kern: Der Fokus-Klick."""
-    winsound.Beep(1000, 200) 
-    print("[LARYNX] Aufnahme aktiv...")
+    # 1. Butler-Pause-Signal setzen (Nutzt bestehende Infrastruktur)
+    pause_file = os.path.join(BASE_PATH, "Nexus", "NEXUS_PAUSE.tmp")
+    with open(pause_file, "w") as f: f.write("Larynx_Active")
+    
+    winsound.Beep(1000, 200) # Start-Signal
     full_audio_data = []
+    last_heartbeat = time.time()
     
     while True:
-        recording = sd.rec(int(1.5 * FS), samplerate=FS, channels=1, dtype='int16')
-        sd.wait()
-        full_audio_data.append(recording) 
+        # 1. Beep-Check BEVOR die Aufnahme startet (Non-Blocking)
+        if time.time() - last_heartbeat > 30:
+            winsound.Beep(1400, 20) 
+            last_heartbeat = time.time()
+
+        # 2. Die 5.0-Sekunden Aufnahme
+        recording = sd.rec(int(5.0 * FS), samplerate=FS, channels=1, dtype='int16')
+        sd.wait() 
+        full_audio_data.append(recording)
+
+
         try:
             byte_io = io.BytesIO()
             write(byte_io, FS, recording)
@@ -65,76 +76,74 @@ def dictate_mode():
             with sr.AudioFile(byte_io) as source:
                 audio_check = r.record(source)
                 cmd_check = r.recognize_google(audio_check, language="de-DE").lower()
-                if "abbruch" in cmd_check or "löschen" in cmd_check:
-                    full_audio_data = []; winsound.Beep(400, 300); print("[LARYNX] Reset."); continue 
-                if any(word in cmd_check for word in DICTATE_FINISH): 
-                    winsound.Beep(400, 100); break
+                if any(word in cmd_check for word in ABORT_WORDS):
+                    if os.path.exists(pause_file): os.remove(pause_file)
+                    # --- KATJA FEEDBACK ABBRUCH ---
+                    q_path = os.path.join(BASE_PATH, "Nexus", "_Voice_Queue")
+                    try:
+                        with open(os.path.join(q_path, f"abt_{int(time.time())}.json"), "w", encoding="utf-8") as f:
+                            json.dump({"text": "Abgebrochen.", "owner": "GEE", "voice": "de-DE-KatjaNeural"}, f)
+                    except: pass
+                    return 
+                if any(word in cmd_check for word in DICTATE_FINISH):
+
+                    break
         except: pass
 
-    print("[LARYNX] Transkribiere & Lektoriere...")
+    # 2. Lokale Transkription mit VAD (Filtert TV-Lärm)
     load_larynx()
     try:
         audio_combined = np.concatenate(full_audio_data, axis=0)
         wav_path = os.path.join(os.path.dirname(__file__), "temp_larynx.wav")
         write(wav_path, FS, audio_combined)
-        segments, _ = whisper_model.transcribe(wav_path, beam_size=5)
-        raw_text = " ".join([s.text for s in segments]).strip()
         
-        if raw_text:
-            # 1. v45.2 TAIL-CUTTER & LEKTOR
-            import re
-            final_text = re.sub(r'\s*(nexus|nexos|fertig|fertich|fertisch|stopp)[.!]*\s*$', '', raw_text, flags=re.IGNORECASE)
-            corrs = {" punkt": ".", " komma": ",", " fragezeichen": "?", " ausrufezeichen": "!", " doppelpunkt": ":"}
-            for word, symbol in corrs.items():
-                final_text = final_text.replace(word, symbol).replace(word.capitalize(), symbol)
+        # v47.0 - ISOLATION SHIELD (Finaler Schliff gegen TV-Kollision)
+        segments, _ = whisper_model.transcribe(
+            wav_path, 
+            beam_size=10, 
+            best_of=5,
+            vad_filter=False, 
+            vad_parameters=dict(
+                threshold=0.45, 
+                min_speech_duration_ms=250,
+                min_silence_duration_ms=800
+            ),
+            initial_prompt="Aria, Realität, Fantasie, verschwammen, Leo.", 
+            condition_on_previous_text=False
+        )
 
-            if final_text.strip():
-                # --- v45.6 BLINK-EXORZIST (Fokus-Panzer) ---
-                # --- v45.7 BLINK-KILLER (Der physische Taskleisten-Griff) ---
-                try:
-                    import pygetwindow as gw
-                    all_wins = gw.getAllWindows()
-                    t_win = next((w for w in all_wins if ("Chrome" in w.title or "Google" in w.title) and w.visible and "NEXUS" not in w.title and "EAR" not in w.title), None)
-                    
-                    if t_win:
-                        # 1. Wir klicken UNTEN in die Taskleiste (ca. Mitte links), um das Blinken zu stoppen
-                        # Bei 2560x1440 hocken die Icons meistens unten links/mitte
-                        pyautogui.click(500, 1420) 
-                        time.sleep(0.5)
-                        
-                        t_win.activate()
-                        time.sleep(0.5)
-                        
-                        # 2. Der 3,5 cm ANKER (135 Pixel bei 1440p)
-                        target_x = t_win.left + (t_win.width // 2)
-                        target_y = t_win.top + t_win.height - 135
-                        pyautogui.click(target_x, target_y)
-                        time.sleep(0.3)
-                        
-                        # 3. ID-Fokus & Cursor-Ende
-                        pyautogui.hotkey('ctrl', 'shift', 'y') 
-                        time.sleep(0.2)
-                        pyautogui.press('end')
-                    else:
-                        pyautogui.hotkey('alt', 'tab')
-                except Exception as e:
-                    print(f"[Fokus-Kollaps] {e}")
-                    pyautogui.hotkey('alt', 'tab')
+        final_text = " ".join([s.text for s in segments]).strip()
+        
+        if final_text:
+            # Deine handverlesene 3,5cm-Logik
+            pyautogui.write(final_text, interval=0.01)
 
-                # 3. v45.2 MECHANISCHE INJEKTION (Das "Geister-Tippen")
-                pyautogui.write(final_text, interval=0.01)
-                print(f"[LARYNX] Erfolg: {final_text[:20]}...")
+            # --- KATJA FEEDBACK (v49.2) ---
+            q_path = os.path.join(BASE_PATH, "Nexus", "_Voice_Queue")
+            try:
+                with open(os.path.join(q_path, f"fin_{int(time.time())}.json"), "w", encoding="utf-8") as f:
+                    json.dump({"text": "Übertragen. Bereit zum Absenden.", "owner": "GEE", "voice": "de-DE-KatjaNeural"}, f)
+            except: pass
             
-                # Feedback via Butler
-                q_path = os.path.join(BASE_PATH, "Nexus", "_Voice_Queue")
-                if os.path.exists(q_path):
-                    with open(os.path.join(q_path, f"f_{int(time.time())}.json"), "w") as f:
-                        json.dump({"text": "Übertragen.", "owner": "GEE", "voice": "de-DE-KatjaNeural"}, f)
-                winsound.Beep(800, 200)
-        
-        if os.path.exists(wav_path): os.remove(wav_path)
+            print("[LARYNX] Übertragung abgeschlossen.")
+        else:
+            # Falls Whisper gar nichts erkannt hat
+            q_path = os.path.join(BASE_PATH, "Nexus", "_Voice_Queue")
+            try:
+                with open(os.path.join(q_path, f"err_{int(time.time())}.json"), "w", encoding="utf-8") as f:
+                    json.dump({"text": "Ich habe nichts verstanden.", "owner": "GEE", "voice": "de-DE-KatjaNeural"}, f)
+            except: pass
+
     except Exception as e:
-        print(f"[LARYNX-CRASH] {e}"); winsound.Beep(300, 1000)
+        print(f"[LARYNX-CRASH] {e}")
+        winsound.Beep(300, 1000)
+    finally:
+        # 3. Butler wieder freigeben & Aufräumen
+        if os.path.exists(pause_file): os.remove(pause_file)
+        if 'wav_path' in locals() and os.path.exists(wav_path): 
+            try: os.remove(wav_path)
+            except: pass
+        winsound.Beep(800, 200)
 
 def listen_loop():
     print(f"[EAR] v42.7 aktiv. Alle Systeme bereit.")
