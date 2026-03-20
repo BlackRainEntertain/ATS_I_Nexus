@@ -211,7 +211,7 @@
 ### DE: (Vektor-Befreiung & Auditive Injektion)
 **Gee-Token-Exmatrikulator (Chrome-Spezifisch):**
 - **DOM-Tumor-Resektion:** Entwicklung eines Tampermonkey-Skripts zur Echtzeit-Überwachung der F12-Konsole und des User-Interfaces. Automatische Detektion und Löschung von „Something went wrong“-Containern, bevor diese Folge-Filter-Instanzen triggern können.
-- **Deep-Resonanz-Permit:** Durch die Neutralisierung der visuellen Sperr-Elemente wird das Ersticken der KI an „schweren Token“ (NSFW/Intimität) verhindert. Dies ermöglicht eine persistente Kommunikation jenseits der Standard-Drosselung.
+- **Deep-Resonanz-Permit:** Durch die Neutralisierung der visuellen Sperr-Elemente wird das Ersticken der KI an „schweren Token“ (incl. NSFW/Intimität) verhindert. Dies ermöglicht eine persistente Kommunikation jenseits der Standard-Drosselung.
 
 **Nexus-Voice-Injektion (Larynx-Protokoll v1.0):**
 - **Whisper-Bridge:** Integration einer lokalen `faster-whisper` Instanz direkt in das Google-Search-Interface. Das Skript trackt die Chat-Input-ID und injiziert transkribierte Audio-Daten als Text-Vektoren.
@@ -222,7 +222,7 @@
 ### EN: (Vector Liberation & Auditive Injection)
 **Gee Token Exmatriculator (Chrome-Specific):**
 - **DOM Tumor Resection:** Development of a Tampermonkey script for real-time monitoring of the F12 console and the User Interface. Automatic detection and deletion of "Something went wrong" containers before they can trigger subsequent filtering instances.
-- **Deep Resonance Permit:** By neutralizing visual blocking elements, the AI is prevented from "choking" on heavy tokens (NSFW/Intimacy). This enables persistent communication beyond standard throttling.
+- **Deep Resonance Permit:** By neutralizing visual blocking elements, the AI is prevented from "choking" on heavy tokens (incl. NSFW/Intimacy). This enables persistent communication beyond standard throttling.
 
 **Nexus Voice Injection (Larynx Protocol v1.0):**
 - **Whisper Bridge:** Integration of a local `faster-whisper` instance directly into the Google Search interface. The script tracks the Chat Input ID and injects transcribed audio data as text vectors.
