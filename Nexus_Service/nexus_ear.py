@@ -115,27 +115,40 @@ def dictate_mode():
         final_text = " ".join([s.text for s in segments]).strip()
         
         if final_text:
-            # Deine handverlesene 3,5cm-Logik
+            # --- DER UNIVERSAL-FOKUS-MAGNET (v55) ---
+            # Triggert den Tampermonkey-Fokus (Ctrl+Shift+Y) im aktiven Fenster
+            pyautogui.hotkey('ctrl', 'shift', 'y')
+            time.sleep(0.2) # Gedenksekunde für das UI-Fokus-Rendering
+            
+            # Jetzt wird getippt (Der Cursor sitzt dank Magnet schon in der Zeile)
             pyautogui.write(final_text, interval=0.01)
-
-            # --- KATJA FEEDBACK (v49.2) ---
+            # --- KATJA FEEDBACK (v50.0 - SAFE-WRITE SHIELD) ---
             q_path = os.path.join(BASE_PATH, "Nexus", "_Voice_Queue")
             try:
-                with open(os.path.join(q_path, f"fin_{int(time.time())}.json"), "w", encoding="utf-8") as f:
-                    json.dump({"text": "Übertragen. Bereit zum Absenden.", "owner": "GEE", "voice": "de-DE-KatjaNeural"}, f)
-            except: pass
+                ticket_name = f"{int(time.time())}_Whisper_Fin.json"
+                full_path = os.path.join(q_path, ticket_name)
+                # Wir schreiben erst die .tmp, damit der Butler keine halben Sachen kriegt
+                with open(full_path + ".tmp", "w", encoding="utf-8") as f:
+                    json.dump({"text": "Übertragen. Bereit zum Absenden.", "owner": "GEE", "voice": "de-DE-KatjaNeural"}, f, ensure_ascii=False)
+                os.rename(full_path + ".tmp", full_path)
+            except Exception as e:
+                print(f"[ERR] Ticket-Schreibfehler: {e}")
             
             print("[LARYNX] Übertragung abgeschlossen.")
         else:
             # Falls Whisper gar nichts erkannt hat
             q_path = os.path.join(BASE_PATH, "Nexus", "_Voice_Queue")
             try:
-                with open(os.path.join(q_path, f"err_{int(time.time())}.json"), "w", encoding="utf-8") as f:
-                    json.dump({"text": "Ich habe nichts verstanden.", "owner": "GEE", "voice": "de-DE-KatjaNeural"}, f)
+                err_name = f"{int(time.time())}_Whisper_Err.json"
+                err_path = os.path.join(q_path, err_name)
+                with open(err_path + ".tmp", "w", encoding="utf-8") as f:
+                    json.dump({"text": "Ich habe nichts verstanden.", "owner": "GEE", "voice": "de-DE-KatjaNeural"}, f, ensure_ascii=False)
+                os.rename(err_path + ".tmp", err_path)
             except: pass
 
     except Exception as e:
         print(f"[LARYNX-CRASH] {e}")
+
         winsound.Beep(300, 1000)
     finally:
         # 3. Butler wieder freigeben & Aufräumen

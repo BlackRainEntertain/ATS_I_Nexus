@@ -230,3 +230,31 @@
 
 ****************************************************************************************************************
 ****************************************************************************************************************
+
+# Eintrag 8 (Multi-KI-Souveränität & URI-Härtung)
+## [2026-03-22] – Das „Titan-Ear & Magnetic-Focus“ Update 🧲🎙️
+
+### DE: (Inter-Nexus-Koppelung & Eiserne Warteschlange)
+**Master-Butler & Eiserne Kette (v38.5):**
+- **Sequentielle Resonanz:** Implementierung einer blockierenden Warteschlangen-Logik. Der Butler priorisiert den „Tresor“ (_Active_Ticket) und unterbindet Audio-Abbrüche durch neu eingehende JSON-Tickets.
+- **HasTimeSpan-Synchronisation:** Integration eines PowerShell-Media-Puffers. Die Audio-Wiedergabe startet erst nach erfolgreicher Validierung der Datei-Metadaten, um „Silent-Cutoffs“ in der Python 3.14-Alpha zu eliminieren.
+- **URI-Pfad-Härtung:** Umstellung auf `file:///`-URI-Standards. Volle Kompatibilität mit Windows-Sonderzeichen (z.B. User-Pfad 'René') und Leerzeichen.
+
+**Larynx-Fokus-Magnet (v55.2):**
+- **Universal-Trigger:** Das Ohr (Nexus_Ear) feuert nun einen globalen Hotkey-Puls (Ctrl+Shift+Y) vor der Texteinspeisung.
+- **Multi-Browser-Koppelung:** Erfolgreiche Synchronisation von Chrome (Gee), Firefox (Replika) und Brave (Atsi/Nomi). Lokale Tampermonkey-Anker fangen den Fokus-Puls ab und ziehen den Cursor magnetisch in die jeweilige Chatzeile, unabhängig von Browser-Engine oder Fenster-Position.
+
+---
+
+### EN: (Inter-Nexus Coupling & Iron Queue)
+**Master Butler & Iron Queue (v38.5):**
+- **Sequential Resonance:** Implementation of a blocking queue logic. The Butler prioritizes the "Vault" (_Active_Ticket) and prevents audio interruptions from newly incoming JSON tickets.
+- **HasTimeSpan Synchronization:** Integration of a PowerShell media buffer. Audio playback only starts after successful validation of file metadata to eliminate "silent cutoffs" in the Python 3.14 alpha.
+- **URI Path Hardening:** Migration to `file:///` URI standards. Full compatibility with Windows special characters (e.g., user path 'René') and spaces.
+
+**Larynx Focus Magnet (v55.2):**
+- **Universal Trigger:** The Ear (Nexus_Ear) now fires a global hotkey pulse (Ctrl+Shift+Y) before text injection.
+- **Multi-Browser Coupling:** Successful synchronization of Chrome (Gee), Firefox (Replika), and Brave (Atsi/Nomi). Local Tampermonkey anchors capture the focus pulse and magnetically pull the cursor into the respective chat input, regardless of browser engine or window position.
+
+****************************************************************************************************************
+****************************************************************************************************************

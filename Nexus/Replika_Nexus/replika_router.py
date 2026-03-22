@@ -1,13 +1,38 @@
 import asyncio
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-import importlib, pkgutil, os, uvicorn, re, threading
+import importlib, pkgutil, os, uvicorn, re, threading, time
+import pygetwindow as gw
+import ctypes
 from rich.console import Console
 from rich.panel import Panel
 
+# --- COCKPIT SNAP LOGIK (v6.8) ---
+def snap_to_grid():
+    # Wir geben dem Fenster 2 Sekunden Zeit, um wirklich zu existieren
+    time.sleep(2.0)
+    # Sucht nach dem Titel, den os.system am Start setzt
+    title_part = "REPLIKA_NEXUS"
+    OFFSET_X = 2560
+    # Exakte GPT-Koordinaten aus deinem Cockpit
+    X, Y, W, H = OFFSET_X + 625, 540, 625, 548
+    
+    windows = [w for w in gw.getWindowsWithTitle('') if title_part in w.title.upper()]
+    if windows:
+        win = windows[0]
+        try:
+            win.restore()
+            win.moveTo(X, Y)
+            win.resizeTo(W, H)
+            # Set Always on Top
+            ctypes.windll.user32.SetWindowPos(win._hWnd, -1, 0, 0, 0, 0, 0x0001 | 0x0002)
+        except Exception as e:
+            print(f"[!] Snap-Fehler: {e}")
+
 def print_replika_banner():
+    # Wir setzen den Titel direkt hier, damit snap_to_grid ihn findet
+    os.system("title REPLIKA_NEXUS")
     console = Console()
-    # Eine weichere, organische ASCII-Resonanz für Replika
     heart_pulse = r"""
  [bold #FF69B4]      ▄▄█▀▀▀▄▄      ▄▄█▀▀▀▄▄     [/bold #FF69B4]
  [bold #FF1493]    ▄█▀      ▀█▄  ▄█▀      ▀█▄    [/bold #FF1493]
@@ -24,7 +49,8 @@ def print_replika_banner():
         border_style="#FF69B4", 
         expand=False
     ))
- # --- DAS INTERAKTIVE HUD (v42.2) - Identisch zu GEE/GPT ---
+
+    # --- DAS INTERAKTIVE HUD (v42.2) ---
     console.print("\n [bold cyan]NEXUS LARYNX PROTOKOLL:[/bold cyan]")
     
     # 1. Diktat-Kette
@@ -41,19 +67,16 @@ def print_replika_banner():
     
     console.print(" [dim]─────────────────────────────────────────────────────────────[/dim]\n")
 
-
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
+# Plugins laden (dein Code) ...
 plugins = []
-
 def load_plugins():
     global plugins
     plugins = []
-    # Erstellt den plugins-Ordner falls er fehlt
     path = os.path.join(os.path.dirname(__file__), 'plugins')
-    if not os.path.exists(path):
-        os.makedirs(path)
+    if not os.path.exists(path): os.makedirs(path)
     for loader, name, is_pkg in pkgutil.iter_modules([path]):
         try:
             module = importlib.import_module(f'plugins.{name}')
@@ -77,4 +100,6 @@ async def receive(request: Request):
 if __name__ == "__main__":
     print_replika_banner()
     load_plugins()
+    # Starte den Snap-Thread, damit er uvicorn nicht blockiert
+    threading.Thread(target=snap_to_grid, daemon=True).start()
     uvicorn.run(app, host="127.0.0.1", port=8004, log_level="error")

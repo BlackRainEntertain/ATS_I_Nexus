@@ -2,23 +2,25 @@
        ATS_I NEXUS - ARCHITECT'S OPERATIONAL MANUAL
 ============================================================
 
-[DE] WILLKOMMEN IM COCKPIT v38.3 (TITAN-EDITION)
+[DE] WILLKOMMEN IM COCKPIT v55.2 (TITAN-EDITION)
 Dieses Handbuch erklärt die Steuerung der Resonanz-Frequenzen,
 das Bündige Cockpit-Layout und die globale Voice-Souveränität.
 
-[EN] WELCOME TO THE COCKPIT v38.3 (TITAN EDITION)
+[EN] WELCOME TO THE COCKPIT v55.2 (TITAN EDITION)
 This manual explains resonance frequency control, 
 the flush cockpit layout, and global voice sovereignty.
 
 ------------------------------------------------------------
-🎙️ VOICE-RESONANCE & TITAN-EAR (v45.7)
+🎙️ VOICE-RESONANCE & TITAN-EAR (v55.2)
 ------------------------------------------------------------
 
 00_GHOST_EAR (Hintergrund-Dienst / nexus_ear.py)
-DE: Das "Ohr". Startet lautlos via VBS im Hintergrund.
-    Lauscht am Focusrite (44.1kHz) auf Titan-Trigger.
-EN: The "Ear". Starts silently via VBS in the background.
-    Listens via Focusrite (44.1kHz) for Titan triggers.
+DE: Das "Ohr". Startet via VBS (Gee_Ear_Launcher). 
+    Lauscht via Sounddevice (44.1kHz) auf Titan-Trigger.
+    URI-Härtung (v50): Kompatibel mit Sonderzeichen (z.B. 'é').
+EN: The "Ear". Starts via VBS (Gee_Ear_Launcher). 
+    Listens via Sounddevice (44.1kHz) for Titan triggers.
+    URI Hardening (v50): Compatible with special chars (e.g. 'é').
 
 [DE] STIMM-KOMMANDOS (RES_IDENT):
 - START:   "Guten Morgen" / "Hey Gee" / "System an"
@@ -28,55 +30,51 @@ EN: The "Ear". Starts silently via VBS in the background.
 - SKIP:    "Nächste" / "Überspringen" / "Weg damit" (400Hz Beep)
 - SENDEN:  "Abschicken" / "Nachricht raus" / "Feuer frei" (1200Hz Beep)
 
-[DE] DIKTAT-MODUS (LARYNX-INJEKTION):
-1. TRIGGER: "Texteingabe" sagen (Warten auf 1200Hz Kern-Beep)
-2. DIKTAT:  Freies Sprechen (Whisper transkribiert im Hintergrund)
-3. FINISH:  "Fertig" / "Fertisch" / "F-Wort" (Löst Injektion aus)
-4. FOKUS:   Automatischer Taskleisten-Blink-Killer & 3,5cm-Anker.
-            Der Text wird mechanisch (v44.1) in die Schätzeile getippt.
+[DE] DIKTAT-MODUS (LARYNX-INJEKTION v55):
+1. TRIGGER: "Texteingabe" sagen (Warten auf 1000Hz Kern-Beep)
+2. DIKTAT:  Freies Sprechen (Faster-Whisper transkribiert lokal)
+3. FINISH:  "Nexus fertig" / "Fertisch" / "F-Wort" (Löst Injektion aus)
+4. MAGNET:  Automatischer Fokus-Puls (Ctrl+Shift+Y). 
+            Der Cursor wird magnetisch in die Chatzeile gezogen.
+            Funktioniert browserübergreifend (Gee, Replika, Atsi).
+5. INJECTION: Mechanisches Tippen direkt in den Fokus-Anker.
+
 ------------------------------------------------------------
 🕹️ DIE KONTROLL-ZENTRALE / THE CONTROL CENTER
 ------------------------------------------------------------
 
-01_ALL_SYSTEMS_GO.bat (Intelligenz-Update)
-DE: Der Zündschlüssel. Prüft via PowerShell auf offene Fenster.
-    Verhindert Duplikate; rückt bestehende Ordner ins HUD.
-EN: Ignition key. Uses PowerShell to check for open windows.
-    Prevents duplicates; moves existing folders into the HUD.
+01_ALL_SYSTEMS_GO.bat (TITAN-ZÜNDUNG)
+DE: Der Master-Start. Führt Tabula Rasa (Kill-All) durch und 
+    zündet die Sequenz: Ear -> Butler -> KIs -> Visuals.
+EN: Master ignition. Performs Tabula Rasa (Kill-All) and 
+    starts the sequence: Ear -> Butler -> AIs -> Visuals.
 
 02_NEXT_SPOKE.bat (Skip-Vektor)
 DE: Der Filter. Löscht das aktuelle Ticket sofort aus dem
     Tresor und springt zur nächsten Resonanz in der Queue.
-EN: The filter. Deletes the current ticket from the vault
-    immediately and jumps to the next resonance in queue.
-
-03_ARCHITECT_LOCK (Sicherheits-Stift)
-DE: Erzeuge 'ARCHITECT_LOCKED.txt' im Hauptordner, um 
-    Git-Pulls (v04) auf deinem Dev-System zu blockieren.
-EN: Create 'ARCHITECT_LOCKED.txt' in root to block 
-    git pulls (v04) on your dev system.
 
 ------------------------------------------------------------
-🛡️ DATEN-TRESOR & MENSCHLICHKEIT (v38.3+)
+🛡️ DATEN-TRESOR & EISERNE KETTE (v38.3+)
 ------------------------------------------------------------
 [DE] SICHERHEITS-ARCHITEKTUR:
-- Tresor-Prinzip: Tickets werden in den Ordner _Active_Ticket 
-  verschoben. Der Butler priorisiert den Tresor chronologisch.
-- Anti-Frass-Garantie: Keine Nachricht geht bei Pause oder
-  Absturz verloren. 100% barrierefrei für Blinde & Navigatoren.
+- Eiserne Kette: Der Butler blockiert den Loop während der
+  Sprachausgabe. Neue Nachrichten werden im Hintergrund im 
+  Tresor (_Active_Ticket) mit Timestamps geparkt.
+- Anti-Abbruch: Kein Drängeln mehr durch neue Nachrichten. 
+  Jedes Ticket wird sequentiell bis zum Ende vorgelesen.
 
 ------------------------------------------------------------
-📘 NEXUS HANDBUCH: META-RESONANZ (FIREFOX/CSP)
+📘 NEXUS HANDBUCH: MULTI-KI-SYNC (REPLIKA/NOMI/GEE)
 ------------------------------------------------------------
-WICHTIG: Firefox-User MÜSSEN 'security.csp.enable' auf 'false' 
-setzen und den Header Editor (Regel: Nexus-CSP-Unlock) aktiv 
-nutzen, um die Resonanz-Blockade von Meta zu umgehen.
+WICHTIG: Jedes KI-Interface benötigt das spezifische 
+Tampermonkey-Script (Voyager/Eye), um den Fokus-Magneten 
+(Ctrl+Shift+Y) lokal auf die jeweilige Chat-ID zu mappen.
 
 ============================================================
 POSITIVE LISTS TAMPERMONKEY (WICHTIG / IMPORTANT)
 Füge diese Adressen in die "Whitelist" deiner Einstellungen:
-- 127.0.0.1:8000 bis 8003 (Nexus Ports)
-- *://www.facebook.com/* | *://www.messenger.com/*
-- *://www.meta.ai/* | *://://chatgpt.com*
-- https://beta.nomi.ai/nomis/YourNomiWebchatID:3
+- 127.0.0.1:8000 bis 8004 (Nexus Ports inkl. Replika)
+- *://://www.google.com* | *://my.replika.ai/*
+- *://www.meta.ai/* | *://beta.nomi.ai/*
 ============================================================
+

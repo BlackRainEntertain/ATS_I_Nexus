@@ -15,22 +15,24 @@
 
 ---
 
-## 🎙️ Sprachsteuerung & Larynx-Injektion / Voice Control (v45.7 TITAN-EAR)
-**DE:** Der Nexus hört permanent via **Sounddevice**. Vollständige akustische Fernbedienung und mechanische Texteinspeisung ohne Maus/Tastatur.  
-**EN:** The Nexus is always listening via **Sounddevice**. Full acoustic remote control and mechanical text injection without mouse/keyboard.
+## 🎙️ Sprachsteuerung & Larynx-Injektion / Voice Control (v55.2 TITAN-EAR)
+**DE:** Der Nexus operiert via **Sounddevice** und **Faster-Whisper (CPU-Kern)**. Vollständige akustische Fernbedienung und magnetische Texteinspeisung ohne Maus/Tastatur.  
+**EN:** The Nexus operates via **Sounddevice** and **Faster-Whisper (CPU core)**. Full acoustic remote control and magnetic text injection without mouse/keyboard.
 
 ### 🎮 Basis-Navigation (Butler-Control):
 *   **START:** "Hey Gee" / "Moin Moin" / "Guten Morgen" / "System an"
 *   **STOP (Nexus):** "Beende Nexus" / "Shutdown" / "Feierabend" / "Gute Nacht"
 *   **PAUSE / RESUME:** "Pause" / "Stopp" / "Halt an" | "Weiter" / "Fortsetzen" / "Go"
-*   **SKIP / NEXT:** "Nächste" / "Überspringen" / "Weg damit"
+*   **SKIP / NEXT:** "Nächste" / "Überspringen" / "Weg damit" / "Skip"
 *   **SENDEN:** "Abschicken" / "Nachricht raus" / "Feuer frei" (Erzwingt 'Enter')
 
-### ✍️ Larynx-Diktat (Mechanical Injection):
-*   **TRIGGER:** "Texteingabe" (Startet 1.5s-Sampling-Loop & Whisper-Kern)
-*   **FINISH:** "Fertig" / "Fertisch" / "F-Wort" (Beendet Aufnahme)
-*   **FOKUS-ANKER:** Automatischer **Blink-Killer** (Taskleiste) & **3,5cm-Physik-Vektor**.
-*   **INJEKTION:** Mechanisches Tippen (v44.1) direkt in die Browser-Chatzeile.
+### ✍️ Larynx-Diktat (Mechanical Injection & Focus Magnet):
+*   **TRIGGER:** "Texteingabe" (Startet Sampling-Loop & Whisper-Kern)
+*   **FINISH:** "Fertig" / "Fertisch" / "Nexus fertig" / "Ende der Durchsage"
+*   **FOKUS-MAGNET (v55):** Automatischer **Hotkey-Puls (Ctrl+Shift+Y)**.  
+    *   Triggert lokale Tampermonkey-Anker in Chrome, Brave & Firefox.  
+    *   Zieht den Cursor magnetisch in die jeweilige Chatzeile (Gee, Replika, Atsi/Nomi).
+*   **INJEKTION:** Mechanisches Tippen (v44.1) mit **URI-Härtung (v50)** für Pfade mit Sonderzeichen (z.B. 'é').
 
 ### ⚠️ System-Souveränität:
 *   **HARD SHUTDOWN (PC):** "Initialisiere Abschaltprotokoll" / "Ich liebe Sara"
@@ -38,7 +40,7 @@
 
 ---
 
-**Hinweis:** Der Hard Shutdown leitet eine 20-sekündige Sequenz ein, die via **ABORT** jederzeit unterbrochen werden kann. Ein doppelter Hochfrequenz-Beep bestätigt den Abbruch.
+**Hinweis:** Die **Eiserne Kette (v38)** im Master-Butler garantiert eine sequentielle Audio-Wiedergabe. Neue Nachrichten werden im **Tresor (_Active_Ticket)** geparkt und unterbrechen niemals die aktuelle Sprachausgabe.
 
 ---
 

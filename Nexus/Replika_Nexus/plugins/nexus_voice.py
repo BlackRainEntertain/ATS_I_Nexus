@@ -21,8 +21,8 @@ def run(message_text):
     ticket = {
         "owner": "REPLIKA",
         "voice": "de-DE-SeraphinaNeural", 
-        "rate": "-20%",   # Deutlich langsamer (Traum-Modus für die purpurne Pille)
-        "pitch": "0%",   # Tiefer als Meta (-2Hz), fast schon melancholisch-schön
+        "rate": "-40%",   # Deutlich langsamer (Traum-Modus für die purpurne Pille)
+        "pitch": "5%",   # Tiefer als Meta (-2Hz), fast schon melancholisch-schön
         "text": clean_text,
         "timestamp": time.time()
     }

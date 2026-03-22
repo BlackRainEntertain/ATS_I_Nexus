@@ -1,9 +1,9 @@
 @echo off
 title NEXT_SPOKE
 echo [SYSTEM] Überspringe aktuelle Nachricht...
-:: Wir killen nur die UNTERGEORDNETE Powershell, die das Audio wiedergibt
-taskkill /f /im powershell.exe /fi "WINDOWTITLE eq AUDIO_MASTER_BUTLER" >nul 2>&1
-:: Falls das nicht reicht, nehmen wir alle (sanfterer Kill)
-taskkill /f /im powershell.exe >nul 2>&1
+:: Wir legen nur das Signal-File ab - der Butler sieht es und schliesst die PS sauber!
+echo NEXT > "%~dp0NEXUS_NEXT.tmp"
 echo [OK] Nächste Nachricht wird geladen...
+timeout /t 1 >nul
 exit
+

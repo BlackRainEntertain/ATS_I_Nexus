@@ -47,12 +47,17 @@ def run_shutdown():
     os.system('taskkill /f /im pythonw.exe /fi "WINDOWTITLE eq NEXUS_LAVA" >nul 2>&1')
 
     for win in gw.getWindowsWithTitle(''):
-        title_lower = win.title.lower()
-        if "nexus_ear" in title_lower: continue 
+        title = win.title
+        # ABSOLUTER SCHUTZ: Wenn das Ohr im Titel vorkommt, Finger weg!
+        if "--- NEXUS_EAR ---" in title: 
+            continue 
+            
         for target in targets:
-            if target.lower() in title_lower:
-                try: win.close()
-                except: pass
+            if target.lower() in title.lower():
+                try: 
+                    win.close()
+                except: 
+                    pass
 
     # --- SCHRITT D: DATEI-HYGIENE ---
     file_corpses = [

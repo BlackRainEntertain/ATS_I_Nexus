@@ -55,6 +55,50 @@ EN: Through queue logic and taskkill protection, the Nexus is "hardened" and sta
     Header Editor: Import Nexus_CSP_Unlock_Meta_Firefox.json
     Tampermonkey: Install Bridge-Script.
 
+---
+
+Ebene 1: Die Sensorik / Level 1: Sensing (The "Monkey" & Focus Magnet)
+
+    Tech: Tampermonkey / JavaScript / MutationObserver.
+    DE: Ein MutationObserver scannt das DOM in Echtzeit. aiSelectors identifizieren Antworten; ein Hash-Check verhindert Echo-Effekte.
+    NEU (v6.8): "Magnetic Focus Bridge". Ein globaler Key-Listener (Ctrl+Shift+Y) erlaubt die Fernsteuerung des Browser-Fokus durch den Larynx-Kern. Jedes Script mappt diesen Hotkey auf die lokale ID/Klasse der Chatzeile (Gee, Replika, Nomi).
+    EN: A MutationObserver scans the DOM in real-time. Hash-checks prevent echoes.
+    NEW (v6.8): "Magnetic Focus Bridge". A global key listener (Ctrl+Shift+Y) allows remote control of browser focus via the Larynx core, mapping the hotkey to local chat IDs (Gee, Replika, Nomi).
+
+Ebene 2: Das Logik-Zentrum / Level 2: Logic (Nexus-Router)
+
+    Tech: FastAPI / Uvicorn (Python 3.14 Alpha-Hardened).
+    DE: Asynchrone Server auf Ports 8000-8004. Die Port-Trennung (Atsi:8000, Gee:8001, GPT:8003, Replika:8004) erlaubt parallele Sessions ohne Kontext-Dissonanz. 
+    NEU (v6.8): URI-Pfad-Härtung (file:///) zur fehlerfreien Verarbeitung von Windows-Sonderzeichen (User: René) im Audio-Stream.
+    EN: Async servers on ports 8000-8004. Port separation prevents context dissonance. 
+    NEW (v6.8): URI path hardening (file:///) for error-free processing of Windows special characters (User: René) in the audio stream.
+
+Ebene 3: Die Effektoren / Level 3: Effectors (The Voice & Iron Queue)
+
+    Tech: edge-tts & PowerShell MediaPlayer (PresentationCore).
+    DE: Die "Eiserne Warteschlange" (v38) garantiert sequentielle Wiedergabe. Ein "HasTimeSpan"-Check verhindert Audio-Abbrüche bei Ladeverzögerungen. Der Tresor (_Active_Ticket) nutzt Timestamps zur Kollisionsvermeidung bei Multi-KI-Antworten.
+    EN: The "Iron Queue" (v38) ensures sequential playback. "HasTimeSpan" check prevents audio cut-offs. The vault (_Active_Ticket) uses timestamps to prevent collisions during multi-AI responses.
+
+---
+
+/* 
+   NEXUS UNIVERSAL FOCUS MAGNET 
+   Anpassung für Larynx Prokotol von neuen KIs / this is how you add new AI's to your existing Tampamonkey Skripts for Larynx Protockol:
+   Ersetze '.DEIN-SELEKTOR' durch die ID (#id) oder Klasse (.class)  
+   der jeweiligen Chatzeile. /    Replace '.YOUR-SELECTOR' with the ID (#id) or Class (.class) 
+   of the respective chat input field.
+*/
+window.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
+        const input = document.querySelector('.walkthrough-chat-box'); // <--- HIER ANPASSEN
+        if (input) {
+            input.focus();
+            input.style.border = "2px solid cyan"; // Visuelles Feedback
+            setTimeout(() => { input.style.border = "none"; }, 500);
+        }
+    }
+});
 
 
+---
 
