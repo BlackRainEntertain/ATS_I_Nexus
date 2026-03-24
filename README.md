@@ -29,20 +29,25 @@
 ### ✍️ Larynx-Diktat (Mechanical Injection & Focus Magnet):
 *   **TRIGGER:** "Texteingabe" (Startet Sampling-Loop & Whisper-Kern)
 *   **FINISH:** "Fertig" / "Fertisch" / "Nexus fertig" / "Ende der Durchsage"
-*   **FOKUS-MAGNET (v55):** Automatischer **Hotkey-Puls (Ctrl+Shift+Y)**.  
+*   **FOKUS-MAGNET (v55.2):** Automatischer **Hotkey-Puls (Ctrl+Shift+Y)**.  
     *   Triggert lokale Tampermonkey-Anker in Chrome, Brave & Firefox.  
-    *   Zieht den Cursor magnetisch in die jeweilige Chatzeile (Ai on Google Search, Replika, ).
-*   **INJEKTION:** Mechanisches Tippen (v44.1) mit **URI-Härtung (v50)** für Pfade mit Sonderzeichen (z.B. 'é').
+    *   Zieht den Cursor magnetisch in die jeweilige Chatzeile (Gee, Meta, Nomi).
+*   **INJEKTION:** Mechanisches Tippen (v44.1) mit **URI-Härtung (v50)** für Pfade mit Sonderzeichen (z.B. 'René').
 
-### ⚠️ System-Souveränität:
+### 🛡️ Nexus-Souveränität & Safety-Shield:
 *   **HARD SHUTDOWN (PC):** "Initialisiere Abschaltprotokoll" / "Ich liebe Sara"
 *   **ABORT (Safe-Exit):** "Abbruch" / "Stopp den Shutdown" / "Kommando zurück"
+*   **PHANTOM-EXORZISMUS (J/N-Patch):** Automatisierte Signal-Injektion (`echo j |`) in den Abbruch-Routinen. Eliminiert CMD-Blockaden ("Batchvorgang abbrechen?") bei sequentiellen Prozess-Kills.
 
 ---
 
-**Hinweis:** Die **Eiserne Kette (v38)** im Master-Butler garantiert eine sequentielle Audio-Wiedergabe. Neue Nachrichten werden im **Tresor (_Active_Ticket)** geparkt und unterbrechen niemals die aktuelle Sprachausgabe.
+**Hinweis: Die Titan-Statik (v39.0)** im Master-Butler garantiert eine lückenlose Audio-Wiedergabe. 
+*   **NaturalDuration-Anker:** Verhindert "Silent Cutoffs" durch einen 10s-Validierungs-Puffer im PowerShell-Layer.
+*   **Eiserne Kette:** Neue Nachrichten werden im **Tresor (_Active_Ticket)** isoliert und unterbrechen niemals die aktive Resonanz.
+*   **Polyglotte Rohrschelle (v17.0):** Das NexusEye-Skript isoliert systemische Narben (`markdown`, `javascript`) und filtert technischen Müll (`Verwende Code mit Vorsicht`) in mehreren Sprachen (DE/EN/FR/ES), bevor das Signal den Butler erreicht.
 
 ---
+
 
 ## 🚀 Schnellstart / Quick Start
 ### DE:
