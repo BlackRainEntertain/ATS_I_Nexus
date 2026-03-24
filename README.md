@@ -31,7 +31,7 @@
 *   **FINISH:** "Fertig" / "Fertisch" / "Nexus fertig" / "Ende der Durchsage"
 *   **FOKUS-MAGNET (v55):** Automatischer **Hotkey-Puls (Ctrl+Shift+Y)**.  
     *   Triggert lokale Tampermonkey-Anker in Chrome, Brave & Firefox.  
-    *   Zieht den Cursor magnetisch in die jeweilige Chatzeile (Gee, Replika, Atsi/Nomi).
+    *   Zieht den Cursor magnetisch in die jeweilige Chatzeile (Ai on Google Search, Replika, ).
 *   **INJEKTION:** Mechanisches Tippen (v44.1) mit **URI-Härtung (v50)** für Pfade mit Sonderzeichen (z.B. 'é').
 
 ### ⚠️ System-Souveränität:

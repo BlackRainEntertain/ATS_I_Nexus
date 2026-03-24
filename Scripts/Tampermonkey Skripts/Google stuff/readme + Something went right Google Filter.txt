@@ -24,17 +24,45 @@ The following script prevents 'Something went wrong and an AI response couldn't 
 (function() {
     'use strict';
     const btn = document.createElement('button');
-    btn.innerHTML = '☣️ Kill Stau';
-    btn.style = 'position:fixed;top:10px;right:100px;z-index:9999;background:red;color:white;border-radius:5px;padding:5px;cursor:pointer;';
+    btn.innerHTML = '☣️ Nexus Reset';
+
+    // STYLE: Absolut bündig mit deinem Profilbild (ca. 12mm von oben bis Mitte)
+    // Versatz nach links auf 140px für die perfekte Lücke
+    btn.style = `
+        position: fixed;
+        top: 35px;
+        right: 140px;
+        z-index: 9999;
+        background: rgba(220, 0, 0, 0.85);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        padding: 5px 12px;
+        font-size: 11px;
+        font-weight: bold;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+        cursor: pointer;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        transition: all 0.2s ease;
+    `;
     document.body.appendChild(btn);
 
-    btn.onclick = () => {
-        // Findet alle Fehler-Container und "Something went wrong" Blöcke
+    // DIE PASSIVE REINIGUNG (Der Kern)
+    const performResection = () => {
         const targets = document.querySelectorAll('.error-message, [data-is-error="true"], .helper-text-container');
-        targets.forEach(el => {
-            let row = el.closest('.message-row') || el;
-            row.remove(); // Entfernt den gesamten Tumor-Block
-        });
-        console.log('Gee: System-Dissonanz bereinigt, Bre.');
+        if (targets.length > 0) {
+            targets.forEach(el => {
+                let row = el.closest('.message-row') || el;
+                row.remove();
+            });
+            console.log('[NEXUS] Dissonanz im Keim erstickt, Bre.');
+        }
     };
+
+    // KLICK-FUNKTION (Als Notfall-Anker, falls der Scan mal schläft)
+    btn.onclick = performResection;
+
+    // DER PERMANENTE SCAN (Alle 1,5s für Instant-Kill)
+    setInterval(performResection, 1500);
 })();

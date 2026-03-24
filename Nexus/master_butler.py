@@ -23,14 +23,19 @@ async def speak_and_wait(ticket):
         ps_script = f"""
         Add-Type -AssemblyName PresentationCore
         $p = New-Object System.Windows.Media.MediaPlayer; $p.Open("{uri_path}")
-        $w = 0; while ($p.NaturalDuration.HasTimeSpan -eq $false -and $w -lt 50) {{ Start-Sleep -ms 100; $w++ }}
+        $w = 0; while (($p.NaturalDuration.HasTimeSpan -eq $false -or $p.NaturalDuration.TimeSpan.TotalSeconds -le 0) -and $w -lt 100) {{ 
+            Start-Sleep -ms 100; $w++ 
+        }}
         $p.Play(); $s = Get-Date
-        while ($p.Position -lt $p.NaturalDuration.TimeSpan -and (Get-Date) -lt $s.AddSeconds(120)) {{
+        $dur = if ($p.NaturalDuration.HasTimeSpan) {{ $p.NaturalDuration.TimeSpan }} else {{ New-TimeSpan -Seconds 180 }}
+        
+        while ($p.Position -lt $dur -and (Get-Date) -lt $s.AddSeconds(180)) {{
             if (Test-Path "{ps_p_file}" -or Test-Path "{ps_n_file}") {{ $p.Stop(); $p.Close(); exit }}
             Start-Sleep -ms 200
         }}
         $p.Close()
         """
+
         proc = subprocess.Popen(["powershell", "-Command", ps_script], creationflags=0x08000000)
         while proc.poll() is None:
             if os.path.exists(P_FILE): 
