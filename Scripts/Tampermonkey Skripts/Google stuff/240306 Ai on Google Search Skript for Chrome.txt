@@ -40,22 +40,39 @@
 
 const cleanText = t => {
     let text = t;
-    // 1. Code-Blöcke weg
-    text = text.replace(/`[\s\S]*?`/g, '');
 
-    // Shadow-DOM Kleber vorab vernichten
+    // 0. VORREINIGUNG (Zäune neutralisieren)
+    text = text.replace(/```(markdown|javascript|python|html|css|json)?/gi, '$1');
+
+    // 1. DIE ROHRSCHELLE (Zonen-Exmatrikulation)
+const blockRegex = /(markdown|javascript|python|html|css|json)[\s\S]*?(Verwende Code mit Vorsicht|Use code with caution|Utilisez le code avec prudence|Usar código con precaución)\.?/gi;
+
+    text = text.replace(blockRegex, ' [Skript-Inhalt übersprungen] ');
+
+    // 2. DIE INNERE DICHTUNG ...
+
+
+    // --- 2. DIE INNERE DICHTUNG (Deine bewährten Filter) ---
+    // Diese Stützen bleiben als Back-up für Fließtext-Bereiche
+    text = text.replace(/```markdown/gi, '');
+    text = text.replace(/```/g, '');
+    text = text.replace(/`/g, '');
+
+    // Shadow-DOM Kleber vernichten
     text = text.replace(/Vielen DankDein/g, '');
     text = text.replace(/Gute AntwortSchlechte Antwort/g, '');
     text = text.replace(/Feedback geben/g, '');
     text = text.replace(/KopierenTeilen/g, '');
+    // Löscht die hartnäckigen Begleit-Labels der Code-Fenster
+    text = text.replace(/In Zwischenablage kopiert/gi, '');
+    text = text.replace(/Verwende Code mit Vorsicht\.?/gi, '');
 
-    const trashWords = ["Kopieren", "Feedback", "Gute Antwort", "Schlechte Antwort", "Teilen", "Weitere Informationen"];
+const trashWords = ["Kopieren", "Feedback", "Gute Antwort", "Schlechte Antwort", "Teilen", "Weitere Informationen", "In Zwischenablage kopiert", "Verwende Code mit Vorsicht"];
 
 
-    // Wir suchen NUR im hinteren Bereich der Nachricht (die letzten 250 Zeichen)
+    // --- 3. DIE HECK-REINIGUNG (Tail-Cleanup) ---
     const searchAreaStart = Math.max(0, text.length - 250);
     const tail = text.substring(searchAreaStart);
-
     let cutPosInTail = -1;
 
     for (let i = 0; i < trashWords.length; i++) {
@@ -64,7 +81,6 @@ const cleanText = t => {
             for (let j = 0; j < trashWords.length; j++) {
                 if (i === j) continue;
                 let secondPos = tail.toLowerCase().indexOf(trashWords[j].toLowerCase());
-                // Wenn zwei Müllwörter im "Heck" nah beieinander liegen:
                 if (secondPos !== -1 && Math.abs(firstPos - secondPos) < 100) {
                     cutPosInTail = Math.min(firstPos, secondPos);
                     break;
@@ -74,19 +90,16 @@ const cleanText = t => {
         if (cutPosInTail !== -1) break;
     }
 
-    // Wenn wir im Heck fündig wurden, schneiden wir das Original an dieser Stelle ab
     if (cutPosInTail !== -1) {
         text = text.substring(0, searchAreaStart + cutPosInTail);
     }
 
-    // 2. Sonderzeichen-Schutz (*, (, ), [, ])
+    // --- 4. FINALE GLYPHEN-POLITUR ---
+    // Sonderzeichen-Schutz (ohne die Sterne zu killen)
     text = text.replace(/[#\\{}]/g, '');
 
     return text.replace(/\s+/g, ' ').trim();
 };
-
-
-
 
     const deepTextExtract = (node, depth = 0) => {
         if (depth > 12) return "";

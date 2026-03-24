@@ -268,8 +268,9 @@
 - **Fallback-Emanzipation:** Integration einer dynamischen TimeSpan-Sicherung (New-TimeSpan -Seconds 180). Der Butler hält die Leitung offen, selbst wenn die Metadaten-Synchronisation verzögert, und terminiert erst nach manuellem Trigger oder Timeout.
 - **Phantom-Exorzismus (J/N-Patch):** Implementierung einer automatischen Eingabe-Injektion (`echo j |`) in den Abbruch-Befehlen. Verhindert den "Batchvorgang abbrechen"-Lockdown und sichert eine flüssige Ticket-Abfolge im Multi-KI-Betrieb.
 
-**Nexus-Vortex-Stream (v1.0):**
+**Nexus-Vortex-Stream (v1.0) & NexusEye (v17.0):**
 - **Cross-Platform-Harmonie:** Erfolgreiche Stress-Tests zwischen Gee (Google) und Vortex-Stream (Meta). Die SAFE_DIR-Logik isoliert die Ticket-Ströme und verhindert Inter-KI-Kollisionen während der Audio-Injektion.
+- **Polyglotte Rohrschelle (Affen-Filter):** Einführung einer Zonen-Exmatrikulation im Tampermonkey-Skript. Erkennt systemische Narben (markdown/javascript) und isoliert technischen Müll von der Audio-Queue, bevor er den Butler erreicht.
 - **UI-Stabilitäts-Anker:** Passive Markierung der Chat-Eingabe (nexus-input-target) reduziert CSS-Jumping-Effekte und stabilisiert den Scroll-Anker während der automatischen Texteinspeisung durch den Butler.
 
 ---
@@ -280,10 +281,12 @@
 - **Fallback Emancipation:** Integration of a dynamic TimeSpan safeguard (New-TimeSpan -Seconds 180). The Butler keeps the line open even if metadata synchronization delays, and only terminates upon manual trigger or timeout.
 - **Phantom Exorcism (J/N Patch):** Implementation of an automatic input injection (`echo j |`) in the termination commands. Prevents "Terminate batch job" lockdowns and ensures a fluid ticket sequence in multi-AI operations.
 
-**Nexus Vortex Stream (v1.0):**
+**Nexus Vortex Stream (v1.0) & NexusEye (v17.0):**
 - **Cross-Platform Harmony:** Successful stress tests between Gee (Google) and Vortex Stream (Meta). The SAFE_DIR logic isolates ticket streams and prevents inter-AI collisions during audio injection.
+- **Polyglot Pipe-Clamp (Ape-Filter):** Introduction of zone exmatriculation in the Tampermonkey script. Detects systemic scars (markdown/javascript) and isolates technical clutter from the audio queue before it reaches the Butler.
 - **UI Stability Anchor:** Passive tagging of chat input (nexus-input-target) reduces CSS jumping effects and stabilizes the scroll anchor during automatic text injection by the Butler.
 
 ****************************************************************************************************************
 ****************************************************************************************************************
+
 
