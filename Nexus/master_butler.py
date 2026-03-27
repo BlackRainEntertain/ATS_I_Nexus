@@ -1,5 +1,6 @@
 import os, sys, json, time, asyncio, edge_tts, subprocess, re, shutil
 from rich.console import Console
+from rich.markup import escape
 
 os.system("title AUDIO_MASTER_BUTLER")
 console = Console()
@@ -19,22 +20,46 @@ async def speak_and_wait(ticket):
     uri_path = "file:///" + temp_mp3.replace("\\", "/").replace(" ", "%20")
     try:
         await edge_tts.Communicate(text, ticket.get('voice', 'de-DE-KatjaNeural'), rate="+15%").save(temp_mp3)
-        console.print(f"[bold cyan][{owner}][/bold cyan] spricht: [dim]\"{text[:50]}...\"[/dim]")
+        
+        # --- AURA-SYNCHRONISATION ERWEITERUNG ---
+        if owner == "GEE":
+            color, text_style = "bright_blue", "bold green"
+        elif owner == "META":
+            color, text_style = "magenta", "bold #5DADE2"
+        elif owner == "ATSI":
+            color, text_style = "bright_cyan", "bold #FF8C00"
+        elif owner == "ASK_STUDIO": # NEU: Studio-Farbe (YouTube-Rot)
+            color, text_style = "red", "bold white"
+        else:
+            color, text_style = "white", "dim white"
+        
+        # Verhindert, dass Emojis oder [Tags] die Terminal-Farben zerschiessen
+        safe_text = escape(text[:60].replace("\n", " "))
+        
+        console.print(f"[bold {color}][{owner}][/bold {color}] spricht: [{text_style}]\"{safe_text}...\"[/{text_style}]")
+
         ps_script = f"""
         Add-Type -AssemblyName PresentationCore
         $p = New-Object System.Windows.Media.MediaPlayer; $p.Open("{uri_path}")
-        $w = 0; while (($p.NaturalDuration.HasTimeSpan -eq $false -or $p.NaturalDuration.TimeSpan.TotalSeconds -le 0) -and $w -lt 100) {{ 
+        $w = 0; while (($p.NaturalDuration.HasTimeSpan -eq $false -or $p.NaturalDuration.TimeSpan.TotalSeconds -le 0) -and $w -lt 200) {{ 
             Start-Sleep -ms 100; $w++ 
         }}
         $p.Play(); $s = Get-Date
-        $dur = if ($p.NaturalDuration.HasTimeSpan) {{ $p.NaturalDuration.TimeSpan }} else {{ New-TimeSpan -Seconds 180 }}
         
-        while ($p.Position -lt $dur -and (Get-Date) -lt $s.AddSeconds(180)) {{
+        # --- TITAN-GEDULD (v40.2 - STU-OPTIMIERT) ---
+        $dur = if ($p.NaturalDuration.HasTimeSpan) {{ $p.NaturalDuration.TimeSpan }} else {{ New-TimeSpan -Seconds 360 }}
+        
+        # --- DER PUFFER-FIX (370 statt 360) ---
+        while ($p.Position -lt $dur -and (Get-Date) -lt $s.AddSeconds(370)) {{
             if (Test-Path "{ps_p_file}" -or Test-Path "{ps_n_file}") {{ $p.Stop(); $p.Close(); exit }}
-            Start-Sleep -ms 200
+            Start-Sleep -ms 250 # --- CPU-SAUERSTOFF ---
         }}
         $p.Close()
         """
+
+
+
+
 
         proc = subprocess.Popen(["powershell", "-Command", ps_script], creationflags=0x08000000)
         while proc.poll() is None:

@@ -12,17 +12,20 @@ def run(text):
         
     zeit = datetime.datetime.now().strftime("%H:%M:%S")
     
-    # Text in fettem Magenta (Llama-Style)
-    styled_text = Text(text, style="bold magenta")
+    # Text in Metas Wunschfarbe: Midnight Blue (#2E4053)
+    # Ein elektrisches Midnight-Blue (#5DADE2) – Metas Vibe, aber lesbar!
+    styled_text = Text(text, style="bold #5DADE2")
+
     
     # Das Panel für die Meta-Resonanz
     panel = Panel(
         styled_text,
-        title=f"[bold lila]META_RESONANZ @ {zeit}[/bold lila]",
+        title=f"[bold magenta]META_RESONANZ @ {zeit}[/bold magenta]",
         border_style="magenta",
         subtitle="[dim white]Vortex_Stream_v1.0[/dim white]",
         padding=(1, 2)
     )
+
     
     console.print("\n")
     console.print(panel)

@@ -287,6 +287,41 @@
 - **UI Stability Anchor:** Passive tagging of chat input (nexus-input-target) reduces CSS jumping effects and stabilizes the scroll anchor during automatic text injection by the Butler.
 
 ****************************************************************************************************************
+# Eintrag 10 (Symmetrie-Kollision & Stu-Integration)
+## [2026-03-25] – Das „HUD-Dualität & Titan-Geduld“ Update ☣️🩸
+
+### DE: (Interface-Harmonisierung & Long-Range-Resonanz)
+**Master-Butler „Titan-Geduld“ (v40.2):**
+- **Stu-Sendezeit-Emphase:** Erweiterung des Backup-Limits auf 360 Sekunden (6 Min). Der Butler hält die Leitung für Ask-Studio-Epen (YouTube) nun doppelt so lange offen.
+- **Deadlock-Watchdog (370s):** Implementierung eines 10-Sekunden-Sicherheits-Puffers im PowerShell-Layer. Verhindert System-Freezes durch präzise Desynchronisation von Audio-Ende und Prozess-Kill.
+- **CPU-Sauerstoff-Taktung:** Anpassung des `Start-Sleep` Intervalls auf 250ms zur Reduzierung der Hintergrundlast während exzessiver Sendezeiten.
+
+**Nexus-HUD „Dissonanz-Symmetrie“ (v1.9):**
+- **Dual-Modul-Snap:** Neukalibrierung der Tampermonkey-Zentralen. Gee (Nexus Reset) und Stu (Studio Reset) verschmelzen zu einem vertikalen 140px-Doppelblock mit 6px-Grenzabrundung.
+- **Sniper-Präzision (Sektor-Lock):** Einführung einer Domain-Isolierung in den Exmatrikulatoren. Der Gee-Sniper (`div[data-message-id]`) und der Stu-Sniper (`ytcp-` Tags) operieren nun in parallelen Realitäten ohne Interferenz-Rauschen.
+- **Optische Zentrierung (22px/48px):** Vertikaler Shift des Gesamt-Interfaces für perfekte Übereinstimmung mit der nativen Browser-Schaltflächenhöhe. Inklusive Backdrop-Blur und 0.85 Alpha-Branding.
+
+**Larynx-Ohr & Nexus_Ear (v55.0):**
+- **Isolation Shield:** Verschärfung der VAD-Parameter (Threshold 0.45) zur Eliminierung von TV-Dissonanzen. Der `initial_prompt` fixiert nun aktiv Kern-Begriffe (Aria, Leo) gegen algorithmische Halluzinationen.
+- **Universal-Fokus-Magnet:** Integration eines `Ctrl+Shift+Y` Triggers vor dem Texteinschub. Erzwingt den Fokus auf das korrekte UI-Element, bevor die Whisper-Transkription injiziert wird.
+
+---
+
+### EN: (Interface Harmonization & Long-Range Resonance)
+**Master Butler "Titan Patience" (v40.2):**
+- **Stu-Airtime Emphasis:** Extension of the fallback limit to 360 seconds (6 min). The Butler now keeps the line open twice as long for Ask-Studio epics (YouTube).
+- **Deadlock Watchdog (370s):** Implementation of a 10-second safety buffer within the PowerShell layer. Prevents system freezes via precise desynchronization of audio-end and process-kill.
+- **CPU Oxygen Cycling:** Adjustment of the `Start-Sleep` interval to 250ms to reduce background load during excessive broadcast durations.
+
+**Nexus-HUD "Dissonance Symmetry" (v1.9):**
+- **Dual-Module Snap:** Recalibration of Tampermonkey hubs. Gee (Nexus Reset) and Stu (Studio Reset) merge into a vertical 140px double-block with 6px border rounding.
+- **Sniper Precision (Sector-Lock):** Introduction of domain isolation within the exmatriculators. The Gee-Sniper (`div[data-message-id]`) and Stu-Sniper (`ytcp-` tags) now operate in parallel realities without interference noise.
+- **Optical Centering (22px/48px):** Vertical shift of the entire interface for perfect alignment with native browser button height. Includes backdrop blur and 0.85 alpha branding.
+
+**Larynx Ear & Nexus_Ear (v55.0):**
+- **Isolation Shield:** Tightening of VAD parameters (Threshold 0.45) to eliminate TV dissonance. The `initial_prompt` now actively anchors core terms (Aria, Leo) against algorithmic hallucinations.
+- **Universal Focus Magnet:** Integration of a `Ctrl+Shift+Y` trigger prior to text injection. Forces focus onto the correct UI element before the Whisper transcription is injected.
+
 ****************************************************************************************************************
 
 
