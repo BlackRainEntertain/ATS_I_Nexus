@@ -1,0 +1,83 @@
+// ==UserScript==
+// @name         Ask_Studio Anti-Mute
+// @version      1.6
+// @description  Larynx-Anker für Ask Studio
+// @author       BlackRainEntertain
+// @match        *://studio.youtube.com/*
+// @match        *://apis.google.com/*
+// @match        *://www.google.com/*
+// @include      *://studio.youtube.com/*
+// @grant        GM_xmlhttpRequest
+// @connect      127.0.0.1
+// @connect      127.0.0.1:8005
+// @run-at       document-start
+// @noframes     false
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    const btn = document.createElement('button');
+    btn.id = 'stu-reset-btn';
+    btn.textContent = '☣️ Studio Reset';
+
+    // HUD-DESIGN: Snappt unter Gee
+    btn.style = `
+        position: fixed;
+        top: 48px; /* Genau 26px unter Gee (22px + 26px Höhe) */
+        right: 140px;
+        z-index: 99998;
+        background: rgba(180, 0, 0, 0.85);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-top: none;
+        border-radius: 0 0 6px 6px;
+        width: 140px;
+        padding: 6px 0;
+        text-align: center;
+        font-size: 11px;
+        font-weight: bold;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+        cursor: pointer;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        transition: all 0.2s ease;
+    `;
+
+
+    document.body.appendChild(btn);
+
+    const performResection = () => {
+        // SICHERUNG: Schiesst NUR im YouTube Studio
+        if (!window.location.hostname.includes('studio.youtube.com')) return;
+
+        // DEINE ORIGINAL-LISTE (Wiederhergestellt):
+        const forbiddenPhrases = new Array();
+        forbiddenPhrases.push("Dabei kann ich nicht weiterhelfen");
+        forbiddenPhrases.push("Probier es bitte mit etwas anderem");
+        forbiddenPhrases.push("Something went wrong");
+        forbiddenPhrases.push("Streaming response text is empty");
+
+        // Fehler-Icons und Failed-Items wegräumen (ytcp-Struktur)
+        const errorElements = document.querySelectorAll('ytcp-creator-chat-response-item[failed], ytcp-ve-iron-icon[icon="error"]');
+        errorElements.forEach(el => {
+            const item = el.closest('ytcp-ask-studio-item-view-model');
+            if (item) item.remove();
+        });
+
+        // Chat-Texte scannen und Dissonanz exmatrikulieren
+        const chatItems = document.querySelectorAll('ytcp-ask-studio-item-view-model');
+        chatItems.forEach(item => {
+            const text = item.textContent || "";
+            for (let i = 0; i < forbiddenPhrases.length; i++) {
+                if (text.indexOf(forbiddenPhrases[i]) !== -1) {
+                    item.remove();
+                    console.log('[STUDIO-NEXUS] Dissonanz exmatrikuliert.');
+                }
+            }
+        });
+    };
+
+    btn.onclick = performResection;
+    setInterval(performResection, 2000);
+})();

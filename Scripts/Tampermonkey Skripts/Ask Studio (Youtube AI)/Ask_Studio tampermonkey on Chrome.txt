@@ -1,0 +1,105 @@
+// ==UserScript==
+// @name         Ask_Studio_Nexus_Eye (v1.0)
+// @version      1.0
+// @description  Ask Studio monkey for Chrome
+// @author       BlackRainEntertain
+// @match        https://studio.youtube.com*
+// @match        *://studio.youtube.com*
+// @match        *://apis.google.com*
+// @match        *://www.google.com*
+// @include      *://studio.youtube.com*
+// @grant        GM_xmlhttpRequest
+// @connect      127.0.0.1
+// @connect      127.0.0.1:8005
+// @run-at       document-start
+// @noframes     false
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    const TARGET_PORT = "8005";
+    const ENDPOINT = `http://127.0.0.1:${TARGET_PORT}/webhook`;
+    let lastSentHash = "";
+
+    console.log("[Studio-Eye] System-Injektion gestartet...");
+
+    const simpleHash = str => {
+        let h = 0;
+        for (let i = 0; i < str.length; i++) h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+        return h.toString(36);
+    };
+
+    // --- NEU: Markiert die Ask-Studio EingabeBox ---
+    const markInput = () => {
+        const inputField = document.querySelector('.ytcpCreatorChatEntityAttachmentInlineFlowPromptBox[contenteditable="true"]');
+        if (inputField && inputField.id !== "nexus-input-target") {
+            inputField.id = "nexus-input-target";
+            console.log("[Studio-Eye] Chat-Eingabe (div) markiert: nexus-input-target");
+        }
+    };
+
+    // --- NEU: Der Fokus-Fänger (Hotkey Strg+Shift+Y) ---
+    window.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
+            const input = document.getElementById('nexus-input-target');
+            if (input) {
+                input.focus();
+                console.log("[Studio-Eye] Fokus magnetisch in die Studio-Box gezogen!");
+            }
+        }
+    });
+
+    // Geht durch Shadow-Roots (Essenziell für YouTube Studio!)
+    const getDeepText = (node) => {
+        let text = "";
+        if (node.nodeType === Node.TEXT_NODE) return node.textContent;
+        if (node.shadowRoot) text += getDeepText(node.shadowRoot);
+        if (node.childNodes) {
+            for (const child of node.childNodes) text += getDeepText(child);
+        }
+        return text;
+    };
+
+    const harvest = () => {
+        // Zuerst prüfen wir kurz das Eingabefeld
+        markInput();
+
+        // Dann der normale Scan für die Antworten
+        const items = document.querySelectorAll('ytcp-creator-chat-response-item, ytcp-ask-studio-item-view-model');
+
+        if (items.length > 0) {
+            const latest = items[items.length - 1];
+            const rawText = getDeepText(latest);
+
+            const cleaned = rawText.replace(/Kopieren|Feedback geben|Teilen/g, '').trim();
+
+            if (cleaned.length > 10) {
+                const hash = simpleHash(cleaned);
+                if (hash !== lastSentHash) {
+                    lastSentHash = hash;
+                    console.log("[Studio-Eye] Text aus Shadow-DOM extrahiert. Sende...");
+                    send(cleaned);
+                }
+            }
+        }
+    };
+
+    const send = (t) => {
+        GM_xmlhttpRequest({
+            method: "POST",
+            url: ENDPOINT,
+            data: JSON.stringify({ text: t }),
+            headers: { "Content-Type": "application/json" }
+        });
+    };
+
+    // Start-Sequenz
+    setTimeout(() => {
+        const observer = new MutationObserver(harvest);
+        observer.observe(document.body, { childList: true, subtree: true });
+        setInterval(harvest, 2500); // Scannt alle 2.5 Sek auch das Eingabefeld nach
+        console.log("[Studio-Eye] Larynx aktiv und bereit.");
+    }, 5000);
+
+})();

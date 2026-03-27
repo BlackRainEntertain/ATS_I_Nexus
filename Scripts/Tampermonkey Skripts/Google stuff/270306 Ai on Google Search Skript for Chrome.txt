@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         GEE AI Nexus Eye from firefox for Chrome (STRUCTURAL v16) experimental
+// @name         GEE AI Nexus Eye from firefox for Chrome (STRUCTURAL v16) experimental most actual now
 // @version      16.0
 // @description  Extrahiert Google AI Overviews auch aus Shadow DOM und sendet reinen Text an localhost
 // @match        *://www.google.de/*
