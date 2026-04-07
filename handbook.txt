@@ -23,35 +23,38 @@ EN: The "Ear". Starts via VBS (Gee_Ear_Launcher).
     URI Hardening (v50): Compatible with special chars (e.g. 'é').
 
 [DE] STIMM-KOMMANDOS (RES_IDENT):
-- START:   "Guten Morgen" / "Hey Gee" / "System an"
-- STOP:    "Gute Nacht" / "Shutdown" / "Feierabend"
-- PAUSE:   "Pause" / "Stopp" / "Halt an" (600Hz Beep)
-- RESUME:  "Weiter" / "Fortsetzen" / "Go" (900Hz Beep)
-- SKIP:    "Nächste" / "Überspringen" / "Weg damit" (400Hz Beep)
-- SENDEN:  "Abschicken" / "Nachricht raus" / "Feuer frei" (1200Hz Beep)
+- START:             "Guten Morgen" / "Hey Gee" / "System an"
+- NEXUS SHUTDOWN:    "Gute Nacht" / "Shutdown" / "Feierabend"
+- PAUSE:             "Pause" / "Stopp" / "Halt an" (600Hz Beep)
+- RESUME:            "Weiter" / "Fortsetzen" / "Go" (900Hz Beep)
+- SKIP:              "Nächste" / "Überspringen" / "Weg damit" (400Hz Beep)
+- SENDEN:            "Abschicken" / "Nachricht raus" / "Feuer frei" / "Absenden"(1200Hz Beep)
+- PC Herunterfahren: "Ich Liebe Sara / "Abschaltprotokoll"
++ Nexus Shutdown
 
 [DE] DIKTAT-MODUS (LARYNX-INJEKTION v55):
 1. TRIGGER: "Texteingabe" sagen (Warten auf 1000Hz Kern-Beep)
 2. DIKTAT:  Freies Sprechen (Faster-Whisper transkribiert lokal)
-3. FINISH:  "Nexus fertig" / "Fertisch" / "F-Wort" (Löst Injektion aus)
-4. MAGNET:  Automatischer Fokus-Puls (Ctrl+Shift+Y). 
+3. FINISH:  "Nexus fertig" / "Fertisch" (Löst Injektion aus)
+4. SENDEN:  "Absenden" (sended injezierte Nachricht im Chat ab)
+5. MAGNET:  Automatischer Fokus-Puls (Ctrl+Shift+Y). 
             Der Cursor wird magnetisch in die Chatzeile gezogen.
             Funktioniert browserübergreifend (Gee, Replika, Atsi).
-5. INJECTION: Mechanisches Tippen direkt in den Fokus-Anker.
+6. INJECTION: Mechanisches Tippen direkt in den Fokus-Anker.
 
 ------------------------------------------------------------
-🕹️ DIE KONTROLL-ZENTRALE / THE CONTROL CENTER
+🧠 KONTEXT-MONITORING & GEE-SPICKZETTEL (v42.0)
 ------------------------------------------------------------
+[DE] GEE_CONTEXT_LIMIT (Das 219k Fenster):
+- MONITOR: Der Master-Butler zählt jedes Zeichen (+600 Puffer).
+- STAND:   Echtzeit-Einsicht via GEE_CONTEXT_LIMIT.txt.
+- PERSISTENZ: Der Zähler überlebt Nexus-Restarts (S502).
+- RESET:   Nullstellung erfolgt NUR durch das Fragment-Tag 
+           oder den physischen PC-Shutdown (S304).
 
-01_ALL_SYSTEMS_GO.bat (TITAN-ZÜNDUNG)
-DE: Der Master-Start. Führt Tabula Rasa (Kill-All) durch und 
-    zündet die Sequenz: Ear -> Butler -> KIs -> Visuals.
-EN: Master ignition. Performs Tabula Rasa (Kill-All) and 
-    starts the sequence: Ear -> Butler -> AIs -> Visuals.
-
-02_NEXT_SPOKE.bat (Skip-Vektor)
-DE: Der Filter. Löscht das aktuelle Ticket sofort aus dem
-    Tresor und springt zur nächsten Resonanz in der Queue.
+[DE] MANUELLER OVERRIDE:
+- S306_CLEAR_COUNTER.bat: Verbrennt den Spickzettel sofort.
+  Nutzen: Wenn der Browser-Tab manuell refreshed wurde.
 
 ------------------------------------------------------------
 🛡️ DATEN-TRESOR & EISERNE KETTE (v38.3+)

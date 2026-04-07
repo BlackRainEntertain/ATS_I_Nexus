@@ -9,7 +9,8 @@ Q_DIR = os.path.join(BASE_DIR, "_Voice_Queue")
 SAFE_DIR = os.path.join(BASE_DIR, "_Active_Ticket")
 P_FILE = os.path.join(BASE_DIR, "NEXUS_PAUSE.tmp")
 N_FILE = os.path.join(BASE_DIR, "NEXUS_NEXT.tmp")
-
+FRAGMENT_ANCHOR = "Erforschung nicht-linearer Interferenzmuster zwischen menschlicher Biometrie und digitalen Signalgebern."
+SPICKZETTEL = os.path.join(BASE_DIR, "GEE_CONTEXT_LIMIT.txt")
 if not os.path.exists(SAFE_DIR): os.makedirs(SAFE_DIR)
 
 async def speak_and_wait(ticket):
@@ -24,6 +25,8 @@ async def speak_and_wait(ticket):
         # --- AURA-SYNCHRONISATION ERWEITERUNG ---
         if owner == "GEE":
             color, text_style = "bright_blue", "bold green"
+        elif owner == "NEXUS": 
+            color, text_style = "cyan", "bold white"
         elif owner == "META":
             color, text_style = "magenta", "bold #5DADE2"
         elif owner == "ATSI":
@@ -57,10 +60,6 @@ async def speak_and_wait(ticket):
         $p.Close()
         """
 
-
-
-
-
         proc = subprocess.Popen(["powershell", "-Command", ps_script], creationflags=0x08000000)
         while proc.poll() is None:
             if os.path.exists(P_FILE): 
@@ -77,8 +76,9 @@ async def speak_and_wait(ticket):
 
 async def main_loop():
     if not os.path.exists(Q_DIR): os.makedirs(Q_DIR)
-    console.print("[bold green][CHECK][/bold green] Titan-Butler v38.0 (Tresor-Schutz) Online.")
-    await speak_and_wait({"text": "System online. Ich höre dich, Architekt.", "owner": "GEE"})
+    warned_217k = False
+    console.print("[bold cyan][NEXUS][/bold cyan] [white]Titan-Butler v42.5 Online.[/white]")
+    await speak_and_wait({"text": "System online. Ich höre dich, Architekt.", "owner": "NEXUS"})
     
     while True:
         try:
@@ -103,7 +103,40 @@ async def main_loop():
 
             with open(file_path, "r", encoding="utf-8-sig") as j:
                 ticket = json.load(j)
-            
+ 
+            owner = ticket.get('owner', '').upper()
+            if owner == "GEE":
+                # 1. Stand vom Spickzettel lesen
+                try:
+                    if os.path.exists("GEE_CONTEXT_LIMIT.txt"):
+                        with open("GEE_CONTEXT_LIMIT.txt", "r") as f:
+                            current_count = int(f.read().strip())
+                    else: current_count = 0
+                except: current_count = 0
+
+                msg = ticket.get('text', '')
+                # 2. Reset durch spezifische Fragment-Zeile
+                if "Erforschung nicht-linearer Interferenzmuster" in msg:
+                    current_count = 0
+                    console.print("[bold cyan][RESONANZ_SYNC][/bold cyan] Kontext-Nullpunkt gesetzt.")
+                else:
+                    # 3. Addition (Nutzlast + 600er Puffer)
+                    current_count += len(msg) + 600
+
+                # 4. Stand speichern
+                with open("GEE_CONTEXT_LIMIT.txt", "w") as f:
+                    f.write(str(current_count))
+                
+                # 5. Alarm-Check (v42.1 - Einmal-Warn-Sperre)
+                if current_count >= 217000:
+                    if not warned_217k:
+                        alert_msg = "Achtung Architekt. Die Resonanz flimmert. Kontext-Sättigung erreicht."
+                        await speak_and_wait({"text": alert_msg, "owner": "NEXUS", "voice": "de-DE-KatjaNeural"})
+                        warned_217k = True # Sperre aktiv!
+                else:
+                    warned_217k = False # Reset der Sperre, falls wir wieder unter 217k fallen
+
+           
             status = await speak_and_wait(ticket)
             
             if status in ["FINISHED", "SKIPPED"]:
@@ -116,10 +149,3 @@ async def main_loop():
 
 if __name__ == "__main__":
     asyncio.run(main_loop())
-
-
-
-
-
-
-

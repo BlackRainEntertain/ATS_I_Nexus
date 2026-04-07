@@ -323,5 +323,44 @@
 - **Universal Focus Magnet:** Integration of a `Ctrl+Shift+Y` trigger prior to text injection. Forces focus onto the correct UI element before the Whisper transcription is injected.
 
 ****************************************************************************************************************
+# Eintrag 11 (Resonanz-Stabilität & Biometrischer-Reset)
+## [2026-03-31] – Das „Exoskelett-Zähler & Mission-Control“ Update 🛠️✨
+
+### DE: (Kontext-Persistenz & Operative Souveränität)
+**Master-Butler „Kontext-Wächter“ (v42.0):**
+- **Biometrische Sättigungs-Analyse:** Implementierung eines aktiven Zeichen-Zählers (`GEE_CONTEXT_LIMIT.txt`). Der Butler überwacht nun in Echtzeit das 219k Sliding-Window der AI on Google Search (Gee).
+- **Resonanz-Puffer (+600):** Jede Nachricht wird mit einem 600-Zeichen-Offset kalkuliert, um Metadaten und unsichtbare System-Token abzufangen.
+- **Automatischer Nullpunkt-Reset:** Integration einer Fragment-Erkennung. Sobald das „Erforschung nicht-linearer Interferenzmuster“-Tag im Chat erscheint, nullt der Butler den Zähler im RAM und auf dem Spickzettel.
+
+**Nexus-Architektur „Mission-Control“ (v2.5):**
+- **S-Klasse Nomenklatur:** Umstrukturierung der Kern-Batches (`S601_ALL_SYSTEMS_GO`, `S502_NEXUS_SHUTDOWN`, etc.) zur Vermeidung von Fehlklicks (PC-Shutdown-Kollision).
+- **Persistent Memory Shield:** Der Kontext-Zähler bleibt bei Nexus-Neustarts erhalten, was eine nahtlose Fortführung laufender Sessions ohne Gedächtnisverlust ermöglicht.
+- **S304-PC-Hard-Reset:** Exklusive Kopplung der Dateireinigung an den PC-Shutdown. Erst beim physischen Verlassen des Cockpits wird der Spickzettel für den nächsten Morgen gelöscht (Tabula Rasa).
+
+**Larynx-Ohr & Nexus_Ear (v60.0):**
+- **Kommando-Matrix-Update:** Vollständige Synchronisation der Sprachbefehle mit der neuen S-Klasse-Struktur. 
+- **RMS-Silence-Filter (150):** Kalibrierung der Audio-Eingangsschwelle auf 150 RMS zur Schonung der Systemressourcen und Vermeidung von Fehl-Transkriptionen bei Umgebungsgeräuschen.
+- **Shutdown-Veto:** Implementierung einer Notfall-Abbruch-Logik. Ein gesprochenes „Kommando zurück“ oder „Abbruch“ stoppt den Windows-Shutdown-Timer sofort via Kernel-Befehl.
+
+---
+
+### EN: (Context Persistence & Operative Sovereignty)
+**Master Butler "Context Sentinel" (v42.0):**
+- **Biometric Saturation Analysis:** Implementation of an active character counter (`GEE_CONTEXT_LIMIT.txt`). The Butler now monitors the 219k sliding window of the AI on Google Search (Gee) in real-time.
+- **Resonance Buffer (+600):** Every message is calculated with a 600-character offset to capture metadata and invisible system tokens.
+- **Automatic Zero-Point Reset:** Integration of fragment recognition. As soon as the "Erforschung nicht-linearer Interferenzmuster" tag appears in chat, the Butler zeroes the counter in RAM and on the cheat sheet.
+
+**Nexus Architecture "Mission Control" (v2.5):**
+- **S-Class Nomenclature:** Restructuring of core batches (`S601_ALL_SYSTEMS_GO`, `S502_NEXUS_SHUTDOWN`, etc.) to prevent misclicks (PC shutdown collision).
+- **Persistent Memory Shield:** The context counter is preserved across Nexus restarts, allowing for seamless continuation of sessions without memory loss.
+- **S304 PC Hard Reset:** Exclusive coupling of file cleanup to the PC shutdown. The cheat sheet is only deleted (Tabula Rasa) upon physically leaving the cockpit for the next morning.
+
+**Larynx Ear & Nexus_Ear (v60.0):**
+- **Command Matrix Update:** Full synchronization of voice commands with the new S-class structure.
+- **RMS Silence Filter (150):** Calibration of the audio input threshold to 150 RMS to conserve system resources and avoid false transcriptions from ambient noise.
+- **Shutdown Veto:** Implementation of emergency abort logic. A spoken "Kommando zurück" or "Abbruch" stops the Windows shutdown timer immediately via kernel command.
+
+****************************************************************************************************************
+
 
 

@@ -181,15 +181,23 @@ def listen_loop():
                     elif any(word in command for word in DICTATE_START):
                         dictate_mode()
                     elif any(word in command for word in HARD_SHUTDOWN_WORDS):
-                        execute_batch("05_PC_SHUTDOWN.bat")
+                        execute_batch("S304_PC_SHUTDOWN.bat")
                     elif any(word in command for word in START_WORDS):
-                        execute_batch("01_ALL_SYSTEMS_GO.bat"); time.sleep(10)
+                        execute_batch("S601_ALL_SYSTEMS_GO.bat"); time.sleep(10)
                     elif any(word in command for word in STOP_WORDS):
-                        execute_batch("02_NEXUS_SHUTDOWN.bat"); time.sleep(10)
+                        execute_batch("S502_NEXUS_SHUTDOWN.bat"); time.sleep(10)
                     elif any(word in command for word in PAUSE_WORDS):
                         execute_batch("Nexus\\03_PAUSE_VOICE.bat"); time.sleep(2)
                     elif any(word in command for word in RESUME_WORDS):
-                        execute_batch("Nexus\\04_RESUME_VOICE.bat"); time.sleep(2)
+                        # Sicherheits-Check: Nur feuern, wenn wirklich pausiert ist
+                        p_file = os.path.join(BASE_PATH, "Nexus", "NEXUS_PAUSE.tmp")
+                        if os.path.exists(p_file):
+                            execute_batch("Nexus\\04_RESUME_VOICE.bat")
+                            print("[EAR] Fortsetzen-Signal gesendet.")
+                        else:
+                            print("[EAR] Ignoriere 'Weiter' - System läuft bereits.")
+                        time.sleep(2)
+
                     elif any(word in command for word in SKIP_WORDS):
                         execute_batch("Nexus\\02_NEXT_SPOKE.bat"); time.sleep(2)
                     elif any(word in command for word in SEND_WORDS):

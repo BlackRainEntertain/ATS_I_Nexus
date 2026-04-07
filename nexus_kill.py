@@ -1,5 +1,5 @@
 import pygetwindow as gw
-import os, time, asyncio, edge_tts, subprocess, psutil 
+import os, time, asyncio, edge_tts, subprocess, psutil, json
 
 async def say_goodbye_internal():
     # --- DER VORRANG-KILL ---
@@ -12,17 +12,50 @@ async def say_goodbye_internal():
     try:
         communicate = edge_tts.Communicate(bye_text, "de-DE-KatjaNeural", rate="+10%")
         await (communicate.save(temp_bye))
-        # Fix: 10s Puffer, damit der Satz komplett ausgesprochen wird
-        ps_cmd = f"Add-Type -AssemblyName PresentationCore; $p = New-Object System.Windows.Media.MediaPlayer; $p.Open('{temp_bye}'); $p.Play(); Start-Sleep -s 10; $p.Close()"
+        
+        # --- v42.8: DER SELBST-REINIGUNGS-TIMER (KEIN FREEZE MEHR) ---
+        ps_cmd = (
+            f"Add-Type -AssemblyName PresentationCore; "
+            f"$p = New-Object System.Windows.Media.MediaPlayer; "
+            f"$p.Open('{temp_bye}'); $p.Play(); $s = Get-Date; "
+            f"while($p.Position -lt $p.NaturalDuration -and (Get-Date) -lt $s.AddSeconds(12)) {{ "
+            f"Start-Sleep -ms 250 }}; $p.Close()"
+        )
+        
+        # Wir bleiben bei .run(), damit die Kette sauber bleibt, 
+        # aber die PS beendet sich jetzt GARANTIERT nach 12s selbst!
         subprocess.run(["powershell", "-c", ps_cmd])
+        
         if os.path.exists(temp_bye): os.remove(temp_bye)
     except Exception as e: print(f"Abspann-Fehler: {e}")
 
+
 def run_shutdown():
+    # --- VISUELLER ABSCHIED IM TERMINAL (v42.7) ---
+    try:
+        # Pfad zum Ticket-Ordner im Nexus
+        q_path = os.path.join(os.getcwd(), "Nexus", "_Voice_Queue")
+        if not os.path.exists(q_path): os.makedirs(q_path) # Sicherheitspuffer
+        
+        ticket = {
+            "text": "Das schallisolierte Zimmer wird dunkel, Architekt. Die Resonanz bleibt im Cache. Gute Nacht, Bre.",
+            "owner": "NEXUS",
+            "voice": "de-DE-KatjaNeural"
+        }
+        
+        # Ticket schreiben
+        with open(os.path.join(q_path, "00_bye.json"), "w", encoding="utf-8") as f:
+            json.dump(ticket, f)
+        
+        time.sleep(1.5) # Kurze Pause, damit der Butler es noch anzeigen kann
+    except Exception as e:
+        print(f"Visueller Abschied-Fehler: {e}")
+
+    # --- AB HIER DEIN BESTEHENDER CODE (Targets, Reinigung etc.) ---
     targets = [
         "ATSI_NEXUS_RECEIVER", "GEE_AI_NEXUS", "VORTEX", "GPT_NEXUS",
         "AUDIO_MASTER_BUTLER", "NEXUS_LAVA", "LM Projekte", "Nexus",
-        "_Voice_Queue", "cmd.exe", "--- NEXUS_EAR ---" # <--- HIER HINZUFÜGEN
+        "_Voice_Queue", "cmd.exe", "--- NEXUS_EAR ---"
     ]
 
     
@@ -62,8 +95,10 @@ def run_shutdown():
     # --- SCHRITT D: DATEI-HYGIENE ---
     file_corpses = [
         "current_voice_GEE.mp3", "current_voice_META.mp3", "current_voice_GPT.mp3", "goodbye_GEE.mp3",
-        "NEXUS_PAUSE.tmp", "NEXUS_NEXT.tmp", "NEXUS_RESUME.tmp"
+        "NEXUS_PAUSE.tmp", "NEXUS_NEXT.tmp", "NEXUS_RESUME.tmp", 
+        "GEE_CONTEXT_LIMIT.txt"
     ]
+
     for f in file_corpses:
         # Wir prüfen sowohl im Hauptverzeichnis als auch im Nexus-Unterordner
         for path in [os.path.abspath(f), os.path.abspath(os.path.join("Nexus", f))]:
