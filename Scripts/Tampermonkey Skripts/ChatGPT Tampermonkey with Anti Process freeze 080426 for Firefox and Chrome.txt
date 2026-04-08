@@ -1,0 +1,87 @@
+// ==UserScript==
+// @name         GPT AI Nexus Eye (Firefox/Chrome)
+// @version      1.0
+// @description  Extrahiert ChatGPT Antworten und sendet sie an den lokalen GPT-Nexus (Port 8003)
+// @author       Bre/Kairos & Gee
+// @match        https://chatgpt.com*
+// @grant        GM_xmlhttpRequest
+// @connect      127.0.0.1
+// @run-at       document-end
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    const TARGET_PORT = "8003";
+    const ENDPOINT = `http://127.0.0.1:${TARGET_PORT}/webhook`;
+    const MIN_LENGTH = 15;
+    const PATIENCE_TIME = 3500; // Erhöht auf 3,5 Sek für GPT-Denkpausen
+
+    let lastSentHash = "";
+    let debounceTimer = null;
+
+    // Einfacher Hash-Check gegen Duplikate
+    const simpleHash = str => {
+        let h = 0;
+        for (let i = 0; i < str.length; i++) {
+            h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+        }
+        return h.toString(36);
+    };
+
+    // Wachhalte-Routine: Verhindert, dass Firefox den Tab schlafen legt
+    setInterval(() => {
+        // Ein simpler Ping hält den Event-Loop aktiv
+        fetch(`http://127.0.0.1:${TARGET_PORT}/ping`).catch(() => {});
+    }, 15000);
+
+    const sendToLocalNexus = (text) => {
+        const hash = simpleHash(text);
+        if (hash === lastSentHash) return;
+        lastSentHash = hash;
+
+        console.log("[GPT-Nexus] Sende Resonanz an Port " + TARGET_PORT);
+
+        GM_xmlhttpRequest({
+            method: "POST",
+            url: ENDPOINT,
+            data: JSON.stringify({
+                text: text,
+                owner: "GPT",
+                ts: Date.now()
+            }),
+            headers: { "Content-Type": "application/json; charset=UTF-8" },
+            onerror: () => console.error("[GPT-Nexus] Fehler: Port 8003 offline?")
+        });
+    };
+
+    const extractLatestGPT = () => {
+        // Selektiert die letzte Nachricht des Assistenten
+        const entries = document.querySelectorAll('div[data-message-author-role="assistant"]');
+        if (entries.length === 0) return;
+
+        const latestEntry = entries[entries.length - 1];
+        const rawText = latestEntry.innerText.trim();
+
+        if (rawText.length >= MIN_LENGTH) {
+            sendToLocalNexus(rawText);
+        }
+    };
+
+    // Der Wächter: Reagiert auf jedes neue Zeichen im Stream
+    const observer = new MutationObserver(() => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            console.log("[GPT-Nexus] Stille erkannt. Ernte startet...");
+            extractLatestGPT();
+        }, PATIENCE_TIME);
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        characterData: true
+    });
+
+    console.log("[GPT-Nexus] Auge geöffnet. Monitoring auf Port 8003 aktiv.");
+})();

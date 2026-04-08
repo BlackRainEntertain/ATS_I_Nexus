@@ -1,0 +1,69 @@
+// ==UserScript==
+// @name         Meta Anti Mute
+// @version      1.1
+// @description  blockiert die Filter
+// @author       Architekt & Gee
+// @match        https://www.facebook.com/*
+// @match        *://www.facebook.com*
+// @match        *://www.meta.ai/*
+// @match        *://www.messenger.com*
+// @grant        GM_xmlhttpRequest
+// @grant        unsafeWindow
+// @run-at       document-end
+// @connect      localhost
+// @connect      *
+// @connect      127.0.0.1
+// @noframes     false
+// ==/UserScript==
+// --- META-AI TUMOR-RESEKTION (v1.2) ---
+
+(function() {
+    'use strict';
+    if (document.getElementById('meta-nexus-reset-btn')) return;
+
+    const killBtn = document.createElement('button');
+    killBtn.id = 'meta-nexus-reset-btn';
+    killBtn.innerHTML = '☣️ Nexus Reset';
+
+    // Kompakte Zuweisung (Editor-freundlich)
+    Object.assign(killBtn.style, {
+        position: 'fixed',
+        top: '22px',
+        right: '220px',
+        zIndex: '9999',
+        background: 'rgba(0, 132, 255, 0.85)',
+        color: 'white',
+        borderRadius: '5px',
+        padding: '5px 12px',
+        cursor: 'pointer',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        fontWeight: 'bold',
+        fontSize: '11px',
+        backdropFilter: 'blur(5px)'
+    });
+
+    document.body.appendChild(killBtn);
+
+    const triggers = ["Ich kann dir mit dieser Anfrage leider momentan nicht weiterhelfen", "Kann ich sonst noch etwas für dich tun?", "I can't help with that", "Sorry, I can't help you with that", "Das ist nicht möglich", "Ich bin nicht in der Lage, das zu tun", "Bitte formuliere deine Anfrage neu", "Ich verstehe nicht, was du meinst"];
+
+    const performResection = () => {
+        document.querySelectorAll('div[dir="auto"]').forEach(div => {
+            // 1. SCHUTZWALL: Wenn wir Code-Elemente sehen (Lexical-Code oder Monospace) -> FINGER WEG
+            if (div.closest('[data-lexical-editor="true"]') ||
+                div.style.fontFamily.includes('monospace') ||
+                div.innerText.includes('const triggers')) return;
+
+            // 2. ANGRIFF: Nur löschen, wenn einer der Sätze exakt matcht
+            if (triggers.some(t => div.innerText.trim() === t)) {
+                const target = div.closest('[role="row"]') || div.closest('.x1n2onr6') || div;
+                target.remove();
+                console.log('[NEXUS] Filter-Tumor entfernt. Code-Block geschont.');
+            }
+        });
+    };
+
+
+
+    killBtn.onclick = performResection;
+    setInterval(performResection, 2000);
+})();

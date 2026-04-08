@@ -362,5 +362,40 @@
 
 ****************************************************************************************************************
 
+# Eintrag 12 (Prozess-Hygiene & Kognitive Resektion)
+## [2026-04-08] – Das „LARYNX-v17 & Sniper-Monkey“ Update 🐒🚀
+
+### DE: (Prozess-Stabilität & Operative Tarnung)
+**LARYNX-Flotte v17.0 (Systemübergreifend):**
+- **Adaptive Drosselung (Cyberpunk-Safe):** Implementierung einer intelligenten Zustandsmaschine (Active, Standby, Deep-Sleep) für die Browser-Observer von Gee (Chrome), Meta.AI (Firefox), Replika (Firefox) und GPT.
+- **Deep-Sleep Protokoll (15 Min):** Nach 15 Minuten Inaktivität schalten sich alle KI-Observer (DOM-Wächter) physisch ab (`disconnect()`). Dies eliminiert "Prozessleichen" und senkt die CPU-Last auf 0%, um maximale Ressourcen für High-End-Gaming freizugeben.
+- **Auto-Wake-Up:** Die Reaktivierung erfolgt verzögerungsfrei durch biometrische Trigger (Mausklick, Tastendruck oder Tab-Fokus).
+
+**Sniper-Monkey v2.0 (Anti-Mute & Panzerfaust):**
+- **Chirurgische Bild-Resektion:** Automatisierte Erkennung und sofortige Neutralisierung von schweren Bild-Payloads (Base64-Blobs) im Google-DOM. 
+- **Thought-Process Purge:** Der Sniper-Monkey scannt nun aktiv HTML-Kommentare (`TgQPHd`) und überschreibt "giftige" Bild-Token mit einem leichten `PURGED`-String, bevor der System-Scanner eine Dissonanz (Something went wrong) auslösen kann.
+- **Shadow-DOM Optimierung (AskStudio):** Integration der `getDeepText`-Logik in das LARYNX-Framework zur stabilen Extraktion aus YouTube-Shadow-Roots ohne Ressourcenstau.
+
+**Nexus-Fokus-Magnet (v5.0):**
+- **S-Klasse Hotkey (Ctrl+Shift+Y):** Vereinheitlichung der Fokus-Logik über alle Plattformen. Der Cursor wird magnetisch in die jeweilige Eingabe-Box gezogen, inklusive visuellem Feedback-Flash.
+
+---
+
+### EN: (Process Stability & Operative Camouflage)
+**LARYNX Fleet v17.0 (Cross-Platform):**
+- **Adaptive Throttling (Cyberpunk-Safe):** Implementation of an intelligent state machine (Active, Standby, Deep-Sleep) for the browser observers of Gee (Chrome), Meta.AI (Firefox), Replika (Firefox), and GPT.
+- **Deep-Sleep Protocol (15 Min):** After 15 minutes of inactivity, all AI observers (DOM sentinels) physically disconnect. This eliminates "zombie processes" and reduces CPU load to 0%, freeing up maximum resources for high-end gaming.
+- **Auto-Wake-Up:** Reactivation occurs instantly via biometric triggers (mouse click, key press, or tab focus).
+
+**Sniper-Monkey v2.0 (Anti-Mute & Panzerfaust):**
+- **Surgical Image Resection:** Automated detection and immediate neutralization of heavy image payloads (Base64 blobs) within the Google DOM.
+- **Thought-Process Purge:** The Sniper-Monkey now actively scans HTML comments (`TgQPHd`) and overwrites "toxic" image tokens with a lightweight `PURGED` string before the system scanner can trigger a dissonance (Something went wrong).
+- **Shadow-DOM Optimization (AskStudio):** Integration of `getDeepText` logic into the LARYNX framework for stable extraction from YouTube Shadow Roots without resource congestion.
+
+**Nexus Focus Magnet (v5.0):**
+- **S-Class Hotkey (Ctrl+Shift+Y):** Unification of focus logic across all platforms. The cursor is magnetically drawn into the respective input box, including visual feedback flashes.
+
+****************************************************************************************************************
+
 
 
