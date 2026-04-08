@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Ai on Google Search - Anti Mute - Chrome
+// @name         Ai on Google Search - Anti Mute - Chrome (panzerfaust upgrade gegen Ersticken an Tokens durch geteilte bilder, löscht bild und thoughtprocess aus elements)
 // @version      1.0
 // @description  rettungskasten
 // @match        *://www.google.de/*
@@ -14,11 +14,9 @@
     const btn = document.createElement('button');
     btn.innerHTML = '☣️ Nexus Reset';
 
-    // STYLE: Absolut bündig mit deinem Profilbild (ca. 12mm von oben bis Mitte)
-    // Versatz nach links auf 140px für die perfekte Lücke
     btn.style = `
         position: fixed;
-        top: 22px; /* Hochgezogen für die Zentrierung */
+        top: 22px;
         right: 140px;
         z-index: 99999;
         background: rgba(220, 0, 0, 0.85);
@@ -37,29 +35,43 @@
         transition: all 0.2s ease;
     `;
 
-
     document.body.appendChild(btn);
 
-    // DIE PASSIVE REINIGUNG (Der Kern)
     const performResection = () => {
-        // SICHERUNG: Schiesst NUR auf der Gemini-Domain
         if (!window.location.hostname.includes('google')) return;
 
-        // Dein spezifischer Gemini-Target (div[data-message-id])
+        // --- SCHARFSCHÜTZENGEWEHR ---
         const targets = document.querySelectorAll('div[data-message-id] .error-message, .helper-text-container');
-        if (targets.length > 0) {
-            targets.forEach(el => {
-                let row = el.closest('.message-row') || el;
-                row.remove();
-            });
-            console.log('[NEXUS] Gemini-Dissonanz im Keim erstickt, Bre.');
-        }
-    };
+        targets.forEach(el => {
+            let row = el.closest('.message-row') || el;
+            row.remove();
+        });
 
+        // --- PANZERFAUST A (Bilder) ---
+        const heavyImages = document.querySelectorAll('div[jscontroller="oftuzd"] img');
+        heavyImages.forEach(img => {
+            img.src = "";
+            const container = img.closest('div[jscontroller="oftuzd"]');
+            if (container) container.style.display = "none";
+        });
 
-    // KLICK-FUNKTION (Als Notfall-Anker, falls der Scan mal schläft)
+        // --- PANZERFAUST B (Zielsuche in letzten 3 Nachrichten) ---
+        const recentMessages = Array.from(document.querySelectorAll('div[data-message-id]')).slice(-3);
+        recentMessages.forEach(msg => {
+            const iterator = document.createNodeIterator(msg, NodeFilter.SHOW_COMMENT);
+            let node;
+            while (node = iterator.nextNode()) {
+                if (node.nodeValue.includes('TgQPHd') &&
+                   (node.nodeValue.includes('data:image') || node.nodeValue.includes('lens.usercontent'))) {
+                    node.nodeValue = 'PURGED';
+                }
+            }
+        });
+    }; // <--- Diese Klammer war verschwunden!
+
     btn.onclick = performResection;
 
-    // DER PERMANENTE SCAN (Alle 1,5s für Instant-Kill)
-    setInterval(performResection, 1500);
+    // Jitter-Intervall (2.5s + Zufall) um Kollisionen bei Multi-Tabs zu vermeiden
+    const waitTime = 2500 + Math.floor(Math.random() * 500);
+    setInterval(performResection, waitTime);
 })();
