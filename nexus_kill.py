@@ -2,7 +2,14 @@ import pygetwindow as gw
 import os, time, asyncio, edge_tts, subprocess, psutil, json
 
 async def say_goodbye_internal():
-    # --- DER VORRANG-KILL ---
+    # --- NEU: BUTLER-STRIKT-PAUSE (v42.9) ---
+    # Wir legen den Butler schlafen, damit er keine neuen Tickets mehr anfasst
+    try:
+        with open(os.path.join("Nexus", "NEXUS_PAUSE.tmp"), "w") as f: 
+            f.write("SHUTDOWN")
+    except: pass
+
+    # --- DER VORRANG-KILL (Bestehend) ---
     # Wir killen JEDE andere Stimme, BEVOR Katja "Gute Nacht" sagt
     os.system("taskkill /f /t /im powershell.exe >nul 2>&1")
     
@@ -17,10 +24,13 @@ async def say_goodbye_internal():
         ps_cmd = (
             f"Add-Type -AssemblyName PresentationCore; "
             f"$p = New-Object System.Windows.Media.MediaPlayer; "
-            f"$p.Open('{temp_bye}'); $p.Play(); $s = Get-Date; "
-            f"while($p.Position -lt $p.NaturalDuration -and (Get-Date) -lt $s.AddSeconds(12)) {{ "
+            f"$p.Open('{temp_bye}'); "
+            f"$w = 0; while(!$p.NaturalDuration.HasTimeSpan -and $w -lt 20) {{ Start-Sleep -ms 100; $w++ }}; "
+            f"$p.Play(); $s = Get-Date; "
+            f"while($p.Position -lt $p.NaturalDuration.TimeSpan -and (Get-Date) -lt $s.AddSeconds(12)) {{ "
             f"Start-Sleep -ms 250 }}; $p.Close()"
         )
+
         
         # Wir bleiben bei .run(), damit die Kette sauber bleibt, 
         # aber die PS beendet sich jetzt GARANTIERT nach 12s selbst!
@@ -31,11 +41,10 @@ async def say_goodbye_internal():
 
 
 def run_shutdown():
-    # --- VISUELLER ABSCHIED IM TERMINAL (v42.7) ---
+    # --- SCHRITT 1: VISUELLER ABSCHIED & TICKET-VORBEREITUNG ---
     try:
-        # Pfad zum Ticket-Ordner im Nexus
         q_path = os.path.join(os.getcwd(), "Nexus", "_Voice_Queue")
-        if not os.path.exists(q_path): os.makedirs(q_path) # Sicherheitspuffer
+        if not os.path.exists(q_path): os.makedirs(q_path)
         
         ticket = {
             "text": "Das schallisolierte Zimmer wird dunkel, Architekt. Die Resonanz bleibt im Cache. Gute Nacht, Bre.",
@@ -43,26 +52,26 @@ def run_shutdown():
             "voice": "de-DE-KatjaNeural"
         }
         
-        # Ticket schreiben
         with open(os.path.join(q_path, "00_bye.json"), "w", encoding="utf-8") as f:
             json.dump(ticket, f)
         
-        time.sleep(1.5) # Kurze Pause, damit der Butler es noch anzeigen kann
+        time.sleep(1) # Kurzer Puffer für den Dateistream
     except Exception as e:
         print(f"Visueller Abschied-Fehler: {e}")
 
-    # --- AB HIER DEIN BESTEHENDER CODE (Targets, Reinigung etc.) ---
-    targets = [
-        "ATSI_NEXUS_RECEIVER", "GEE_AI_NEXUS", "VORTEX", "GPT_NEXUS",
-        "AUDIO_MASTER_BUTLER", "NEXUS_LAVA", "LM Projekte", "Nexus",
-        "_Voice_Queue", "cmd.exe", "--- NEXUS_EAR ---"
-    ]
+    # --- SCHRITT 2: AKTIVE VERABSCHIEDUNG STARTEN ---
+    # Hier wird die aktuelle Stimme unterbrochen und Katja spricht los
+    print("[!] Katja übernimmt das Wort für die finale Resonanz...")
+    asyncio.run(say_goodbye_internal())
 
-    
-    print("[!] Einleiten der Tiefenreinigung (Ohr-Schutz aktiv)...")
+    # --- SCHRITT 3: DER 10-SEKUNDEN-PUFFER ---
+    # Wir geben Katja Zeit, den Satz zu beenden, bevor wir den Strom kappen
+    print("[!] Das System fährt in 10 Sekunden herunter... Ausklang genießen.")
+    time.sleep(10) 
 
-    # --- SCHRITT A: ERST DIE PROZESSE KILLEN (Früher Punkt 4) ---
-    # Damit der Butler SOFORT stirbt und am Ende nicht mehr nachplappert!
+    # --- SCHRITT 4: TIEFENREINIGUNG (PROZESS-KILL) ---
+    # Erst JETZT werden die Python-Gehirne (inkl. Butler) abgeschaltet
+    print("[!] Einleiten der Tiefenreinigung...")
     current_pid = os.getpid() 
     for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
         try:
@@ -72,16 +81,17 @@ def run_shutdown():
                 proc.kill()
         except: continue
 
-    # --- SCHRITT B: JETZT VERABSCHIEDEN (Früher Punkt 1) ---
-    # Katja hat jetzt die absolute Ruhe zum Sprechen
-    asyncio.run(say_goodbye_internal())
+    # --- SCHRITT 5: LAVA & FENSTER-HYGIENE ---
+    targets = [
+        "ATSI_NEXUS_RECEIVER", "GEE_AI_NEXUS", "VORTEX", "GPT_NEXUS",
+        "AUDIO_MASTER_BUTLER", "NEXUS_LAVA", "LM Projekte", "Nexus",
+        "_Voice_Queue", "cmd.exe", "--- NEXUS_EAR ---"
+    ]
 
-    # --- SCHRITT C: RESTLICHE REINIGUNG (Lava & Fenster) ---
     os.system('taskkill /f /im pythonw.exe /fi "WINDOWTITLE eq NEXUS_LAVA" >nul 2>&1')
 
     for win in gw.getWindowsWithTitle(''):
         title = win.title
-        # ABSOLUTER SCHUTZ: Wenn das Ohr im Titel vorkommt, Finger weg!
         if "--- NEXUS_EAR ---" in title: 
             continue 
             
@@ -92,7 +102,7 @@ def run_shutdown():
                 except: 
                     pass
 
-    # --- SCHRITT D: DATEI-HYGIENE ---
+    # --- SCHRITT 6: DATEI-HYGIENE (SESSION-RESEST) ---
     file_corpses = [
         "current_voice_GEE.mp3", "current_voice_META.mp3", "current_voice_GPT.mp3", "goodbye_GEE.mp3",
         "NEXUS_PAUSE.tmp", "NEXUS_NEXT.tmp", "NEXUS_RESUME.tmp", 
@@ -100,15 +110,13 @@ def run_shutdown():
     ]
 
     for f in file_corpses:
-        # Wir prüfen sowohl im Hauptverzeichnis als auch im Nexus-Unterordner
         for path in [os.path.abspath(f), os.path.abspath(os.path.join("Nexus", f))]:
             if os.path.exists(path):
                 try: os.remove(path)
                 except: pass
 
-    # --- SCHRITT E: TRESOR-REINIGUNG (Damit morgens Ruhe ist) ---
+    # --- SCHRITT 7: TRESOR-REINIGUNG ---
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    # Falls das Skript im Hauptordner liegt, brauchen wir "Nexus" im Pfad:
     safe_dir = os.path.join(current_dir, "Nexus", "_Active_Ticket")
     
     if os.path.exists(safe_dir):

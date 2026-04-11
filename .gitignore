@@ -36,3 +36,12 @@ Thumbs.db
 # Verhindert, dass Whisper-Modelle ins Repo rutschen
 **/Models/faster-whisper-*
 Nexus_Service/temp_larynx.wav
+
+# --- NEXUS SPEZIFISCH ---
+Nexus/_Active_Ticket/
+Nexus/_Voice_Queue/
+Nexus/*.mp3
+Nexus/GEE_CONTEXT_LIMIT.txt
+Nexus/NEXUS_PAUSE.tmp
+Nexus/NEXUS_NEXT.tmp
+

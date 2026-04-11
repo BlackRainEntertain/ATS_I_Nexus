@@ -189,13 +189,10 @@ def listen_loop():
                     elif any(word in command for word in PAUSE_WORDS):
                         execute_batch("Nexus\\03_PAUSE_VOICE.bat"); time.sleep(2)
                     elif any(word in command for word in RESUME_WORDS):
-                        # Sicherheits-Check: Nur feuern, wenn wirklich pausiert ist
                         p_file = os.path.join(BASE_PATH, "Nexus", "NEXUS_PAUSE.tmp")
-                        if os.path.exists(p_file):
-                            execute_batch("Nexus\\04_RESUME_VOICE.bat")
-                            print("[EAR] Fortsetzen-Signal gesendet.")
-                        else:
-                            print("[EAR] Ignoriere 'Weiter' - System läuft bereits.")
+                        # Wir feuern die Batch IMMER, um sicherzugehen
+                        execute_batch("Nexus\\04_RESUME_VOICE.bat")
+                        print("[EAR] Resume-Impuls gesendet.")
                         time.sleep(2)
 
                     elif any(word in command for word in SKIP_WORDS):

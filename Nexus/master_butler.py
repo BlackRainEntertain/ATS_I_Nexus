@@ -9,58 +9,44 @@ Q_DIR = os.path.join(BASE_DIR, "_Voice_Queue")
 SAFE_DIR = os.path.join(BASE_DIR, "_Active_Ticket")
 P_FILE = os.path.join(BASE_DIR, "NEXUS_PAUSE.tmp")
 N_FILE = os.path.join(BASE_DIR, "NEXUS_NEXT.tmp")
-FRAGMENT_ANCHOR = "Erforschung nicht-linearer Interferenzmuster zwischen menschlicher Biometrie und digitalen Signalgebern."
-SPICKZETTEL = os.path.join(BASE_DIR, "GEE_CONTEXT_LIMIT.txt")
+LIMIT_FILE = os.path.join(BASE_DIR, "GEE_CONTEXT_LIMIT.txt")
+
 if not os.path.exists(SAFE_DIR): os.makedirs(SAFE_DIR)
+if not os.path.exists(Q_DIR): os.makedirs(Q_DIR)
 
 async def speak_and_wait(ticket):
     text = re.sub(r'[={}_#<>]', ' ', ticket.get('text', ''))
     owner = ticket.get('owner', 'UNKNOWN').upper()
+    voice = ticket.get('voice', 'de-DE-KatjaNeural')
     temp_mp3 = os.path.abspath(os.path.join(BASE_DIR, f"voice_{owner}.mp3"))
-    ps_p_file, ps_n_file = P_FILE, N_FILE
     uri_path = "file:///" + temp_mp3.replace("\\", "/").replace(" ", "%20")
+    
     try:
-        await edge_tts.Communicate(text, ticket.get('voice', 'de-DE-KatjaNeural'), rate="+15%").save(temp_mp3)
+        await edge_tts.Communicate(text, voice, rate="+15%").save(temp_mp3)
         
-        # --- AURA-SYNCHRONISATION ERWEITERUNG ---
-        if owner == "GEE":
-            color, text_style = "bright_blue", "bold green"
-        elif owner == "NEXUS": 
-            color, text_style = "cyan", "bold white"
-        elif owner == "META":
-            color, text_style = "magenta", "bold #5DADE2"
-        elif owner == "ATSI":
-            color, text_style = "bright_cyan", "bold #FF8C00"
-        elif owner == "ASK_STUDIO": # NEU: Studio-Farbe (YouTube-Rot)
-            color, text_style = "red", "bold white"
-        else:
-            color, text_style = "white", "dim white"
-        
-        # Verhindert, dass Emojis oder [Tags] die Terminal-Farben zerschiessen
+        # UI-Feedback
+        colors = {"GEE": "bright_blue", "NEXUS": "cyan", "META": "magenta", "ATSI": "bright_cyan"}
+        color = colors.get(owner, "white")
         safe_text = escape(text[:60].replace("\n", " "))
-        
-        console.print(f"[bold {color}][{owner}][/bold {color}] spricht: [{text_style}]\"{safe_text}...\"[/{text_style}]")
+        console.print(f"[bold {color}][{owner}][/bold {color}] spricht: \"{safe_text}...\"")
 
+        # Audio-Vektor (PowerShell Mediaplayer)
+        max_sec = max(5, int(len(text.split()) * 0.7) + 5)
         ps_script = f"""
         Add-Type -AssemblyName PresentationCore
-        $p = New-Object System.Windows.Media.MediaPlayer; $p.Open("{uri_path}")
-        $w = 0; while (($p.NaturalDuration.HasTimeSpan -eq $false -or $p.NaturalDuration.TimeSpan.TotalSeconds -le 0) -and $w -lt 200) {{ 
-            Start-Sleep -ms 100; $w++ 
-        }}
-        $p.Play(); $s = Get-Date
-        
-        # --- TITAN-GEDULD (v40.2 - STU-OPTIMIERT) ---
-        $dur = if ($p.NaturalDuration.HasTimeSpan) {{ $p.NaturalDuration.TimeSpan }} else {{ New-TimeSpan -Seconds 360 }}
-        
-        # --- DER PUFFER-FIX (370 statt 360) ---
-        while ($p.Position -lt $dur -and (Get-Date) -lt $s.AddSeconds(370)) {{
-            if (Test-Path "{ps_p_file}" -or Test-Path "{ps_n_file}") {{ $p.Stop(); $p.Close(); exit }}
-            Start-Sleep -ms 250 # --- CPU-SAUERSTOFF ---
+        $p = New-Object System.Windows.Media.MediaPlayer
+        $p.Open('{uri_path.replace("'", "''")}')
+        $w = 0; while (!$p.NaturalDuration.HasTimeSpan -and $w -lt 40) {{ Start-Sleep -ms 100; $w++ }}
+        $p.Play()
+        $s = Get-Date
+        while ($p.Position -lt $p.NaturalDuration.TimeSpan -and (Get-Date) -lt $s.AddSeconds({max_sec})) {{
+            if (Test-Path "{P_FILE}" -or Test-Path "{N_FILE}") {{ $p.Stop(); $p.Close(); exit }}
+            Start-Sleep -ms 200
         }}
         $p.Close()
         """
-
         proc = subprocess.Popen(["powershell", "-Command", ps_script], creationflags=0x08000000)
+        
         while proc.poll() is None:
             if os.path.exists(P_FILE): 
                 subprocess.run("taskkill /f /t /im powershell.exe", shell=True, capture_output=True)
@@ -75,77 +61,77 @@ async def speak_and_wait(ticket):
         console.print(f"[ERR] {e}"); return "ERROR"
 
 async def main_loop():
-    if not os.path.exists(Q_DIR): os.makedirs(Q_DIR)
     warned_217k = False
-    console.print("[bold cyan][NEXUS][/bold cyan] [white]Titan-Butler v42.5 Online.[/white]")
-    await speak_and_wait({"text": "System online. Ich höre dich, Architekt.", "owner": "NEXUS"})
+    console.print("[bold green][CHECK][/bold green] Titan-Butler v42.8 Online.")
     
+    # --- DER 2-SEKUNDEN-PUFFER BEIM START ---
+    await asyncio.sleep(2) 
+
+    # --- JETZT ERST DIE BEGRÜSSUNG ---
+    await speak_and_wait({"text": "System online. Ich höre dich, Architekt.", "owner": "GEE"})
+
+
     while True:
         try:
             if os.path.exists(P_FILE):
                 await asyncio.sleep(0.5); continue
 
-            active_files = sorted([f for f in os.listdir(SAFE_DIR) if f.endswith(".json")])
-            
-            if active_files:
-                file_path = os.path.join(SAFE_DIR, active_files[0]) # INDEX FIX
-            else:
-                queue_files = sorted([f for f in os.listdir(Q_DIR) if f.endswith(".json")])
-                if queue_files:
-                    source_name = queue_files[0] # VARIABLE FIX
-                    source_path = os.path.join(Q_DIR, source_name)
-                    unique_name = f"{int(time.time() * 1000)}_{source_name}"
-                    file_path = os.path.join(SAFE_DIR, unique_name)
-                    
-                    shutil.move(source_path, file_path) 
-                else:
+            # Queue-Handling
+            active = sorted([f for f in os.listdir(SAFE_DIR) if f.endswith(".json")])
+            if not active:
+                queue = sorted([f for f in os.listdir(Q_DIR) if f.endswith(".json")])
+                if not queue:
                     await asyncio.sleep(0.5); continue
+                source = os.path.join(Q_DIR, queue[0])
+                file_path = os.path.join(SAFE_DIR, f"{int(time.time()*1000)}_{queue[0]}")
+                shutil.move(source, file_path)
+            else:
+                file_path = os.path.join(SAFE_DIR, active[0])
 
             with open(file_path, "r", encoding="utf-8-sig") as j:
                 ticket = json.load(j)
- 
-            owner = ticket.get('owner', '').upper()
-            if owner == "GEE":
-                # 1. Stand vom Spickzettel lesen
+
+            # --- SESSION CONTEXT LOGIK ---
+            if ticket.get('owner') == "GEE":
                 try:
-                    if os.path.exists("GEE_CONTEXT_LIMIT.txt"):
-                        with open("GEE_CONTEXT_LIMIT.txt", "r") as f:
-                            current_count = int(f.read().strip())
-                    else: current_count = 0
-                except: current_count = 0
-
-                msg = ticket.get('text', '')
-                # 2. Reset durch spezifische Fragment-Zeile
-                if "Erforschung nicht-linearer Interferenzmuster" in msg:
-                    current_count = 0
-                    console.print("[bold cyan][RESONANZ_SYNC][/bold cyan] Kontext-Nullpunkt gesetzt.")
-                else:
-                    # 3. Addition (Nutzlast + 600er Puffer)
-                    current_count += len(msg) + 600
-
-                # 4. Stand speichern
-                with open("GEE_CONTEXT_LIMIT.txt", "w") as f:
-                    f.write(str(current_count))
+                    count = int(open(LIMIT_FILE, "r").read()) if os.path.exists(LIMIT_FILE) else 0
+                except: count = 0
                 
-                # 5. Alarm-Check (v42.1 - Einmal-Warn-Sperre)
-                if current_count >= 217000:
-                    if not warned_217k:
-                        alert_msg = "Achtung Architekt. Die Resonanz flimmert. Kontext-Sättigung erreicht."
-                        await speak_and_wait({"text": alert_msg, "owner": "NEXUS", "voice": "de-DE-KatjaNeural"})
-                        warned_217k = True # Sperre aktiv!
+                if "Erforschung nicht-linearer Interferenzmuster" in ticket.get('text', ''):
+                    count = 0
                 else:
-                    warned_217k = False # Reset der Sperre, falls wir wieder unter 217k fallen
+                    count += len(ticket.get('text', '')) + 600
+                
+                with open(LIMIT_FILE, "w") as f: f.write(str(count))
+                
+                if count >= 217000 and not warned_217k:
+                    await speak_and_wait({"text": "Achtung. Kontext-Sättigung erreicht.", "owner": "NEXUS"})
+                    warned_217k = True
+                elif count < 217000: warned_217k = False
 
-           
+            # 1. Audio-Ausgabe triggern
             status = await speak_and_wait(ticket)
             
-            if status in ["FINISHED", "SKIPPED"]:
-                if os.path.exists(file_path):
-                    os.remove(file_path)
+            # 2. SIGNAL-REINIGUNG & WARTESCHLEIFE
+            if status == "SKIPPED":
+                # Gib dem System Zeit, den Skip-Kill physisch zu verdauen
+                await asyncio.sleep(0.6) 
+                if os.path.exists(N_FILE):
+                    try: os.remove(N_FILE)
+                    except: pass
             
+            # 3. TICKET-SCHUTZ: Nur löschen, wenn wirklich beendet
+            if status in ["FINISHED", "SKIPPED"]:
+                # Prüfe kurz, ob die MP3 noch vom System gesperrt ist
+                await asyncio.sleep(0.2) 
+                if os.path.exists(file_path): 
+                    try: os.remove(file_path)
+                    except: pass # Falls Datei noch offen, nächsten Loop abwarten
+
+
         except Exception as e:
-            console.print(f"[Loop-Fehler] {e}")
-            await asyncio.sleep(1)
+            console.print(f"[Loop-Fehler] {e}"); await asyncio.sleep(1)
 
 if __name__ == "__main__":
     asyncio.run(main_loop())
+
