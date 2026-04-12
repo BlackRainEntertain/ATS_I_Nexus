@@ -24,11 +24,17 @@ async def speak_and_wait(ticket):
     try:
         await edge_tts.Communicate(text, voice, rate="+15%").save(temp_mp3)
         
-        # UI-Feedback
+        # UI-Feedback (v43.1 mit Uhrzeit-Stempel)
+        from datetime import datetime
+        uhrzeit = datetime.now().strftime("%H:%M:%S")
+        
         colors = {"GEE": "bright_blue", "NEXUS": "cyan", "META": "magenta", "ATSI": "bright_cyan"}
         color = colors.get(owner, "white")
         safe_text = escape(text[:60].replace("\n", " "))
-        console.print(f"[bold {color}][{owner}][/bold {color}] spricht: \"{safe_text}...\"")
+        
+        # Der neue Look: [OWNER] Uhrzeit spricht: "Text..."
+        console.print(f"[bold {color}][{owner}][/bold {color}] [grey]{uhrzeit}[/grey] spricht: \"{safe_text}...\"")
+
 
         # Audio-Vektor (PowerShell Mediaplayer)
         max_sec = max(5, int(len(text.split()) * 0.7) + 5)
@@ -36,12 +42,12 @@ async def speak_and_wait(ticket):
         Add-Type -AssemblyName PresentationCore
         $p = New-Object System.Windows.Media.MediaPlayer
         $p.Open('{uri_path.replace("'", "''")}')
-        $w = 0; while (!$p.NaturalDuration.HasTimeSpan -and $w -lt 40) {{ Start-Sleep -ms 100; $w++ }}
+        $w = 0; while (!$p.NaturalDuration.HasTimeSpan -and $w -lt 40) {{ Start-Sleep -m 100; $w++ }}
         $p.Play()
         $s = Get-Date
         while ($p.Position -lt $p.NaturalDuration.TimeSpan -and (Get-Date) -lt $s.AddSeconds({max_sec})) {{
             if (Test-Path "{P_FILE}" -or Test-Path "{N_FILE}") {{ $p.Stop(); $p.Close(); exit }}
-            Start-Sleep -ms 200
+            Start-Sleep -m 200
         }}
         $p.Close()
         """

@@ -25,10 +25,10 @@ async def say_goodbye_internal():
             f"Add-Type -AssemblyName PresentationCore; "
             f"$p = New-Object System.Windows.Media.MediaPlayer; "
             f"$p.Open('{temp_bye}'); "
-            f"$w = 0; while(!$p.NaturalDuration.HasTimeSpan -and $w -lt 20) {{ Start-Sleep -ms 100; $w++ }}; "
+            f"$w = 0; while(!$p.NaturalDuration.HasTimeSpan -and $w -lt 20) {{ Start-Sleep -m 100; $w++ }}; "
             f"$p.Play(); $s = Get-Date; "
             f"while($p.Position -lt $p.NaturalDuration.TimeSpan -and (Get-Date) -lt $s.AddSeconds(12)) {{ "
-            f"Start-Sleep -ms 250 }}; $p.Close()"
+            f"Start-Sleep -m 250 }}; $p.Close()"
         )
 
         
