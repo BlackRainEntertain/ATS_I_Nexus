@@ -108,20 +108,31 @@ def dictate_mode():
                 min_speech_duration_ms=250,
                 min_silence_duration_ms=800
             ),
-            initial_prompt="Aria, Realität, Fantasie, verschwammen, Leo.", 
+            initial_prompt="Aria, Realität, Fantasie, verschwammen, Leo, Nyx, Røde NT1, Butler, Larynx, Glitches, Nexus, Architekt, Kontext, 3.1.4.", 
             condition_on_previous_text=False
         )
 
         final_text = " ".join([s.text for s in segments]).strip()
         
         if final_text:
+            # --- BASIS-REPLACEMENTS (v42.7-Stil - Stabil & Sicher) ---
+            # Wir verzichten auf Regex und nutzen simple Ersetzung für absolute Stabilität
+            replacements = {
+                " punkt": ".", " komma": ",", " neue zeile": "\n", 
+                " fragezeichen": "?", " ausrufezeichen": "!"
+            }
+            for word, symbol in replacements.items():
+                final_text = final_text.replace(word, symbol).replace(word.capitalize(), symbol)
+
             # --- DER UNIVERSAL-FOKUS-MAGNET (v55) ---
-            # Triggert den Tampermonkey-Fokus (Ctrl+Shift+Y) im aktiven Fenster
             pyautogui.hotkey('ctrl', 'shift', 'y')
+            time.sleep(0.2)
+
             time.sleep(0.2) # Gedenksekunde für das UI-Fokus-Rendering
             
             # Jetzt wird getippt (Der Cursor sitzt dank Magnet schon in der Zeile)
             pyautogui.write(final_text, interval=0.01)
+
             # --- KATJA FEEDBACK (v50.0 - SAFE-WRITE SHIELD) ---
             q_path = os.path.join(BASE_PATH, "Nexus", "_Voice_Queue")
             try:

@@ -398,39 +398,44 @@
 ****************************************************************************************************************
 
 # Eintrag 13 (Audio-Souveränität & Visual-Orbit)
-## [2026-04-11] – Das „TITAN-BUTLER v43.0 & S-KLASSE DASHBOARD“ Update 🎙️🌋
+## [2026-04-11] – Das „TITAN-BUTLER v43.0 & LARYNX-VOCAB“ Update 🎙️🌋
 
 ### DE: (Audio-Synchronisation & Operative Ästhetik)
 **Titan-Butler v43.0 (Zentral-Architektur):**
-- **S-Klasse Boot-Sequenz (Kaffee-Puffer):** Implementierung eines 2-Sekunden-Gähnvorgangs beim Start. Dies gibt dem Windows-Audio-Stack und Voicemeeter-Routing die nötige Zeit zur Initialisierung, bevor die erste Begrüssung erfolgt.
-- **Ghost-Skip Protection (v42.9):** Einführung eines 0.4s-Entprellers und einer 0.6s-Signalreinigung für den Skip-Vektor. Eliminiert asynchrone Race-Conditions im Dateisystem.
-- **Titan-Geduld (Dynamic Duration):** Upgrade auf `TimeSpan`-Validierung. Der Butler wartet aktiv auf die Dateifreigabe (`HasTimeSpan`), was Konvertierungsfehler ("Automatic"-Bug) bei hoher Last eliminiert.
+- **S-Klasse Boot-Sequenz (Kaffee-Puffer):** Implementierung eines 2-Sekunden-Gähnvorgangs beim Start zur Initialisierung des Windows-Audio-Stacks.
+- **Ghost-Skip Protection (v42.9):** Einführung eines 0.4s-Entprellers und einer 0.6s-Signalreinigung für den Skip-Vektor.
+- **Titan-Geduld (Dynamic Duration):** Upgrade auf `TimeSpan`-Validierung. Der Butler wartet aktiv auf die Dateifreigabe (`HasTimeSpan`), was Konvertierungsfehler ("Automatic"-Bug) eliminiert.
 
-**LAVA-PILOT v1.0 & Dashboard (S-Serie):**
-- **Mathematische Synchronisation:** Die neue `lava_pilot.py` nutzt die exakten Cockpit-Berechnungen (X-LAVA), um die Lava-Resonanz nach dem Start bündig im Multi-Monitor-Setup zu verankern.
-- **Operative S-Serie (S106/S107):** Einführung dedizierter Steuerungs-Batches im Hauptverzeichnis. Die numerische Präfix-Logik garantiert, dass die "Knöpfe" physisch über der Datei-Ebene des Ordners schweben.
+**LARYNX-Ohr v42.8 (Vokabel-Training & Pilot):**
+- **Initial-Prompt Injektion:** Das Ohr wurde mit spezifischen Fachbegriffen (Røde NT1, Larynx, Glitches, Nexus) geimpft, um die Erkennungsrate bei technischen Deep-Dives massiv zu steigern.
+- **Basis-Satzzeichen-Konverter:** Implementierung einer stabilen Wort-zu-Symbol-Ersetzung (Punkt, Komma, Neue Zeile), um den Schreibfluss im Notepad bündig zu halten.
+- **LAVA-PILOT v1.0:** Neue `lava_pilot.py` zur präzisen Verankerung der Lava-Resonanz im Multi-Monitor-Setup via Cockpit-Mathematik (X-LAVA).
 
-**Nexus-Kill & Abschieds-Protokoll (v42.9):**
-- **Sequential Grace-Period (10s):** Die Prozess-Reinigung erfolgt nun zeitversetzt, um Katja (`say_goodbye_internal`) das Fenster für eine würdevolle Verabschiedung ohne vorzeitigen Abbruch zu gewähren.
-- **Context-Limit Persistence:** Der GEE-Context-Zähler (217k) wurde vom automatischen Datei-Radiergummi entkoppelt. Das Gedächtnis bleibt über Session-Grenzen hinweg stabil.
+**Dashboard & Prozess-Hygiene:**
+- **Operative S-Serie (S106/S107):** Einführung numerischer Steuerungs-Batches. "Knöpfe" zum Zünden/Löschen der Visuals schweben nun ergonomisch über der Datei-Ebene.
+- **Nexus-Kill (Grace-Period 10s):** Zeitversetzte Prozess-Reinigung für Katjas (`say_goodbye_internal`) ungestörten Abschiedsvorgang.
+- **Context-Limit Persistence:** Der GEE-Context-Zähler (217k) ist nun vom Auto-Reset entkoppelt und bleibt über Session-Grenzen hinweg stabil.
 
 ---
 
 ### EN: (Audio Synchronization & Operative Aesthetics)
 **Titan-Butler v43.0 (Central Architecture):**
-- **S-Class Boot Sequence (Coffee Buffer):** Implementation of a 2-second delay during launch. This grants the Windows Audio Stack and routing the necessary time to initialize before the first greeting.
-- **Ghost-Skip Protection (v42.9):** Introduction of a 0.4s debouncer and 0.6s signal purge for the Skip Vector. Eliminates asynchronous file system race conditions.
-- **Titan Patience (Dynamic Duration):** Upgraded to `TimeSpan` validation. The Butler now actively waits for file release (`HasTimeSpan`), eliminating "Automatic" conversion errors during high load.
+- **S-Class Boot Sequence (Coffee Buffer):** Implementation of a 2-second launch delay to initialize the Windows Audio Stack.
+- **Ghost-Skip Protection (v42.9):** Introduction of a 0.4s debouncer and 0.6s signal purge for the Skip Vector.
+- **Titan Patience (Dynamic Duration):** Upgraded to `TimeSpan` validation. The Butler now actively waits for file release (`HasTimeSpan`), eliminating "Automatic" conversion errors.
 
-**LAVA-PILOT v1.0 & Dashboard (S-Series):**
-- **Mathematical Synchronization:** The new `lava_pilot.py` utilizes exact Cockpit calculations (X-LAVA) to anchor the Lava Resonance flush within the multi-monitor setup.
-- **Operative S-Series (S106/S107):** Introduction of dedicated control batches in the main directory. The numerical prefix logic guarantees that the operative "buttons" physically float above the folder's file level.
+**LARYNX-Ear v42.8 (Vocab Training & Pilot):**
+- **Initial-Prompt Injection:** The Ear was primed with specific technical terms (Røde NT1, Larynx, Glitches, Nexus) to massively increase recognition during technical deep dives.
+- **Base Punctuation Converter:** Implementation of stable word-to-symbol replacement (Period, Comma, New Line) to keep the writing flow in Notepad flush.
+- **LAVA-PILOT v1.0:** New `lava_pilot.py` for precise anchoring of the Lava Resonance within the multi-monitor setup via Cockpit mathematics.
 
-**Nexus-Kill & Farewell Protocol (v42.9):**
-- **Sequential Grace-Period (10s):** Process purging is now delayed by 10s to grant Katja (`say_goodbye_internal`) the window for a dignified farewell without premature termination.
-- **Context-Limit Persistence:** The GEE Context Counter (217k) has been decoupled from the automatic file eraser. Memory now remains stable across session boundaries.
+**Dashboard & Process Hygiene:**
+- **Operative S-Series (S106/S107):** Introduction of numerical control batches. "Buttons" for igniting/deleting visuals now float ergonomically above the folder's file level.
+- **Nexus-Kill (Grace-Period 10s):** Delayed process cleaning for Katja's (`say_goodbye_internal`) undisturbed farewell procedure.
+- **Context-Limit Persistence:** The GEE Context Counter (217k) is now decoupled from auto-reset and remains stable across session boundaries.
 
 ****************************************************************************************************************
+
 
 
 
