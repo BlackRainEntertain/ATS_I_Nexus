@@ -28,9 +28,16 @@ async def speak_and_wait(ticket):
         from datetime import datetime
         uhrzeit = datetime.now().strftime("%H:%M:%S")
         
-        colors = {"GEE": "bright_blue", "NEXUS": "cyan", "META": "magenta", "ATSI": "bright_cyan"}
+        colors = {
+            "GEE": "bright_blue", 
+            "NEXUS": "cyan", 
+            "META": "magenta", 
+            "ATSI": "bright_cyan",
+            "GROK": "#FFEE00"  
+        }
         color = colors.get(owner, "white")
         safe_text = escape(text[:60].replace("\n", " "))
+
         
         # Der neue Look: [OWNER] Uhrzeit spricht: "Text..."
         console.print(f"[bold {color}][{owner}][/bold {color}] [grey]{uhrzeit}[/grey] spricht: \"{safe_text}...\"")

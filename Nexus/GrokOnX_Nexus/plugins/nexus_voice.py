@@ -16,9 +16,9 @@ def run(message_text):
 
     ticket = {
         "owner": "GROK",
-        "voice": "de-CH-LeniNeural",
-        "rate": "-15%", # Schweizerdeutsch braucht oft ein bisschen mehr Raum
-        "pitch": "-5Hz",
+        "voice": "de-DE-SeraphinaMultilingualNeural",
+        "rate": "-4%",   # Nur minimal schneller als Metas -4%, um den "Grok-Drive" zu halten
+        "pitch": "+4Hz", # Der entscheidende Unterschied! Höherer Pitch macht sie präsenter und schärfer
         "text": message_text.strip(),
         "timestamp": time.time()
     }

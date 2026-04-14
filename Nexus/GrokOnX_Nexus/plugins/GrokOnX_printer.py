@@ -6,20 +6,20 @@ import datetime
 console = Console()
 
 def run(text):
-    # Filtert leere Texte oder Echos
     if not text or len(text.strip()) < 5 or "[GROK EMPFANGEN]" in text:
         return
         
     zeit = datetime.datetime.now().strftime("%H:%M:%S")
-    
-    # X-Ästhetik (Grün/Weiss/Schwarz)
     MAX_UI_WIDTH = 55 
-    styled_text = Text(text, style="bold white", overflow="fold")
+    
+    # Schriftfarbe Weiss (Universums-Stil)
+    styled_text = Text(text, style="bright_white", overflow="fold")
     
     panel = Panel.fit(
         styled_text,
-        title=f"[bold green]GROK @ {zeit}[/bold green]",
-        border_style="green",
+        # Titel in Gelb (Identisch zum Butler/Nervensystem)
+        title=f"[bold #FFEE00]GROK @ {zeit}[/bold #FFEE00]",
+        border_style="#FFEE00", # Gelber Rahmen
         subtitle="[dim white]xAI_Nexus_v1[/dim white]",
         padding=(1, 2),
         width=MAX_UI_WIDTH
@@ -27,3 +27,4 @@ def run(text):
     
     console.print("\n")
     console.print(panel)
+
