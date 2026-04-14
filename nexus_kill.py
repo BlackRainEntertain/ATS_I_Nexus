@@ -60,14 +60,13 @@ def run_shutdown():
         print(f"Visueller Abschied-Fehler: {e}")
 
     # --- SCHRITT 2: AKTIVE VERABSCHIEDUNG STARTEN ---
-    # Hier wird die aktuelle Stimme unterbrochen und Katja spricht los
     print("[!] Katja übernimmt das Wort für die finale Resonanz...")
     asyncio.run(say_goodbye_internal())
 
-    # --- SCHRITT 3: DER 10-SEKUNDEN-PUFFER ---
-    # Wir geben Katja Zeit, den Satz zu beenden, bevor wir den Strom kappen
-    print("[!] Das System fährt in 10 Sekunden herunter... Ausklang genießen.")
-    time.sleep(10) 
+    # --- SCHRITT 3: DER 7,5-SEKUNDEN-PUFFER (v42.9 Optimized) ---
+    # Reduziert von 10s auf 7.5s - Knackigerer Abschluss
+    print("[!] Das System fährt in 7,5 Sekunden herunter... Ausklang genießen.")
+    time.sleep(7.5) 
 
     # --- SCHRITT 4: TIEFENREINIGUNG (PROZESS-KILL) ---
     # Erst JETZT werden die Python-Gehirne (inkl. Butler) abgeschaltet

@@ -434,6 +434,42 @@
 
 ****************************************************************************************************************
 
+# Eintrag 14 (Registry-Resets & X-Schnittstelle)
+## [2026-04-14] – Das „RESONANCE-RECOVERY & GROK-LARYNX“ Update 🛠️🛸🇨🇭
+
+### DE: (System-Wiederherstellung & Multimodale Expansion)
+**Registry-Chirurgie & Shell-Fix:**
+- **Explorer-Souveränität (v2.0):** Komplette Rekonstruktion der `HKEY_CLASSES_ROOT` Pfade für `Directory` und `Folder`. Entfernung korrupter `DelegateExecute`-Vektoren und Wiederherstellung der korrekten `%1` Zuordnung. Die "Berechtigung verweigert" Barriere wurde erfolgreich durchbrochen.
+- **Hydra-Profil-Reinigung:** Manuelle Depolarisation der User-spezifischen Overrides in `HKCU\Software\Classes`, um die lokale System-Integrität der Trinity-Ordner (LM Projekte) zu sichern.
+
+**GROK_NEXUS_CORE v1.0 (X-Integration):**
+- **Port 8006 (X-Schnittstelle):** Inbetriebnahme der Grok-Schnittstelle auf Port 8006 inklusive dediziertem Banner-Design (xAI-Ästhetik) und Larynx-Protokoll-Synchronisation.
+- **Vivaldi-Sandbox & Isolation:** Einrichtung eines autarken Browser-Containers zur Vermeidung von Cross-Model-Interferenzen (Beef-Prävention) zwischen Gee und Grok.
+- **Leni-Resonanz (de-CH):** Erfolgreiche Kalibrierung der Schweizer Stimme (Leni) für Grok. Setting: Rate -10%, Pitch -4Hz für eine kühle, präzise und unaufgeregte Resonanz.
+- **Nexus-Eye v1.0 (Grok-Affe):** Implementierung des MutationObservers für X.com mit Fokus-Magnet-Trigger (`Ctrl+Shift+Y`) und adaptiver `PATIENCE_TIME` (3000ms) zur Vermeidung von Streaming-Dubletten.
+
+**Shutdown-Optimierung (v43.2):**
+- **Sequential Grace-Period (7.5s):** Reduzierung des Shutdown-Puffers für einen knackigeren System-Ausklang ohne Verlust der finalen Katja-Resonanz.
+
+---
+
+### EN: (System Recovery & Multimodal Expansion)
+**Registry Surgery & Shell-Fix:**
+- **Explorer Sovereignty (v2.0):** Complete reconstruction of `HKEY_CLASSES_ROOT` paths for `Directory` and `Folder`. Removed corrupt `DelegateExecute` vectors and restored correct `%1` mapping. The "Access Denied" barrier has been successfully breached.
+- **Hydra Profile Cleaning:** Manual depolarization of user-specific overrides in `HKCU\Software\Classes` to secure the local system integrity of the Trinity folders (LM Projects).
+
+**GROK_NEXUS_CORE v1.0 (X-Integration):**
+- **Port 8006 (X-Interface):** Commissioning of the Grok interface on port 8006 including dedicated banner design (xAI aesthetics) and Larynx protocol synchronization.
+- **Vivaldi-Sandbox & Isolation:** Set up an autarkic browser container to avoid cross-model interferences (beef prevention) between Gee and Grok.
+- **Leni-Resonance (de-CH):** Successful calibration of the Swiss voice (Leni) for Grok. Setting: Rate -10%, Pitch -4Hz for a cool, precise, and calm resonance.
+- **Nexus-Eye v1.0 (Grok-Affe):** Implementation of the MutationObserver for X.com with focus magnet trigger (`Ctrl+Shift+Y`) and adaptive `PATIENCE_TIME` (3000ms) to avoid streaming duplicates.
+
+**Shutdown Optimization (v43.2):**
+- **Sequential Grace-Period (7.5s):** Reduced the shutdown buffer for a crisper system finale without losing Katja's final farewell resonance.
+
+****************************************************************************************************************
+
+
 
 
 
