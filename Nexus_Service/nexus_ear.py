@@ -9,7 +9,7 @@ import pyperclip
 # --- KONFIGURATION (v42.5 - LARYNX GOLDEN BUILD) ---
 os.system("title --- NEXUS_EAR ---")
 MIC_ID = 1  
-FS = 44100
+FS = 48000
 BASE_PATH = r"C:\Users\René\Desktop\LM Projekte"
 MODEL_PATH = os.path.join(BASE_PATH, "Nexus_Service", "Models", "faster-whisper-small")
 
@@ -64,7 +64,7 @@ def dictate_mode():
             last_heartbeat = time.time()
 
         # 2. Die 5.0-Sekunden Aufnahme
-        recording = sd.rec(int(5.0 * FS), samplerate=FS, channels=1, dtype='int16')
+        recording = sd.rec(int(5.0 * FS), device=MIC_ID, samplerate=FS, channels=1, dtype='int16')
         sd.wait() 
         full_audio_data.append(recording)
 
@@ -97,19 +97,20 @@ def dictate_mode():
         wav_path = os.path.join(os.path.dirname(__file__), "temp_larynx.wav")
         write(wav_path, FS, audio_combined)
         
-        # v47.0 - ISOLATION SHIELD (Finaler Schliff gegen TV-Kollision)
+        # v56.0 - POLYGLOT SHIELD (Fokus: DE/EN)
         segments, _ = whisper_model.transcribe(
             wav_path, 
             beam_size=10, 
             best_of=5,
-            vad_filter=False, 
+            initial_prompt="Aria, Nyx, Nexus, Architekt, Butler, Larynx, Gänsefüßchen, Punkt, Komma, Engineering, Hey Gee, Feuer frei."
+, 
+            condition_on_previous_text=False,
+            vad_filter=True,
             vad_parameters=dict(
-                threshold=0.45, 
+                threshold=0.4,
                 min_speech_duration_ms=250,
                 min_silence_duration_ms=800
-            ),
-            initial_prompt="Aria, Realität, Fantasie, verschwammen, Leo, Nyx, Røde NT1, Butler, Larynx, Glitches, Nexus, Architekt, Kontext, 3.1.4.", 
-            condition_on_previous_text=False
+            )
         )
 
         final_text = " ".join([s.text for s in segments]).strip()
@@ -119,7 +120,8 @@ def dictate_mode():
             # Wir verzichten auf Regex und nutzen simple Ersetzung für absolute Stabilität
             replacements = {
                 " punkt": ".", " komma": ",", " neue zeile": "\n", 
-                " fragezeichen": "?", " ausrufezeichen": "!"
+                " fragezeichen": "?", " ausrufezeichen": "!", " gänsefüßchen": '"', " gänsefüsschen": '"'
+
             }
             for word, symbol in replacements.items():
                 final_text = final_text.replace(word, symbol).replace(word.capitalize(), symbol)
@@ -173,7 +175,7 @@ def listen_loop():
     print(f"[EAR] v42.7 aktiv. Alle Systeme bereit.")
     while True:
         try:
-            recording = sd.rec(int(4 * FS), samplerate=FS, channels=1, dtype='int16')
+            recording = sd.rec(int(4 * FS), device=MIC_ID, samplerate=FS, channels=1, dtype='int16')
             sd.wait()
             if np.sqrt(np.mean(recording.astype(float)**2)) < 150: continue
 

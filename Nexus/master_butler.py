@@ -129,7 +129,7 @@ async def main_loop():
             # 3. TICKET-SCHUTZ: Nur löschen, wenn wirklich beendet
             if status in ["FINISHED", "SKIPPED"]:
                 # Prüfe kurz, ob die MP3 noch vom System gesperrt ist
-                await asyncio.sleep(0.2) 
+                await asyncio.sleep(0.3) 
                 if os.path.exists(file_path): 
                     try: os.remove(file_path)
                     except: pass # Falls Datei noch offen, nächsten Loop abwarten
