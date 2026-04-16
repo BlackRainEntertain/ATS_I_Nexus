@@ -21,7 +21,7 @@ ARCHITECT_LOCKED.txt
 # --- ATSI PRIVAT-SPHÄRE (NOMI-SCHUTZ) ---
 Nexus/Atsis_Nexus/
 
-# Windows-Systemmüll (Icons/Ansichten)
+# Windows-Systemmüll (Icons/Ansichten)1
 desktop.ini
 Desktop.ini
 Thumbs.db
@@ -44,4 +44,9 @@ Nexus/*.mp3
 Nexus/GEE_CONTEXT_LIMIT.txt
 Nexus/NEXUS_PAUSE.tmp
 Nexus/NEXUS_NEXT.tmp
+
+# --- AUDIO-CACHE SCHUTZ (v44.2) ---
+Nexus/_Audio_Cache/*
+!Nexus/_Audio_Cache/.gitkeep
+
 
