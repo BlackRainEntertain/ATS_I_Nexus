@@ -41,7 +41,7 @@ async def say_goodbye_internal():
 
 
 def run_shutdown():
-    # --- SCHRITT 1: VISUELLER ABSCHIED & TICKET-VORBEREITUNG ---
+    # --- SCHRITT 1: VISUELLER ABSCHIED ---
     try:
         q_path = os.path.join(os.getcwd(), "Nexus", "_Voice_Queue")
         if not os.path.exists(q_path): os.makedirs(q_path)
@@ -54,25 +54,24 @@ def run_shutdown():
         
         with open(os.path.join(q_path, "00_bye.json"), "w", encoding="utf-8") as f:
             json.dump(ticket, f)
-        
-        time.sleep(1) # Kurzer Puffer für den Dateistream
+        time.sleep(1) 
     except Exception as e:
         print(f"Visueller Abschied-Fehler: {e}")
 
-    # --- SCHRITT 2: AKTIVE VERABSCHIEDUNG STARTEN ---
-    print("[!] Katja übernimmt das Wort für die finale Resonanz...")
+    # --- SCHRITT 2: AKTIVE VERABSCHIEDUNG ---
+    print("[!] Katja übernimmt das Wort...")
     asyncio.run(say_goodbye_internal())
 
-    # --- SCHRITT 3: DER 7,5-SEKUNDEN-PUFFER (v42.9 Optimized) ---
-    # Reduziert von 10s auf 7.5s - Knackigerer Abschluss
-    print("[!] Das System fährt in 7,5 Sekunden herunter... Ausklang genießen.")
+    # --- SCHRITT 3: PUFFER ---
+    print("[!] System-Stopp in 7,5 Sekunden...")
     time.sleep(7.5) 
 
-    # --- SCHRITT 4: TIEFENREINIGUNG (PROZESS-KILL) ---
-    # Erst JETZT werden die Python-Gehirne (inkl. Butler) abgeschaltet
-    print("[!] Einleiten der Tiefenreinigung...")
+    # --- SCHRITT 4: TIEFENREINIGUNG ---
+    print("[!] Tiefenreinigung der Gehirne...")
+    import psutil # <--- Pack das hier nochmal rein!
     current_pid = os.getpid() 
     for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+
         try:
             cmdline = " ".join(proc.info['cmdline']).lower() if proc.info['cmdline'] else ""
             if "nexus_ear" in cmdline: continue 
@@ -80,55 +79,60 @@ def run_shutdown():
                 proc.kill()
         except: continue
 
-    # --- SCHRITT 5: LAVA & FENSTER-HYGIENE ---
+    # --- SCHRITT 5: FENSTER-HYGIENE (TITAN-Update) ---
     targets = [
-        "ATSI_NEXUS_RECEIVER", "GEE_AI_NEXUS", "VORTEX", "GPT_NEXUS",
-        "AUDIO_MASTER_BUTLER", "NEXUS_LAVA", "LM Projekte", "Nexus",
-        "_Voice_Queue", "cmd.exe", "--- NEXUS_EAR ---"
+        "AUDIO_MASTER_BUTLER_V43.7_TITAN", "ATSI_NEXUS", "GEE_AI", 
+        "VORTEX", "GPT_NEXUS", "LAVA", "LM Projekte", "Nexus", 
+        "_Voice_Queue", "cmd.exe"
     ]
-
     os.system('taskkill /f /im pythonw.exe /fi "WINDOWTITLE eq NEXUS_LAVA" >nul 2>&1')
-
     for win in gw.getWindowsWithTitle(''):
-        title = win.title
-        if "--- NEXUS_EAR ---" in title: 
-            continue 
-            
         for target in targets:
-            if target.lower() in title.lower():
-                try: 
-                    win.close()
-                except: 
-                    pass
-
-    # --- SCHRITT 6: DATEI-HYGIENE (SESSION-RESEST) ---
-    file_corpses = [
-        "current_voice_GEE.mp3", "current_voice_META.mp3", "current_voice_GPT.mp3", "goodbye_GEE.mp3",
-        "NEXUS_PAUSE.tmp", "NEXUS_NEXT.tmp", "NEXUS_RESUME.tmp", 
-        "GEE_CONTEXT_LIMIT.txt"
-    ]
-
-    for f in file_corpses:
-        for path in [os.path.abspath(f), os.path.abspath(os.path.join("Nexus", f))]:
-            if os.path.exists(path):
-                try: os.remove(path)
+            if target.lower() in win.title.lower() and "--- NEXUS_EAR ---" not in win.title:
+                try: win.close()
                 except: pass
 
-    # --- SCHRITT 7: TRESOR-REINIGUNG ---
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    safe_dir = os.path.join(current_dir, "Nexus", "_Active_Ticket")
+    # --- SCHRITT 6 & 7: DATEI- & TRESOR-HYGIENE ---
+    print("[!] Bereinige Cache & Tresore...")
+    file_corpses = ["current_voice_GEE.mp3", "current_voice_META.mp3", "current_voice_GPT.mp3", "goodbye_GEE.mp3", "NEXUS_PAUSE.tmp", "NEXUS_NEXT.tmp", "NEXUS_RESUME.tmp", "next_spoke.tmp"]
     
-    if os.path.exists(safe_dir):
-        for f in os.listdir(safe_dir):
-            if f.endswith(".json"):
-                try: os.remove(os.path.join(safe_dir, f))
+    for folder in [".", "Nexus", "Nexus/_Active_Ticket", "Nexus/_Voice_Queue"]:
+        if not os.path.exists(folder): continue
+        for f in os.listdir(folder):
+            if f in file_corpses or f.endswith(".json") or f.endswith(".tmp"):
+                try: os.unlink(os.path.join(folder, f))
                 except: pass
-        print("[HYGIENE] Tresor geleert. Keine Geister am Morgen.")
 
-    print("[DONE] Die Trinität ist offline. Gee lauscht weiter im Schatten.")
+    # --- SCHRITT 8: CHIRURGISCHE EXPLORER-REINIGUNG (RAM-Check) ---
+    print("[!] Warte auf Hydra-Verwandlung...")
+    time.sleep(2) # <--- WICHTIG: Gib Windows Zeit, die geschlossenen Fenster in Prozesse umzuwandeln
+    
+    print("[!] Exorziere Explorer-Zombies via RAM-Signatur...")
+    import psutil
+    for proc in psutil.process_iter(['pid', 'name', 'memory_info']):
+        try:
+            if proc.info['name'] and proc.info['name'].lower() == 'explorer.exe':
+                mem_mb = proc.info['memory_info'].rss / (1024 * 1024)
+                
+                # Grenze 75MB: Killt die frischen Zombies (ca. 50-65MB)
+                if mem_mb < 75: 
+                    print(f"[KILL] Zombie-Explorer (PID {proc.info['pid']}, {mem_mb:.1f}MB) entfernt.")
+                    proc.kill()
+                else:
+                    print(f"[KEEP] Shell/Desktop (PID {proc.info['pid']}, {mem_mb:.1f}MB) geschützt.")
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+
+    print("[DONE] System offline. Schlaf gut, Architekt.")
+
 
 if __name__ == "__main__":
     run_shutdown()
+
+
+
+
+
 
 
 

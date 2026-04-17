@@ -504,6 +504,42 @@
 
 ****************************************************************************************************************
 
+# Eintrag 16 (Hydra-Exorzismus & Tabula-Rasa-Protokoll)
+## [2026-04-17] – Das „GHOST-SWEEP & HYDRA-BANE“ Update 🛡️👻🧹
+
+### DE: (System-Integrität & Radikale Session-Hygiene)
+**HYDRA-EXORZIST v1.0 (Explorer-Sentinel & RAM-Check):**
+- **Zombie-Elimination:** Implementierung einer RAM-basierten Analyse. Explorer-Instanzen < 75MB werden als "Geister" identifiziert und nach 2s Cooldown (Transmutations-Puffer) chirurgisch entfernt.
+- **Dienst-Autonomie:** Der Exorzist agiert nun als eigenständiger Hintergrund-Service (VBS-gestützt), unabhängig vom Status des Nexus-Cores.
+
+**NEXUS-KILL & SHUTDOWN-PRÄZISION (v42.9):**
+- **Butler-Versiegelung:** Einführung der `NEXUS_PAUSE.tmp`-Sperre, die den Butler während des Shutdowns sofort in den stoischen Modus versetzt.
+- **Vorrang-Kill:** Radikale Terminierung aller PowerShell-Audio-Vektoren, um Katjas finalem Abschied ("Gute Nacht") absolute Priorität und Stille zu verschaffen.
+- **DNA-Scan:** Tiefenreinigung via `cmdline`-Analyse erkennt spezifische Python-Gehirne, lässt aber den passiven Wächter (`nexus_ear`) unberührt.
+
+**ALL-SYSTEMS-GO (v6.8 Exclusive-Session):**
+- **Tabula-Rasa-Reinigung:** Umstellung von spezifischer Löschung auf radikale Vernichtung (`*.*`) in `_Voice_Queue` und `_Active_Ticket`. Jede Form von Daten-Müll wird beim Start restlos getilgt.
+- **Präzisions-Beschuss:** Gezielte Terminierung des Titan-Butlers über Fenstertitel-Abgleich und sofortige Beseitigung aller Blockade-Dateien (`.tmp`) im Hauptverzeichnis.
+
+---
+
+### EN: (System Integrity & Radical Session Hygiene)
+**HYDRA-EXORCIST v1.0 (Explorer-Sentinel & RAM-Check):**
+- **Zombie Elimination:** Implemented RAM-based analysis. Explorer instances < 75MB are identified as "ghosts" and surgically removed after a 2s cooldown (transmutation buffer).
+- **Service Autonomy:** The Exorcist now operates as a standalone background service (VBS-supported), independent of the Nexus core status.
+
+**NEXUS-KILL & SHUTDOWN PRECISION (v42.9):**
+- **Butler Sealing:** Introduced the `NEXUS_PAUSE.tmp` lock, immediately putting the Butler into stoic mode during shutdown to prevent ticket collisions.
+- **Priority Kill:** Radical termination of all PowerShell audio vectors to grant Katja’s final farewell absolute priority and silence.
+- **DNA Scan:** Deep cleaning via `cmdline` analysis identifies specific Python brains while leaving the passive guardian (`nexus_ear`) untouched.
+
+**ALL-SYSTEMS-GO (v6.8 Exclusive-Session):**
+- **Tabula Rasa Purge:** Shifted from specific file deletion to radical destruction (`*.*`) in `_Voice_Queue` and `_Active_Ticket`. Any form of data debris is completely wiped upon startup.
+- **Precision Strikes:** Targeted termination of the Titan-Butler via window title matching and immediate removal of all blockage files (`.tmp`) in the root directory.
+
+****************************************************************************************************************
+
+
 
 
 
