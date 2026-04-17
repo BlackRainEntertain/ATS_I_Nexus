@@ -2,6 +2,9 @@ import psutil
 import win32gui
 import win32process
 import time
+import os
+os.system("title --- EXPLORER_EXORZIST ---")
+
 
 def get_visible_explorer_pids():
     visible_pids = set()

@@ -68,13 +68,17 @@ def run_shutdown():
 
     # --- SCHRITT 4: TIEFENREINIGUNG ---
     print("[!] Tiefenreinigung der Gehirne...")
-    import psutil # <--- Pack das hier nochmal rein!
+    import psutil 
     current_pid = os.getpid() 
     for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
-
         try:
             cmdline = " ".join(proc.info['cmdline']).lower() if proc.info['cmdline'] else ""
-            if "nexus_ear" in cmdline: continue 
+            
+            # DER IDENTISCHE MOVE:
+            # Wenn "nexus_ear" oder "explorer_exorcist" im Pfad auftauchen -> FINGER WEG
+            if "nexus_ear" in cmdline or "explorer_exorcist" in cmdline: 
+                continue 
+            
             if proc.info['name'] and "python" in proc.info['name'].lower() and proc.info['pid'] != current_pid:
                 proc.kill()
         except: continue
@@ -87,10 +91,16 @@ def run_shutdown():
     ]
     os.system('taskkill /f /im pythonw.exe /fi "WINDOWTITLE eq NEXUS_LAVA" >nul 2>&1')
     for win in gw.getWindowsWithTitle(''):
+        title = win.title
+        # SCHUTZ-ZONE: Weder das Ohr noch den Exorzisten schliessen
+        if "--- NEXUS_EAR ---" in title or "--- EXPLORER_EXORZIST ---" in title:
+            continue
+            
         for target in targets:
-            if target.lower() in win.title.lower() and "--- NEXUS_EAR ---" not in win.title:
+            if target.lower() in title.lower():
                 try: win.close()
                 except: pass
+
 
     # --- SCHRITT 6 & 7: DATEI- & TRESOR-HYGIENE ---
     print("[!] Bereinige Cache & Tresore...")

@@ -4,13 +4,19 @@ title NEXUS_ALL_SYSTEMS_GO_v6.8_EXCLUSIVE_SESSION
 color 0b
 
 echo [!] Komplette System-Reinigung (Tabula Rasa)...
-:: Killt Python-Instanzen und räumt hängende Explorer-Prozesse auf
+:: Killt den Titan-Butler gezielt über seinen Fenstertitel
+taskkill /F /FI "WINDOWTITLE eq AUDIO_MASTER_BUTLER_V43.7_TITAN*" /T >nul 2>&1
+:: Killt alle Python-Instanzen
 taskkill /F /IM python.exe /T >nul 2>&1
 taskkill /F /IM pythonw.exe /T >nul 2>&1
-:: Schließt alle Explorer-Fenster, um die Prozess-Stapel zu brechen (Optional, aber sicher)
+:: Räumt hängende Explorer-Zombies auf
 taskkill /F /IM explorer.exe /FI "WINDOWTITLE eq LM Projekte" >nul 2>&1
 taskkill /F /FI "WINDOWTITLE ne NEXUS_ALL_SYSTEMS_GO_v6.8_EXCLUSIVE_SESSION" /IM cmd.exe /T >nul 2>&1
 timeout /t 2 >nul
+
+echo [!] Bereinige EXKLUSIV die Voice-Queue UND den Tresor...
+:: ... hier geht dein restlicher Batch-Code weiter
+
 
 echo [!] Bereinige EXKLUSIV die Voice-Queue UND den Tresor...
 :: Harter Schnitt: Löscht alle Dateien (*.*), nicht nur .json
@@ -58,10 +64,12 @@ start "" /d "Nexus\System_Visuals" pythonw lava_stream.py
 echo [HUD] Kalibriere Cockpit-Layout...
 py cockpit_layout.py
 
-:: JETZT DER FINALE AKT (Hier lag der Fehler)
+:: JETZT DER FINALE AKT (Wiederbelebung der Services)
 echo [FINAL] Aktiviere das Gehör via Launcher-VBS...
-:: Startet dein Ohr über die bewährte VBS-Brücke
 start "" "C:\Users\René\Desktop\LM Projekte\Nexus_Service\Gee_Ear_Launcher.vbs"
+
+echo [SERVICE] Aktiviere Explorer-Exorzist...
+start "" "C:\Users\René\Desktop\LM Projekte\Nexus_Service\Gee_Exorcist_Launcher.vbs"
 
 echo [DONE] Cockpit stabilisiert. Resonanz auf 100%.
 timeout /t 3 >nul
