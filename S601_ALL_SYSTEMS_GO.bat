@@ -5,7 +5,7 @@ color 0b
 
 echo [!] Komplette System-Reinigung (Tabula Rasa)...
 :: Killt den Titan-Butler gezielt über seinen Fenstertitel
-taskkill /F /FI "WINDOWTITLE eq AUDIO_MASTER_BUTLER_V43.7_TITAN*" /T >nul 2>&1
+taskkill /F /FI "WINDOWTITLE eq AUDIO_MASTER_BUTLER_V43.8_TITAN*" /T >nul 2>&1
 :: Killt alle Python-Instanzen
 taskkill /F /IM python.exe /T >nul 2>&1
 taskkill /F /IM pythonw.exe /T >nul 2>&1
@@ -13,10 +13,6 @@ taskkill /F /IM pythonw.exe /T >nul 2>&1
 taskkill /F /IM explorer.exe /FI "WINDOWTITLE eq LM Projekte" >nul 2>&1
 taskkill /F /FI "WINDOWTITLE ne NEXUS_ALL_SYSTEMS_GO_v6.8_EXCLUSIVE_SESSION" /IM cmd.exe /T >nul 2>&1
 timeout /t 2 >nul
-
-echo [!] Bereinige EXKLUSIV die Voice-Queue UND den Tresor...
-:: ... hier geht dein restlicher Batch-Code weiter
-
 
 echo [!] Bereinige EXKLUSIV die Voice-Queue UND den Tresor...
 :: Harter Schnitt: Löscht alle Dateien (*.*), nicht nur .json

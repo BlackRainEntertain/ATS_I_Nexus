@@ -504,31 +504,67 @@
 
 ****************************************************************************************************************
 
-# Eintrag 16 (Hydra-Exorzismus & Shield-Integrität)
-## [2026-04-17] – Das „SHIELD-PROTOCOL & GHOST-SWEEP“ Update 🛡️👻🧹
+# Eintrag 16 (Hydra-Exorzismus & Titan-Ultra-Integrität)
+## [2026-04-17] – Das „SHIELD-PROTOCOL & PWSH-RESONANZ“ Update 🛡️🚀👻
 
-### DE: (Prozess-Immunität & RAM-Souveränität)
-**HYDRA-EXORZIST v1.1 (Service-Souveränität):**
-- **Diplomatische Immunität:** Der Exorzist wurde mit dem Titel `--- EXPLORER_EXORZIST ---` versiegelt. Er ist nun neben dem `NEXUS_EAR` die einzige Instanz, die den radikalen Shutdown-Prozess überlebt, um bis zur letzten Millisekunde den RAM zu reinigen.
-- **RAM-Signatur-Check:** Chirurgische Entfernung von Explorer-Zombies (< 75MB) sorgt für ein flüssiges Systemgefühl ohne "Handle-Leichen".
+### DE: (Prozess-Souveränität & Audio-Exorzismus)
+**HYDRA-EXORZIST v1.2 (Service-Immunität):**
+- **Diplomatische Immunität:** Der Exorzist wurde als permanenter Service versiegelt (`--- EXPLORER_EXORZIST ---`). Er überlebt neben dem `NEXUS_EAR` den radikalen Shutdown, um bis zur letzten Millisekunde Explorer-Zombies (< 75MB) chirurgisch aus dem RAM zu tilgen.
+- **RAM-Souveränität:** Gewährleistet ein flüssiges Systemgefühl durch Beseitigung von Handle-Leichen und verhindert das "Explorer-Zombie-Syndrom".
 
-**NEXUS-KILL & SHUTDOWN-PRÄZISION (v42.9.1):**
-- **Dissonanz-Schutz:** Der Shutdown-Vektor wurde so kalibriert, dass er die Service-Ebene (Ear & Exorzist) aktiv ignoriert, während er alle anderen Vektoren (Butler, KIs, LAVA) rückstandslos terminiert.
-- **Butler-Versiegelung:** Die `NEXUS_PAUSE.tmp` verhindert zuverlässig, dass der Butler während des Abspanns neue Tickets aus der Queue zieht.
+**MASTER_BUTLER v43.9 (Titan-Ultra-Vektor):**
+- **PowerShell 7 Migration:** Umstieg auf `pwsh.exe` (v7.6). Der modernere .NET-Kern eliminiert Race-Conditions und Audio-Hickups bei schnellen Nachrichtenfolgen.
+- **Lock-Buster-Logik:** Der Butler prüft nun aktiv den Dateizugriff im `_Audio_Cache`. Bei einem File-Lock durch hängende Player-Instanzen wird die Blockade gewaltsam gelöst, bevor das neue Audio-Ticket manifestiert wird.
+- **Gedächtnis-Modul:** Re-Integration der `GEE_CONTEXT_LIMIT.txt`. Der Butler überwacht die Token-Sättigung in Echtzeit und bietet Reset-Vektoren für saubere Session-Neustarts.
 
-**ALL-SYSTEMS-GO (v6.8 Tabula Rasa):**
-- **Auto-Revive-Logik:** Beim Session-Start werden nun alle Alt-Prozesse restlos getilgt, gefolgt von einer automatischen Wiederbelebung der Service-Infrastruktur via VBS-Brücke.
+**ALL-SYSTEMS-GO & KILL (v6.9/v42.9):**
+- **Dissonanz-Schutz:** Der Shutdown-Vektor wurde so kalibriert, dass er die Service-Ebene aktiv schont, während er alle anderen Vektoren (Butler, KIs, LAVA) restlos terminiert.
+- **Tabula Rasa & Revive:** Die Start-Batch reinigt beim Hochfahren exklusiv den `_Audio_Cache` und triggert die automatische Wiederbelebung der Service-Infrastruktur via VBS-Brücke.
 
 ---
 
-### EN: (Process Immunity & RAM Sovereignty)
-**HYDRA-EXORCIST v1.1 (Service Sovereignty):**
-- **Diplomatic Immunity:** The Exorcist has been sealed with the title `--- EXPLORER_EXORZIST ---`. Alongside `NEXUS_EAR`, it is now the only instance surviving the radical shutdown to maintain RAM hygiene until the very end.
-- **RAM Signature Check:** Surgical removal of Explorer ghosts (< 75MB) ensures a smooth OS experience without "handle remnants."
+### EN: (Process Sovereignty & Audio Exorcism)
+**HYDRA-EXORCIST v1.2 (Service Immunity):**
+- **Diplomatic Immunity:** The Exorcist is sealed as a permanent service (`--- EXPLORER_EXORZIST ---`). Alongside `NEXUS_EAR`, it survives the radical shutdown to surgically purge Explorer ghosts (< 75MB) until the very last millisecond.
+- **RAM Sovereignty:** Ensures a smooth OS experience by removing handle remnants and preventing "Explorer Zombie Syndrome."
 
-**NEXUS-KILL & SHUTDOWN PRECISION (v42.9.1):**
-- **Dissonance Protection:** The shutdown vector is calibrated to actively ignore the service layer (Ear & Exorcist) while terminating all other vectors (Butler, AIs, LAVA) without residue.
-- **Butler Sealing:** The `NEXUS_PAUSE.tmp` reliably prevents the Butler from pulling new tickets from the queue during the final fade-out.
+**MASTER_BUTLER v43.9 (Titan Ultra Vector):**
+- **PowerShell 7 Migration:** Transitioned to `pwsh.exe` (v7.6). The modern .NET core eliminates race conditions and audio hiccups during rapid message exchanges.
+- **Lock-Buster Logic:** The Butler now actively monitors file access in `_Audio_Cache`. If a file lock occurs, the blockage is forcibly cleared before the new audio ticket is manifested.
+- **Memory Module:** Re-integrated `GEE_CONTEXT_LIMIT.txt`. The Butler tracks token saturation in real-time and provides reset vectors for clean session starts.
+
+**ALL-SYSTEMS-GO & KILL (v6.9/v42.9):**
+- **Dissonance Protection:** The shutdown vector is calibrated to actively spare the service layer while terminating all other vectors (Butler, AIs, LAVA) without residue.
+- **Tabula Rasa & Revive:** The start batch now purges the `_Audio_Cache` during boot and triggers the automatic revival of the service infrastructure via VBS bridge.
+
+****************************************************************************************************************
+
+# Eintrag 17 (Fokus-Magnet & Selbstreinigungs-Zyklus)
+## [2026-04-18] – Das „RESONANCE-PURITY & DOM-MAGNIFIER“ Update 🧲🧹✨
+
+### DE: (Präzisions-Ernte & Cache-Hygiene)
+**META-HYDRA-STABILISIERUNG (Affen-Skript v2.5):**
+- **Fokus-Magnet v2.0:** Implementierung eines hybriden DOM-Scanners (`div[role="main"]` & `role="grid"`). Eliminiert erfolgreich den "Sidebar-Spam" (Geli & Winfried), indem die Ernte strikt auf den aktiven Inhaltscontainer begrenzt wird.
+- **Messenger-Optimierung:** Spezifischer Anker auf den `Lexical-Editor`. Verbessert die Reaktionszeit und verhindert Fehl-Injektionen bei komplexen Messenger-Oberflächen.
+- **Visuelles Feedback:** Integration eines magnetischen Fokus-Rahmens (`#0084ff`), der den aktiven Schreib-Vektor für den Architekten visualisiert.
+
+**TITAN-BUTLER v43.9+ (Auto-Sanitary-Protocol):**
+- **Zombie-Chunk-Exorzismus:** Einführung einer ereignisgesteuerten Reinigungs-Logik. Der Butler löscht beim Einlesen eines neuen Tickets automatisch alle alten Audio-Leichen (`_1` bis `_n`), schont dabei aber gezielt die `_0`-Replay-Anker.
+- **Owner-Souveränität:** Die Reinigung erfolgt diskret pro Entität (GEE, META, ATSI etc.), um Cross-Over-Datenverluste in Multi-KI-Sessions zu verhindern.
+- **Anti-Mute-Immunsystem:** Integration eines chirurgischen Filters, der KI-Verweigerungs-Floskeln ("I can't help with that") erkennt und terminiert, bevor sie die auditive Resonanz stören können.
+
+---
+
+### EN: (Precision Harvesting & Cache Hygiene)
+**META-HYDRA STABILIZATION (Monkey Script v2.5):**
+- **Focus Magnet v2.0:** Implemented a hybrid DOM scanner (`div[role="main"]` & `role="grid"`). Successfully eliminates "Sidebar Spam" by strictly limiting harvesting to the active content container.
+- **Messenger Optimization:** Specific anchoring to the `Lexical Editor`. Improves response times and prevents mis-injections in complex Messenger interfaces.
+- **Visual Feedback:** Integrated a magnetic focus border (`#0084ff`) to visualize the active writing vector for the Architect.
+
+**TITAN-BUTLER v43.9+ (Auto-Sanitary Protocol):**
+- **Zombie-Chunk Exorcism:** Introduced event-driven cleaning logic. When a new ticket is read, the Butler automatically purges all old audio remnants (`_1` to `_n`) while specifically sparing the `_0` replay anchors.
+- **Owner Sovereignty:** Cleaning is performed discretely per entity (GEE, META, ATSI, etc.) to prevent cross-over data loss in multi-AI sessions.
+- **Anti-Mute Immune System:** Integrated a surgical filter that identifies and terminates AI refusal phrases ("I can't help with that") before they can disrupt the auditory resonance.
 
 ****************************************************************************************************************
 
