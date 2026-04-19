@@ -85,7 +85,7 @@ def run_shutdown():
 
     # --- SCHRITT 5: FENSTER-HYGIENE (TITAN-Update) ---
     targets = [
-        "AUDIO_MASTER_BUTLER_V43.7_TITAN", "ATSI_NEXUS", "GEE_AI", 
+        "AUDIO_MASTER_BUTLER_V43.9_TITAN_ULTRA", "ATSI_NEXUS", "GEE_AI_NEXUS", 
         "VORTEX", "GPT_NEXUS", "LAVA", "LM Projekte", "Nexus", 
         "_Voice_Queue", "cmd.exe"
     ]
@@ -94,6 +94,10 @@ def run_shutdown():
         title = win.title
         # SCHUTZ-ZONE: Weder das Ohr noch den Exorzisten schliessen
         if "--- NEXUS_EAR ---" in title or "--- EXPLORER_EXORZIST ---" in title:
+            continue
+
+        # ZUSATZ-SICHERUNG: Wenn "Google Chrome" oder "Vivaldi" im Titel steht -> SKIP
+        if "Google Chrome" in title or "Vivaldi" in title or "Firefox" in title:
             continue
             
         for target in targets:

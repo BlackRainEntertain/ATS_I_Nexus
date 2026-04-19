@@ -5,7 +5,7 @@ color 0b
 
 echo [!] Komplette System-Reinigung (Tabula Rasa)...
 :: Killt den Titan-Butler gezielt über seinen Fenstertitel
-taskkill /F /FI "WINDOWTITLE eq AUDIO_MASTER_BUTLER_V43.8_TITAN*" /T >nul 2>&1
+taskkill /F /FI "WINDOWTITLE eq AUDIO_MASTER_BUTLER_V43.9_TITAN_ULTRA" /T >nul 2>&1
 :: Killt alle Python-Instanzen
 taskkill /F /IM python.exe /T >nul 2>&1
 taskkill /F /IM pythonw.exe /T >nul 2>&1

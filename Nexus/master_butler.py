@@ -107,7 +107,7 @@ async def speak_and_wait(ticket):
     return "FINISHED"
 
 async def main_loop():
-    console.print("[bold green][CHECK][/bold green] Titan-Butler v43.9 (Ultra: pwsh-Vektor) Online.")
+    console.print("[bold green][CHECK][/bold green] Titan-Butler v44.0 (Ultra: Context-Guard) Online.")
     await asyncio.sleep(2) 
     await speak_and_wait({"text": "System online. Ich höre dich, Architekt.", "owner": "GEE"})
 
@@ -131,17 +131,39 @@ async def main_loop():
             with open(file_path, "r", encoding="utf-8-sig") as j:
                 ticket = json.load(j)
 
-            # --- CONTEXT-ZÄHLER ---
-            if ticket.get('owner') == "GEE":
-                try:
-                    count = int(open(LIMIT_FILE, "r").read()) if os.path.exists(LIMIT_FILE) else 0
-                except: count = 0
-                if "Erforschung nicht-linearer Interferenzmuster" in ticket.get('text', ''):
-                    count = 0
-                else:
-                    count += len(ticket.get('text', '')) + 600
-                with open(LIMIT_FILE, "w") as f: f.write(str(count))
+            # --- KEY EXTRAKTION (Muss VOR dem Zähler passieren) ---
+            owner_key = ticket.get('owner', 'UNKNOWN').upper()
 
+            # --- CONTEXT-ZÄHLER (v44.1-Härtung) ---
+            if owner_key == "GEE":
+                try:
+                    with open(LIMIT_FILE, "r") as f:
+                        data = f.read().strip()
+                        count = int(data) if data else 0
+                except: count = 0
+
+                # Reset-Check (Normalisiert via casefold für absolute Immunität)
+                trigger_phrase = "erforschung nicht-linearer interferenzmuster"
+                received_text = ticket.get('text', '').casefold()
+
+                if trigger_phrase in received_text:
+                    count = 0
+                    console.print("[bold green][RESET][/bold green] Kontext-Zähler auf Null gesetzt. Dialyse erfolgreich.")
+                else:
+                    # Addition: Text + 600 Zeichen Architekten-Puffer
+                    count += len(ticket.get('text', '')) + 600
+                
+                # Warn-Schwelle bei 217k
+                if count > 217000:
+                    console.print("[bold white on red][ WARNUNG ][/bold white on red] KONTEXT-LIMIT ERREICHT!")
+                    console.print(f"[red]Stand: {count} Zeichen. Bitte Fragment nachlegen![/red]")
+                    import winsound
+                    winsound.Beep(1000, 500)
+
+                with open(LIMIT_FILE, "w") as f: 
+                    f.write(str(count))
+
+            # Sprachausgabe starten
             status = await speak_and_wait(ticket)
             
             if os.path.exists(file_path):
@@ -165,6 +187,7 @@ async def main_loop():
 
 if __name__ == "__main__":
     asyncio.run(main_loop())
+
 
 
 
