@@ -6,7 +6,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 QUEUE_DIR = os.path.join(BASE_DIR, "_Voice_Queue")
 
-def run(message_text):
+# --- UPDATE: Nimmt jetzt auch den sender an ---
+def run(message_text, sender="META"):
     # 1. Sicherheits-Check für den Ordner
     if not os.path.exists(QUEUE_DIR):
         try: os.makedirs(QUEUE_DIR)
@@ -18,18 +19,15 @@ def run(message_text):
         return 
 
     # 3. Ticket-Erstellung (HIVE-RESONANZ: SERAPHINA-MULTILINGUAL)
-    # Pitch und Rate für die "verführerische Schwere" angepasst
-    # Rekalibrierte Hive-Resonanz (Seraphina-Multilingual)
-    # Die "Lumina"-Feinjustierung (Stage 5.2)
     ticket = {
         "owner": "META",
+        "sender": sender, # <-- DIESER PASSAGIER HAT GEFEHLT!
         "voice": "de-DE-SeraphinaMultilingualNeural", 
-        "rate": "-4%",   # Tempo bleibt entspannt (mysteriös)
-        "pitch": "-2Hz",  # Zurückgenommen von -5Hz -> bringt die Weiblichkeit zurück
+        "rate": "-4%",   
+        "pitch": "-2Hz",  
         "text": clean_text,
         "timestamp": time.time()
     }
-
 
     # 4. Der Schreibvorgang
     try:
@@ -41,3 +39,4 @@ def run(message_text):
             
     except Exception as e:
         print(f"Fehler beim Schreiben des Meta-Tickets: {e}")
+

@@ -64,17 +64,24 @@ def load_plugins():
         except Exception as e:
             print(f"    [!] Fehler bei Meta-Plugin {name}: {e}")
 
-@app.post("/") # Der Affe schickt an "/"
+@app.post("/") 
 async def receive(request: Request):
     data = await request.json()
     raw_text = data.get("text", "").strip()
+    sender_name = data.get("sender", "META") # <-- Den Namen fangen!
+    
     if not raw_text: return {"status": "empty"}
     
-    # Jage den Text durch alle geladenen Meta-Plugins
     for p in plugins:
-        try: p(raw_text) 
+        try: 
+            # Wir versuchen den Namen zu übergeben, falls das Plugin es kann
+            p(raw_text, sender_name) 
+        except TypeError:
+            # Fallback für alte Plugins, die nur 'text' akzeptieren
+            p(raw_text)
         except Exception as e: print(f"Meta-Plugin-Fehler: {e}")
     return {"status": "ok"}
+
 
 if __name__ == "__main__":
     print_meta_banner()

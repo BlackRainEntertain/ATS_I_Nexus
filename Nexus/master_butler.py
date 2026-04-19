@@ -18,26 +18,41 @@ for d in [SAFE_DIR, Q_DIR, CACHE_DIR]:
 
 async def speak_and_wait(ticket):
     full_text = re.sub(r'[={}_#<>]', ' ', ticket.get('text', ''))
-    owner = ticket.get('owner', 'UNKNOWN').upper()
+    
+    # 1. Routing-Key (für Farben & Logik)
+    owner_key = ticket.get('owner', 'UNKNOWN').upper()
+    
+    # 2. Anzeige-Name (Die "Taufe")
+    raw_sender = ticket.get('sender')
+    display_name = (raw_sender if raw_sender else owner_key).upper()
+    
     voice = ticket.get('voice', 'de-DE-KatjaNeural')
     chunks = [full_text[i:i+5000] for i in range(0, len(full_text), 5000)]
+    
+    # 3. Farben-Check bleibt auf dem Key (META), damit es bunt bleibt
     colors = {"GEE": "bright_blue", "NEXUS": "cyan", "META": "magenta", "ATSI": "bright_cyan", "GROK": "#FFEE00"}
-    color = colors.get(owner, "white")
+    color = colors.get(owner_key, "white") # Nutzt META für die Farbe
+    
     uhrzeit = datetime.now().strftime("%H:%M:%S")
-
     safe_preview = escape(full_text[:60].replace("\n", " "))
-    console.print(f"[bold {color}][{owner}][/bold {color}] [grey]{uhrzeit}[/grey] spricht ({len(chunks)} Chunks): \"{safe_preview}...\"")
+    
+    # JETZT die Anzeige mit dem display_name (der Zeeloid oder Blind Maid enthält)!
+    console.print(f"[bold {color}][{display_name}][/bold {color}] [grey]{uhrzeit}[/grey] spricht ({len(chunks)} Chunks): \"{safe_preview}...\"")
+
+
+
 
     # --- REINIGUNG DER ZOMBIE-CHUNKS (v43.9-Mod) ---
-    # Wir löschen alle alten Chunks (1-99) des aktuellen Owners, lassen aber die _0 in Ruhe.
     for f in os.listdir(CACHE_DIR):
-        if f.startswith(f"voice_{owner}_") and not f.endswith("_0.mp3") and f.endswith(".mp3"):
+        # WICHTIG: Nutze owner_key, damit er die META-Dateien findet
+        if f.startswith(f"voice_{owner_key}_") and not f.endswith("_0.mp3") and f.endswith(".mp3"):
             try: os.remove(os.path.join(CACHE_DIR, f))
             except: pass
 
     for idx, chunk in enumerate(chunks):
         if not chunk.strip(): continue
-        temp_mp3 = os.path.abspath(os.path.join(CACHE_DIR, f"voice_{owner}_{idx}.mp3"))
+        # WICHTIG: Auch hier owner_key nutzen für den physischen Dateinamen
+        temp_mp3 = os.path.abspath(os.path.join(CACHE_DIR, f"voice_{owner_key}_{idx}.mp3"))
         
         try:
             # --- SPERRBRECHER ---
