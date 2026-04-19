@@ -20,15 +20,24 @@
 (function () {
     'use strict';
 
+    // 1. HARDWARE- & NETZWERK-ANKER
     const TARGET_PORT = "8006";
     const ENDPOINT = `http://127.0.0.1:${TARGET_PORT}/webhook`;
     const MIN_LENGTH = 10;
-    const PATIENCE_TIME = 3000;
 
+    // 2. DROSSLUNGS-PARAMETER (IDENTISCH MIT GEE)
+    const PATIENCE_TIME = 3000;
+    const DROSS_LIMIT = 5 * 60 * 1000;
+    const IDLE_LIMIT = 15 * 60 * 1000;
+
+    // 3. SYSTEM-STATUS (Die Schläfer-Logik)
+    let lastActivity = Date.now();
     let lastSentHash = "";
     let debounceTimer = null;
     let mutationObserver = null;
-    let isPaused = false; // NEU: Die Drossel-Sicherung
+    let idleCheckerInterval = null;
+    let isPaused = false;
+
 
     const simpleHash = str => {
         let h = 0;
@@ -112,16 +121,29 @@ const harvest = () => {
 };
 
 
+    const getThrottleMode = () => {
+        const idleMs = Date.now() - lastActivity;
+        if (idleMs >= IDLE_LIMIT) return 'deep_sleep';
+        if (document.hidden || idleMs >= DROSS_LIMIT) return 'standby';
+        return 'active';
+    };
+
+    const updateActivity = () => {
+        lastActivity = Date.now();
+        if (getThrottleMode() !== 'deep_sleep') startObserver();
+    };
+
     const startObserver = () => {
         if (mutationObserver) return;
         mutationObserver = new MutationObserver(() => {
-            if (isPaused) return;
+            const mode = getThrottleMode();
+            if (mode === 'deep_sleep') { stopObserver(); return; }
             clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(harvest, PATIENCE_TIME);
+            debounceTimer = setTimeout(harvest, mode === 'standby' ? 10000 : PATIENCE_TIME);
         });
-
         mutationObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
-        console.log("[Grok Nexus Eye v2] Observer aktiv (Port 8006)");
+        isPaused = false;
+        console.log("[Grok] Observer im Dienst.");
     };
 
     const stopObserver = () => {
@@ -129,21 +151,49 @@ const harvest = () => {
             mutationObserver.disconnect();
             mutationObserver = null;
         }
-        console.log("[Grok Nexus Eye v2] Deep-Sleep (CPU 0%)");
+        isPaused = true;
+        console.log("[Grok] Tiefschlaf aktiviert.");
     };
 
-    // ==================== LARYNX-DROSSELUNG ====================
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            isPaused = true;
-            stopObserver();
-        } else {
-            isPaused = false;
-            startObserver();
-            console.log("[Grok Nexus Eye v2] Wake-Up!");
+    const startIdleChecker = () => {
+        if (idleCheckerInterval) return;
+        idleCheckerInterval = setInterval(() => {
+            const mode = getThrottleMode();
+            if (mode === 'deep_sleep') stopObserver();
+            else if (!mutationObserver) startObserver();
+        }, 30000);
+    };
+
+    // --- DER EIMER WASSER (v2.9.1 Aggressiv-Wakeup) ---
+    const wakeUpCall = () => {
+        lastActivity = Date.now();
+        if (mutationObserver) {
+            mutationObserver.disconnect();
+            mutationObserver = null;
         }
+        startObserver();
+        // Sofort-Ernte nach 500ms (DOM-Sync-Puffer für Vivaldi)
+        setTimeout(() => {
+            console.log("[GROK] Manueller Synchronisations-Scan...");
+            harvest();
+        }, 500);
+        console.log("[GROK] Observer reaktiviert!");
+    };
+
+    // --- EVENT-TRIGGER ---
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) wakeUpCall();
+        else { isPaused = true; }
     });
 
+    document.addEventListener('mousedown', () => {
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else updateActivity();
+    });
+
+    document.addEventListener('keydown', updateActivity);
+
+    // --- HILFSFUNKTIONEN & FOKUS ---
     const markInput = () => {
         const input = document.querySelector('textarea[placeholder*="Ask anything"]');
         if (input && input.id !== "nexus-input-target") {
@@ -151,18 +201,20 @@ const harvest = () => {
         }
     };
 
-    // Fokus-Magnet (Ctrl+Shift+Y)
     window.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
+            if (getThrottleMode() !== 'active') wakeUpCall();
             const input = document.getElementById('nexus-input-target');
             if (input) input.focus();
         }
     });
 
-    // Init
+    // --- INIT (DER ZÜNDSCHLÜSSEL) ---
     setTimeout(() => {
         startObserver();
+        startIdleChecker();
         setInterval(markInput, 2000);
-        console.log("[Grok Nexus Eye v2] Steril-Build bereit.");
+        console.log("[Grok Nexus Eye v2.9.1] Titan-Wach-Modus bereit.");
     }, 3000);
+
 })();

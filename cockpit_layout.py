@@ -61,7 +61,7 @@ if __name__ == "__main__":
     move_window("ATSI_NEXUS_RECEIVER", OFFSET_X - 13, 0, 658, 548)
     move_window("GEE_AI_NEXUS", OFFSET_X - 13, 540, 658, 548)
     move_window("VORTEX", OFFSET_X + 625, 0, 625, 548)
-    move_window("GPT_NEXUS", OFFSET_X + 625, 540, 625, 548)
+    move_window("GROK_NEXUS", OFFSET_X + 625, 540, 625, 548)
     
     # 2. TRINITY (Smarte Exaktheit)
     move_window("LM Projekte", X_LM, 0, W_CLEAN, LM_H, exact=True)
@@ -74,6 +74,6 @@ if __name__ == "__main__":
     move_window("Voicemeeter", OFFSET_X + MON2_W - 1022 - 123, 1080 - 625 - 54, 1022, 625)
 
     time.sleep(0.5)
-    targets = ["ATSI_NEXUS_RECEIVER", "GEE_AI_NEXUS", "GPT_NEXUS", "VORTEX", "LM Projekte", "Nexus", "_Voice_Queue", "NEXUS_LAVA", "AUDIO_MASTER_BUTLER"]
+    targets = ["ATSI_NEXUS_RECEIVER", "GEE_AI_NEXUS", "GROK_NEXUS", "VORTEX", "LM Projekte", "Nexus", "_Voice_Queue", "NEXUS_LAVA", "AUDIO_MASTER_BUTLER"]
     for t in targets: set_always_on_top(t)
     print("\n[DONE] Matrix bündig. Keine Hydra-Brut mehr.")
