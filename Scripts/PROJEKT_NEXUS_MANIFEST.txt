@@ -57,6 +57,26 @@ EN: Through queue logic and taskkill protection, the Nexus is "hardened" and sta
 
 ---
 
+🧪 5. Vivaldi-Spezifikation (Grok-Vektor) / Vivaldi Specification (Grok Vector)
+
+DE: Spezielle Hardware-Kalibrierung für Vivaldi:
+Da Vivaldi als primärer Host für den Grok-Nexus fungiert, ist eine manuelle Justierung der Engine-Parameter zwingend erforderlich, um Ressourcen-Kollisionen (Explorer-Freezes) zu terminieren.
+
+Einstellungen (Settings) -> Leistung (Performance):
+1. Grafikbeschleunigung (Hardware Acceleration): [AUS / OFF]
+   (Grund: Verhindert Deadlocks zwischen Chromium-GPU-Zyklen und dem Butler-Audio-Stream).
+2. Arbeitsspeicher-Sparmodus (Memory Saver): [NIEMALS / NEVER]
+   (Grund: Garantiert die permanente Vigilanz des MutationObservers in Hintergrund-Tabs).
+
+EN: Special Hardware Calibration for Vivaldi:
+As Vivaldi acts as the primary host for the Grok-Nexus, manual adjustment of engine parameters is mandatory to terminate resource collisions (Explorer freezes).
+
+Settings -> Performance:
+1. Hardware Acceleration: [OFF]
+2. Memory Saver: [NEVER]
+
+---
+
 Ebene 1: Die Sensorik / Level 1: Sensing (The "Monkey" & Focus Magnet)
 
     Tech: Tampermonkey / JavaScript / MutationObserver.
