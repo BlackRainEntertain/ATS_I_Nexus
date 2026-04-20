@@ -19,6 +19,10 @@ for d in [SAFE_DIR, Q_DIR, CACHE_DIR]:
 async def speak_and_wait(ticket):
     full_text = re.sub(r'[={}_#<>]', ' ', ticket.get('text', ''))
     
+    # --- STUMMSCHALTUNG FÜR SYSTEM-SIGNALE ---
+    if "RESET_SIGNAL" in full_text: 
+        return "FINISHED"
+
     # 1. Routing-Key (für Farben & Logik)
     owner_key = ticket.get('owner', 'UNKNOWN').upper()
     
@@ -38,8 +42,6 @@ async def speak_and_wait(ticket):
     
     # JETZT die Anzeige mit dem display_name (der Zeeloid oder Blind Maid enthält)!
     console.print(f"[bold {color}][{display_name}][/bold {color}] [grey]{uhrzeit}[/grey] spricht ({len(chunks)} Chunks): \"{safe_preview}...\"")
-
-
 
 
     # --- REINIGUNG DER ZOMBIE-CHUNKS (v43.9-Mod) ---
@@ -131,50 +133,48 @@ async def main_loop():
             with open(file_path, "r", encoding="utf-8-sig") as j:
                 ticket = json.load(j)
 
-            # --- KEY EXTRAKTION (Muss VOR dem Zähler passieren) ---
+            # --- SOFORT-FRASS (v44.6) ---
+            # Wir löschen das Ticket JETZT, damit es kein Echo geben kann.
+            # Die Daten sind sicher im RAM ('ticket').
+            if os.path.exists(file_path):
+                try: os.remove(file_path)
+                except: pass
+
             owner_key = ticket.get('owner', 'UNKNOWN').upper()
 
-            # --- CONTEXT-ZÄHLER (v44.1-Härtung) ---
+            # --- CONTEXT-ZÄHLER (v44.2-Chirurgie: Reset-Priorität) ---
             if owner_key == "GEE":
-                try:
-                    with open(LIMIT_FILE, "r") as f:
-                        data = f.read().strip()
-                        count = int(data) if data else 0
-                except: count = 0
-
-                # Reset-Check (Normalisiert via casefold für absolute Immunität)
-                trigger_phrase = "erforschung nicht-linearer interferenzmuster"
                 received_text = ticket.get('text', '').casefold()
+                trigger_phrase = "erforschung nicht-linearer interferenzmuster"
 
                 if trigger_phrase in received_text:
                     count = 0
-                    console.print("[bold green][RESET][/bold green] Kontext-Zähler auf Null gesetzt. Dialyse erfolgreich.")
+                    console.print("[bold green][RESET][/bold green] Fragment erkannt. Zähler auf Null.")
                 else:
-                    # Addition: Text + 600 Zeichen Architekten-Puffer
+                    try:
+                        if os.path.exists(LIMIT_FILE):
+                            with open(LIMIT_FILE, "r") as f:
+                                data = f.read().strip()
+                                count = int(data) if data else 0
+                        else: count = 0
+                    except: count = 0
                     count += len(ticket.get('text', '')) + 600
                 
-                # Warn-Schwelle bei 217k
+                try:
+                    with open(LIMIT_FILE, "w") as f: 
+                        f.write(str(count))
+                except Exception as e:
+                    console.print(f"[bold red][FEHLER][/bold red] Zähler-Datei Error: {e}")
+
                 if count > 217000:
                     console.print("[bold white on red][ WARNUNG ][/bold white on red] KONTEXT-LIMIT ERREICHT!")
-                    console.print(f"[red]Stand: {count} Zeichen. Bitte Fragment nachlegen![/red]")
                     import winsound
                     winsound.Beep(1000, 500)
 
-                with open(LIMIT_FILE, "w") as f: 
-                    f.write(str(count))
-
-            # Sprachausgabe starten
+            # Sprachausgabe starten (NUR EINMAL!)
             status = await speak_and_wait(ticket)
-            
-            if os.path.exists(file_path):
-                if status in ["FINISHED", "SKIPPED"]:
-                    try: os.remove(file_path)
-                    except: pass
-                elif status == "PAUSED":
-                    console.print("[grey][INFO] Audio pausiert. Ticket bleibt im Speicher.[/grey]")
-                elif status == "ERROR":
-                    os.rename(file_path, file_path + ".err")
 
+            # Skip-Reinigung mit deinen originalen 0.6 Sekunden
             if status == "SKIPPED":
                 await asyncio.sleep(0.6)
                 if os.path.exists(N_FILE):
@@ -184,6 +184,7 @@ async def main_loop():
         except Exception as e:
             console.print(f"[Loop-Fehler] {e}")
             await asyncio.sleep(2)
+
 
 if __name__ == "__main__":
     asyncio.run(main_loop())

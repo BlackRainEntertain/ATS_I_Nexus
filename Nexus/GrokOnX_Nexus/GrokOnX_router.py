@@ -89,7 +89,7 @@ async def receive(request: Request):
         except Exception as e: print(f"Grok-Nexus-Fehler: {e}")
     return {"status": "ok"}
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
     print_grok_banner()
     load_plugins()
     threading.Thread(target=move_to_layout, daemon=True).start()
