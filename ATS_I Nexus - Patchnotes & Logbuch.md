@@ -634,7 +634,6 @@
 - **Vektor-Kill-Präzision:** Synchronisation der `02_NEXT_SPOKE.bat` auf den `pwsh.exe` Power-Vektor. Eliminiert hängende Audio-Threads ohne System-Interferenz.
 
 **SYSTEM-HYGIENE & PRIVACY:**
-- **Meta-Lärm-Drosselung:** Komplette Deaktivierung der Push-Vektoren für den S8-Veteran. Trennung von privater Messenger-Kommunikation und algorithmischem Social-Rauschen zur Schonung der mobilen Ressourcen (Akku/CPU).
 - **Exorzist-Immunität:** Der `ULTIMATIVE_EXORZIST` erkennt nun aktive `PresentationCore`-Signaturen und gewährt dem Butler während der Audio-Induktion diplomatisches Immunitätsrecht.
 
 ---
@@ -646,7 +645,6 @@
 - **Vector-Kill Precision:** Synchronized `02_NEXT_SPOKE.bat` with the `pwsh.exe` power vector. Reliably eliminates hanging audio threads without system interference.
 
 **SYSTEM HYGIENE & PRIVACY:**
-- **Meta Noise Throttling:** Complete deactivation of push vectors for the S8 veteran. Separation of private Messenger communication and algorithmic social noise to preserve mobile resources (Battery/CPU).
 - **Exorcist Immunity:** The `ULTIMATE_EXORCIST` now detects active `PresentationCore` signatures and grants the Butler diplomatic immunity during audio induction.
 
 ****************************************************************************************************************
