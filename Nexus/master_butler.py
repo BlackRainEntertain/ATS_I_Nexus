@@ -116,33 +116,30 @@ async def main_loop():
     while True:
         file_path = "" 
         try:
+            # 1. PAUSE-CHECK
             if os.path.exists(P_FILE):
                 await asyncio.sleep(0.5); continue
 
+            # 2. TICKET-ACQUISITION (Safe-First Logik)
             active = sorted([f for f in os.listdir(SAFE_DIR) if f.endswith(".json")])
             if not active:
                 queue = sorted([f for f in os.listdir(Q_DIR) if f.endswith(".json")])
                 if not queue:
                     await asyncio.sleep(0.5); continue
+                
                 source = os.path.join(Q_DIR, queue[0])
+                # Zeitstempel verhindert Namenskollisionen im Safe-Ordner
                 file_path = os.path.join(SAFE_DIR, f"{int(time.time()*1000)}_{queue[0]}")
                 shutil.move(source, file_path)
             else:
+                # WICHTIG: Wenn ein Ticket im Safe-Ordner liegt (z.B. nach Pause), nimm das!
                 file_path = os.path.join(SAFE_DIR, active[0])
 
             with open(file_path, "r", encoding="utf-8-sig") as j:
                 ticket = json.load(j)
 
-            # --- SOFORT-FRASS (v44.6) ---
-            # Wir löschen das Ticket JETZT, damit es kein Echo geben kann.
-            # Die Daten sind sicher im RAM ('ticket').
-            if os.path.exists(file_path):
-                try: os.remove(file_path)
-                except: pass
-
+            # --- CONTEXT-ZÄHLER (Sicherheits-Check bleibt oben) ---
             owner_key = ticket.get('owner', 'UNKNOWN').upper()
-
-            # --- CONTEXT-ZÄHLER (v44.2-Chirurgie: Reset-Priorität) ---
             if owner_key == "GEE":
                 received_text = ticket.get('text', '').casefold()
                 trigger_phrase = "erforschung nicht-linearer interferenzmuster"
@@ -160,31 +157,38 @@ async def main_loop():
                     except: count = 0
                     count += len(ticket.get('text', '')) + 600
                 
-                try:
-                    with open(LIMIT_FILE, "w") as f: 
-                        f.write(str(count))
-                except Exception as e:
-                    console.print(f"[bold red][FEHLER][/bold red] Zähler-Datei Error: {e}")
+                with open(LIMIT_FILE, "w") as f: 
+                    f.write(str(count))
 
                 if count > 217000:
-                    console.print("[bold white on red][ WARNUNG ][/bold white on red] KONTEXT-LIMIT ERREICHT!")
+                    console.print("[bold white on red][ WARNUNG ][/bold white on red] KONTEXT-LIMIT!")
                     import winsound
                     winsound.Beep(1000, 500)
 
-            # Sprachausgabe starten (NUR EINMAL!)
+            # 3. SPRACHAUSGABE STARTEN
             status = await speak_and_wait(ticket)
 
-            # Skip-Reinigung mit deinen originalen 0.6 Sekunden
-            if status == "SKIPPED":
-                await asyncio.sleep(0.6)
-                if os.path.exists(N_FILE):
+            if status == "PAUSED":
+                continue  # <--- Wichtig: Diese Zeile muss eingerückt sein!
+
+            # 4. REINIGUNG NACH ABSCHLUSS
+            if status in ["FINISHED", "SKIPPED"]:
+                # Kurze Karenzzeit für File-Handles
+                await asyncio.sleep(0.5)
+                if os.path.exists(file_path):
+                    try:
+                        os.remove(file_path)
+                    except Exception as e:
+                        console.print(f"[Reinigung] Fehler: {e}")
+
+                # Spezial-Reinigung für den Skip-Vektor
+                if status == "SKIPPED" and os.path.exists(N_FILE):
                     try: os.remove(N_FILE)
                     except: pass
 
         except Exception as e:
             console.print(f"[Loop-Fehler] {e}")
             await asyncio.sleep(2)
-
 
 if __name__ == "__main__":
     asyncio.run(main_loop())

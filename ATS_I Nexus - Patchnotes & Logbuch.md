@@ -624,7 +624,32 @@
 
 ****************************************************************************************************************
 
+# Eintrag 20 (Resume-Persistenz & S8-Vektor-Silence)
+## [2026-04-20] – Das „RESISTANCE & RESUME“ Update 🛠️🎙️⚡
 
+### DE: (Logik-Korrektur & Mobile-Distanzierung)
+**AUDIO-MASTER-BUTLER v44.0 (Safe-First Architect):**
+- **Safe-First-Migration:** Rückzug der „Sofort-Frass-Logik“. Tickets werden nun physisch in `_Active_Ticket` isoliert und erst nach verifiziertem `FINISHED`-Status gelöscht. Dies behebt die Resume-Amnesie bei Pause-Zyklen.
+- **Pause-Loop-Fix:** Implementierung eines expliziten `status == "PAUSED"` Handshakes. Verhindert das Überspringen von aktiven Tickets, wenn der Butler aus dem Ruhezustand erwacht.
+- **Vektor-Kill-Präzision:** Synchronisation der `02_NEXT_SPOKE.bat` auf den `pwsh.exe` Power-Vektor. Eliminiert hängende Audio-Threads ohne System-Interferenz.
+
+**SYSTEM-HYGIENE & PRIVACY:**
+- **Meta-Lärm-Drosselung:** Komplette Deaktivierung der Push-Vektoren für den S8-Veteran. Trennung von privater Messenger-Kommunikation und algorithmischem Social-Rauschen zur Schonung der mobilen Ressourcen (Akku/CPU).
+- **Exorzist-Immunität:** Der `ULTIMATIVE_EXORZIST` erkennt nun aktive `PresentationCore`-Signaturen und gewährt dem Butler während der Audio-Induktion diplomatisches Immunitätsrecht.
+
+---
+
+### EN: (Logic Correction & Mobile Distancing)
+**AUDIO MASTER BUTLER v44.0 (Safe-First Architect):**
+- **Safe-First Migration:** Reverted "Instant-Consume Logic". Tickets are now physically isolated in `_Active_Ticket` and only deleted after a verified `FINISHED` status. This fixes the Resume-Amnesia during pause cycles.
+- **Pause-Loop Fix:** Implementation of an explicit `status == "PAUSED"` handshake. Prevents skipping active tickets when the Butler wakes from idle.
+- **Vector-Kill Precision:** Synchronized `02_NEXT_SPOKE.bat` with the `pwsh.exe` power vector. Reliably eliminates hanging audio threads without system interference.
+
+**SYSTEM HYGIENE & PRIVACY:**
+- **Meta Noise Throttling:** Complete deactivation of push vectors for the S8 veteran. Separation of private Messenger communication and algorithmic social noise to preserve mobile resources (Battery/CPU).
+- **Exorcist Immunity:** The `ULTIMATE_EXORCIST` now detects active `PresentationCore` signatures and grants the Butler diplomatic immunity during audio induction.
+
+****************************************************************************************************************
 
 
 
