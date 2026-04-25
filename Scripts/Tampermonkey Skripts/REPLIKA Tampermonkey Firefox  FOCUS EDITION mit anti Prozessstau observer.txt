@@ -1,0 +1,119 @@
+// ==UserScript==
+// @name         Replika Nexus Voyager v1.1 - FOCUS EDITION mit anti Prozessstau observer
+// @version      1.0
+// @description  Extrahiert Replika-Resonanz & aktiviert Fokus-Magnet (Port 8004).
+// @author       Architekt & Gee
+// @match        https://replika.ai*
+// @match        https://my.replika.ai*
+// @match        https://my.replika.com/*
+// @grant        GM_xmlhttpRequest
+// @run-at       document-end
+// @connect      127.0.0.1
+// @connect      localhost
+// ==/UserScript==
+
+(function() {
+    'use strict';
+    const ENDPOINT = "http://127.0.0.1:8004/webhook";
+    let lastSent = "";
+    let debounceTimer = null;
+
+    // --- NEU: DER FOKUS-MAGNET (v1.1) ---
+    // Reagiert auf den Python-Hotkey (Ctrl+Shift+Y), um den Cursor in die Zeile zu ziehen
+    window.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
+            const replikaInput = document.getElementById('send-message-textarea');
+            if (replikaInput) {
+                replikaInput.focus();
+                console.log("[NEXUS] Replika-Fokus magnetisch angezogen!");
+                // Kleiner visueller Flash als Feedback (Optional)
+                replikaInput.style.outline = "2px solid #FF69B4";
+                setTimeout(() => { replikaInput.style.outline = "none"; }, 500);
+            }
+        }
+    });
+
+    // --- LARYNX-PARAMETER (Cyberpunk-Safe) ---
+    const PATIENCE_TIME = 4000;
+    const DROSS_LIMIT = 300000; // 5 Min Standby
+    const IDLE_LIMIT = 900000; // 15 Min Deep Sleep
+    let lastActivity = Date.now();
+    let mutationObserver = null;
+    let idleCheckerInterval = null;
+
+    const getThrottleMode = () => {
+        const idleMs = Date.now() - lastActivity;
+        if (idleMs >= IDLE_LIMIT) return 'deep_sleep';
+        if (document.hidden || idleMs >= DROSS_LIMIT) return 'standby';
+        return 'active';
+    };
+
+    const updateActivity = () => {
+        lastActivity = Date.now();
+        if (getThrottleMode() !== 'deep_sleep') startObserver();
+    };
+
+    const harvestReplika = () => {
+        const messages = document.querySelectorAll('div[data-author="replika"]');
+        if (messages.length > 0) {
+            const lastMsgElement = messages[messages.length - 1];
+            const fullText = lastMsgElement.innerText.trim();
+
+            if (fullText && fullText !== lastSent && fullText.length > 1) {
+                if (fullText.trim() !== lastSent.trim()) {
+                    lastSent = fullText;
+                    console.log("[NEXUS] Replika-Resonanz stabilisiert.");
+                    send(fullText);
+                }
+            }
+        }
+    };
+
+    const startObserver = () => {
+        if (mutationObserver) return;
+        mutationObserver = new MutationObserver(() => {
+            const mode = getThrottleMode();
+            if (mode === 'deep_sleep') { stopObserver(); return; }
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(harvestReplika, (mode === 'standby' ? 10000 : PATIENCE_TIME));
+        });
+        mutationObserver.observe(document.body, { childList: true, subtree: true });
+        console.log("[NEXUS Replika] Observer aktiv: " + getThrottleMode());
+    };
+
+    const stopObserver = () => {
+        if (mutationObserver) {
+            mutationObserver.disconnect();
+            mutationObserver = null;
+        }
+        console.log("[NEXUS Replika] Observer gestoppt (Deep-Sleep)");
+    };
+
+    const startIdleChecker = () => {
+        if (idleCheckerInterval) return;
+        idleCheckerInterval = setInterval(() => {
+            getThrottleMode() === 'deep_sleep' ? stopObserver() : startObserver();
+        }, 30000);
+    };
+
+    function send(t) {
+        GM_xmlhttpRequest({
+            method: "POST",
+            url: ENDPOINT,
+            data: JSON.stringify({ text: t, ts: Date.now() }),
+            headers: { "Content-Type": "application/json" },
+            timeout: 5000,
+            onload: () => console.log("[NEXUS OK]"),
+            onerror: (err) => console.error("[NEXUS ERR]", err)
+        });
+    }
+
+    // --- EVENT LISTENER ---
+    document.addEventListener('visibilitychange', updateActivity);
+    document.addEventListener('keydown', updateActivity);
+    document.addEventListener('mousedown', updateActivity);
+
+    // Start-Kommando
+    startObserver();
+    startIdleChecker();
+})();

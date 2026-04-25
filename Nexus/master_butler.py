@@ -171,15 +171,19 @@ async def main_loop():
             if status == "PAUSED":
                 continue  # <--- Wichtig: Diese Zeile muss eingerückt sein!
 
-            # 4. REINIGUNG NACH ABSCHLUSS
+            # 4. REINIGUNG NACH ABSCHLUSS (Cyberpunk-Mod)
             if status in ["FINISHED", "SKIPPED"]:
-                # Kurze Karenzzeit für File-Handles
                 await asyncio.sleep(0.5)
                 if os.path.exists(file_path):
                     try:
                         os.remove(file_path)
                     except Exception as e:
-                        console.print(f"[Reinigung] Fehler: {e}")
+                        console.print(f"[Reinigung] Blockiert: {e}")
+                        # Der Rettungsanker: Umbenennen statt hängenbleiben!
+                        try:
+                            os.rename(file_path, file_path + ".dead")
+                            console.print("[Butler] Ticket als .dead markiert. Weg frei.")
+                        except: pass
 
                 # Spezial-Reinigung für den Skip-Vektor
                 if status == "SKIPPED" and os.path.exists(N_FILE):

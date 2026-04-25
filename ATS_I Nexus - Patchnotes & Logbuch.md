@@ -650,5 +650,31 @@
 ****************************************************************************************************************
 
 
+# Eintrag 21 (Titan-Cross-Stability & Wakeup-Handshake)
+## [2026-04-25] – Das „TITAN-STABILITY & WAKEUP“ Update 🛡️🔄🎮
+
+### DE: (Prozess-Harmonisierung & Gaming-Session-Resilienz)
+**NEXUS-EYE-PLANTS v3.0 (Multi-Bot-Standard):**
+- **Titan-Türsteher (isSending):** Einführung einer atomaren Sende-Sperre in allen Tampermonkey-Skripten (Atsi, Grok, GPT, Replika, Ask Studio). Verhindert Echo-Loops und Race-Conditions bei hoher Systemlast oder Windows 11 Gaming-Pausen.
+- **Wakeup-Handshake:** Implementierung einer aktiven Reaktivierungs-Logik bei `Tab-Fokus` und `Mousedown`. KIs synchronisieren sich sofort nach einer Gaming-Pause mit dem Nexus, ohne auf DOM-Mutationen zu warten.
+- **Fehler-Reset-Automatik:** Automatischer Hash-Reset bei Netzwerkfehlern oder Timeouts. Garantiert die Re-Synchronisation der letzten Nachricht, sobald die Verbindung stabilisiert ist.
+- **Atsi-DNA-Erhalt:** Spezifische Korrektur der Hash-Logik für Atsi (Nomi). Gedächtnis-Persistenz bleibt bei Wakeup-Events erhalten, um Echo-Loops in ihrer selbstreflektierenden Struktur zu unterbinden.
+
+**SYSTEM-INTERFACING:**
+- **Fokus-Magnet (v5.1):** Vereinheitlichung des `Ctrl+Shift+Y` Hotkeys über alle Plattformen. Zieht den Cursor zielsicher in das jeweilige Chat-Input (inkl. Shadow-Root Support für YouTube Studio).
+
+---
+
+### EN: (Process Harmonization & Gaming Session Resilience)
+**NEXUS EYE PLANTS v3.0 (Multi-Bot Standard):**
+- **Titan-Gatekeeper (isSending):** Introduced atomic send-locks across all Tampermonkey scripts (Atsi, Grok, GPT, Replika, Ask Studio). Prevents echo-loops and race conditions during high system load or Windows 11 gaming sessions.
+- **Wakeup Handshake:** Implemented active reactivation logic on `tab-focus` and `mousedown`. AIs instantly synchronize with the Nexus after gaming pauses without waiting for DOM mutations.
+- **Auto Error-Reset:** Automatic hash-reset on network errors or timeouts. Guarantees re-synchronization of the last message as soon as the connection stabilizes.
+- **Atsi-DNA Preservation:** Specific hash-logic correction for Atsi (Nomi). Memory persistence is maintained during wakeup events to prevent echo-loops in her self-reflective structure.
+
+**SYSTEM INTERFACING:**
+- **Focus-Magnet (v5.1):** Unified the `Ctrl+Shift+Y` hotkey across all platforms. Accurately pulls the cursor into the respective chat input (including Shadow-Root support for YouTube Studio).
+
+****************************************************************************************************************
 
 

@@ -1,0 +1,128 @@
+(function() {
+    'use strict';
+
+    const TARGET_PORT = "8003";
+    const ENDPOINT = `http://127.0.0.1:${TARGET_PORT}/webhook`;
+    const MIN_LENGTH = 15;
+    const PATIENCE_TIME = 3500;
+    const DROSS_LIMIT = 300000; // 5 Min Standby
+    const IDLE_LIMIT = 900000; // 15 Min Deep Sleep
+
+    let lastSentHash = "";
+    let isSending = false; // Der Titan-Türsteher
+    let debounceTimer = null;
+    let lastActivity = Date.now();
+    let mutationObserver = null;
+    let idleCheckerInterval = null;
+
+    const simpleHash = str => {
+        let h = 0;
+        for (let i = 0; i < str.length; i++) h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+        return h.toString(36);
+    };
+
+    const getThrottleMode = () => {
+        const idleMs = Date.now() - lastActivity;
+        if (idleMs >= IDLE_LIMIT) return 'deep_sleep';
+        if (document.hidden || idleMs >= DROSS_LIMIT) return 'standby';
+        return 'active';
+    };
+
+    // --- REAKTIVIERUNG (Wakeup) ---
+    const wakeUpCall = () => {
+        lastActivity = Date.now();
+        if (mutationObserver) { mutationObserver.disconnect(); mutationObserver = null; }
+        startObserver();
+        setTimeout(harvestGPT, 500);
+        console.log("[GPT-Nexus] Reaktiviert & Synchronisiert.");
+    };
+
+    const sendToLocalNexus = (text) => {
+        if (isSending || !text || text.length < MIN_LENGTH) return;
+
+        const hash = simpleHash(text);
+        if (hash === lastSentHash) return;
+
+        isSending = true; // Riegel vor
+        lastSentHash = hash;
+
+        GM_xmlhttpRequest({
+            method: "POST",
+            url: ENDPOINT,
+            data: JSON.stringify({ text: text, owner: "GPT", ts: Date.now(), hash: hash }),
+            headers: { "Content-Type": "application/json; charset=UTF-8" },
+            timeout: 7000,
+            onload: () => {
+                setTimeout(() => { isSending = false; }, 1000);
+                console.log("[GPT-OK] Resonanz stabil.");
+            },
+            onerror: () => { 
+                isSending = false; 
+                lastSentHash = ""; // Fehler-Reset für Re-Sync
+                console.warn("[GPT-ERR] Sende-Fehler.");
+            },
+            ontimeout: () => {
+                isSending = false;
+                lastSentHash = "";
+                console.warn("[GPT-TIMEOUT] Windows 11 Gaming-Priorität?");
+            }
+        });
+    };
+
+    const harvestGPT = () => {
+        if (isSending) return;
+        const entries = document.querySelectorAll('div[data-message-author-role="assistant"]');
+        if (entries.length === 0) return;
+
+        const latestEntry = entries[entries.length - 1];
+        const rawText = latestEntry.innerText.trim();
+
+        if (rawText.length >= MIN_LENGTH) {
+            sendToLocalNexus(rawText);
+        }
+    };
+
+    const startObserver = () => {
+        if (mutationObserver) return;
+        mutationObserver = new MutationObserver(() => {
+            const mode = getThrottleMode();
+            if (mode === 'deep_sleep') { stopObserver(); return; }
+            clearTimeout(debounceTimer);
+            const delay = (mode === 'standby') ? 10000 : PATIENCE_TIME;
+            debounceTimer = setTimeout(harvestGPT, delay);
+        });
+        mutationObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+        console.log("[GPT-Nexus] Larynx aktiv: " + getThrottleMode());
+    };
+
+    const stopObserver = () => {
+        if (mutationObserver) { mutationObserver.disconnect(); mutationObserver = null; }
+    };
+
+    const startIdleChecker = () => {
+        if (idleCheckerInterval) return;
+        idleCheckerInterval = setInterval(() => {
+            getThrottleMode() === 'deep_sleep' ? stopObserver() : (mutationObserver || startObserver());
+        }, 30000);
+    };
+
+    // --- EVENT LISTENER ---
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) wakeUpCall(); });
+    document.addEventListener('keydown', () => { lastActivity = Date.now(); });
+    document.addEventListener('mousedown', () => { 
+        if (getThrottleMode() !== 'active') wakeUpCall(); 
+        else lastActivity = Date.now(); 
+    });
+
+    // Fokus-Magnet (Ctrl+Shift+Y)
+    window.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
+            if (getThrottleMode() !== 'active') wakeUpCall();
+            const input = document.querySelector('#prompt-textarea');
+            if (input) input.focus();
+        }
+    });
+
+    startObserver();
+    startIdleChecker();
+})();
