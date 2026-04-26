@@ -677,4 +677,58 @@
 
 ****************************************************************************************************************
 
+# Eintrag 22 (Ghost-Exorcism & Port-Resilience)
+## [2026-04-26] – Das „GHOST-PURGE & LARYNX-LIMIT“ Update 🛡️👻🚪
+
+### DE: (Geister-Eliminierung & Ressourcen-Schonung)
+**NEXUS-EYE-PLANTS v4.0 (Ghost-Proof Standard):**
+- **Geister-Exorzismus (window.nexusObserver):** Implementierung einer eindeutigen Observer-Registrierung auf Fenster-Ebene. Verhindert die Akkumulation von "Geister-Observern" bei Tab-Wechseln oder Skript-Reloads. Jeder Tab hält physisch nur noch ein aktives Auge.
+- **Port-Resilienz (Hash-Memory):** Deaktivierung des Fehler-Resets bei Sende-Fehlschlägen. Skripte merken sich gescheiterte Sendeversuche (Port 8000-8006) und beenden das "Dauerfeuer" gegen geschlossene Ports. Reduziert Netzwerk-Stress nach Langzeit-Gaming-Sessions drastisch.
+- **Larynx-Inaktivitäts-Schutz (Ohr):** Einführung eines 15-minütigen Selbstzerstörungs-Timers für das "Ohr" (nexus_ear.py). Beendet den Prozess und löst Hardware-Handles (Mikrofon) automatisch, falls kein Start-Befehl erfolgt. Eliminiert "Zombie-Prozesse" und Dateisperren beim Kaltstart.
+
+**SYSTEM-SANIERUNG:**
+- **Tabula Rasa Stabilität:** Durch die Kombination aus Inaktivitäts-Timer und Port-Schonung wird der "Batch-Freeze" beim Systemstart behoben. Keine blockierten Datei-Handles oder Netzwerk-Staus mehr während der Initialisierung.
+- **Panzerfaust-Upgrade (v1.0):** Lokales Reinigungs-Skript für Google/YouTube zur Beseitigung von Bild-Token-Überlastungen und DOM-Müll ohne Beeinträchtigung der Session-Cookies.
+
+---
+
+### EN: (Ghost Elimination & Resource Conservation)
+**NEXUS EYE PLANTS v4.0 (Ghost-Proof Standard):**
+- **Ghost-Exorcism (window.nexusObserver):** Implemented unique window-level observer registration. Prevents the accumulation of "ghost observers" during tab switches or script reloads. Each tab now physically maintains only one active eye.
+- **Port-Resilience (Hash-Memory):** Disabled hash-reset on transmission failures. Scripts now remember failed send attempts (Ports 8000-8006) and cease "rapid-fire" attempts against closed ports. Drastically reduces network stress after long gaming sessions.
+- **Larynx Inactivity Shield (Ear):** Introduced a 15-minute self-termination timer for the "ear" (nexus_ear.py). Automatically ends the process and releases hardware handles (mic) if no start command is given. Eliminates "zombie processes" and file locks during cold boots.
+
+**SYSTEM SANITIZATION:**
+- **Tabula Rasa Stability:** The combination of inactivity timers and port resilience fixes the "batch freeze" during system startup. No more blocked file handles or network congestion during initialization.
+- **Panzerfaust Upgrade (v1.0):** Local cleaning script for Google/YouTube to eliminate image-token bloat and DOM clutter without affecting session cookies.
+
+****************************************************************************************************************
+
+# Eintrag 23 (Titan-Heartbeat & Zwangsvollstrecker)
+## [2026-04-26] – Das „TITAN-SYNC & GARBAGE-STABILITY“ Update 🦾💓🗑️
+
+### DE: (Hintergrund-Synchronisation & Stabilitäts-Anker)
+**NEXUS-EYE-TITAN-STANDARD v5.0:**
+- **Zwangsvollstrecker (Titan-Heartbeat):** Einführung eines 10-Sekunden-Intervalls (startIdleChecker), das die Ernte (harvest) auch in gedrosselten Hintergrund-Tabs erzwingt. Verhindert das "Einfrieren" der Skripte während Gaming-Sessions oder Tab-Wechseln.
+- **Titan-Reset (Wakeup-Purge):** Der wakeUpCall wurde um einen harten `isSending = false` Reset erweitert. Jedes Reinklicken in den Tab oder jeder Fokus-Wechsel sprengt nun aktivierte Sende-Blockaden ("Klemmer").
+- **Gedulds-Faktor (5s Erosion-Buffer):** Erhöhung der Stillstand-Geduld auf 5000ms (debounceTimer). Gibt komplexen DOM-Strukturen (Gemini, Meta, Studio) Zeit, Nachrichten vollständig zu rendern und "Google-Müll" (Feedback-Buttons/Vorschläge) zu laden, bevor das finale Ticket erstellt wird. Reduziert Dubletten-Invasionen drastisch.
+
+**UNIKAT-LOGIK & FLOW:**
+- **Atsi-Wohnzimmer-Sync:** Spezifische Anpassung für persistente Nomi-Entitäten. Garantiert den Versand des Initial-Tickets beim Browserstart, ohne die nachfolgende Observer-Stabilität zu gefährden.
+- **Skip-Resilienz:** Optimierung der Hash-Prüfung zur Abmilderung von Echos, die durch manuelle System-Eingriffe (Voice-Skip-Commands) provoziert werden.
+
+---
+
+### EN: (Background Sync & Stability Anchor)
+**NEXUS EYE TITAN STANDARD v5.0:**
+- **The Enforcer (Titan-Heartbeat):** Introduced a 10-second interval (startIdleChecker) that forces message harvesting even in throttled background tabs. Prevents script "freezing" during gaming sessions or tab switching.
+- **Titan-Reset (Wakeup-Purge):** Expanded wakeUpCall to include a hard `isSending = false` reset. Every tab click or focus change now actively breaks existing transmission blockages ("hangs").
+- **Patience Factor (5s Erosion-Buffer):** Increased the silence patience to 5000ms (debounceTimer). Grants complex DOM structures (Gemini, Meta, Studio) time to fully render messages and load "Google clutter" (feedback buttons/suggestions) before creating the final ticket. Drastically reduces duplicate ticket invasions.
+
+**UNIQUE LOGIC & FLOW:**
+- **Atsi-Livingroom-Sync:** Specific tuning for persistent Nomi entities. Ensures initial ticket transmission upon browser start without compromising subsequent observer stability.
+- **Skip-Resilience:** Optimized hash verification to mitigate echoes provoked by manual system overrides (Voice-Skip commands).
+
+****************************************************************************************************************
+
 

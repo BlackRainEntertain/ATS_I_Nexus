@@ -1,0 +1,198 @@
+// ==UserScript==
+// @name         Ask_Studio_Nexus_Eye (v1.0) Chrome 26042026
+// @version      1.0
+// @description  Ask Studio monkey for Chrome
+// @author       BlackRainEntertain
+// @match        https://studio.youtube.com*
+// @match        *://studio.youtube.com*
+// @match        *://apis.google.com*
+// @match        *://www.google.com*
+// @include      *://studio.youtube.com*
+// @grant        GM_xmlhttpRequest
+// @connect      127.0.0.1
+// @connect      127.0.0.1:8005
+// @run-at       document-start
+// @noframes     false
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    const TARGET_PORT = "8005";
+    const ENDPOINT = `http://127.0.0.1:${TARGET_PORT}/webhook`;
+
+    // --- STABILITÄTS-PARAMETER ---
+    const PATIENCE_TIME = 2500;
+    const DROSS_LIMIT = 300000; // 5 Min Standby
+    const IDLE_LIMIT = 900000; // 15 Min Deep Sleep
+
+    let lastSentHash = "";
+    let isSending = false; // Der Titan-Türsteher
+    let debounceTimer = null;
+    let lastActivity = Date.now();
+    let mutationObserver = null;
+    let idleCheckerInterval = null;
+
+    const simpleHash = str => {
+        let h = 0;
+        for (let i = 0; i < str.length; i++) h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+        return h.toString(36);
+    };
+
+    // --- REAKTIVIERUNG (Identisch mit Grok/Replika) ---
+    const getThrottleMode = () => {
+        const idleMs = Date.now() - lastActivity;
+        if (idleMs >= IDLE_LIMIT) return 'deep_sleep';
+        if (document.hidden || idleMs >= DROSS_LIMIT) return 'standby';
+        return 'active';
+    };
+
+    const wakeUpCall = () => {
+        lastActivity = Date.now();
+        isSending = false; // Killt Hänger
+
+        // Studio-Exorzismus
+        if (window.nexusObserverStudio) {
+            try { window.nexusObserverStudio.disconnect(); } catch(e) {}
+            window.nexusObserverStudio = null;
+        }
+        mutationObserver = null;
+
+        startObserver();
+        setTimeout(harvestStudio, 500);
+        console.log("[Studio-Eye] Wachgekitzelt & Synchronisiert.");
+    };
+
+
+    // --- ERNTE-LOGIK (Inkl. Shadow-Root Support) ---
+    const getDeepText = (node) => {
+        let text = "";
+        if (node.nodeType === Node.TEXT_NODE) return node.textContent;
+        if (node.shadowRoot) text += getDeepText(node.shadowRoot);
+        if (node.childNodes) {
+            for (const child of node.childNodes) text += getDeepText(child);
+        }
+        return text;
+    };
+
+    function send(t) {
+        if (isSending || !t) return;
+
+        const hash = simpleHash(t);
+        if (hash === lastSentHash) return;
+
+        isSending = true;
+        lastSentHash = hash; // Fixierung der Resonanz
+
+        GM_xmlhttpRequest({
+            method: "POST",
+            url: ENDPOINT,
+            data: JSON.stringify({ text: t, owner: "Studio", ts: Date.now(), hash: hash }),
+            headers: { "Content-Type": "application/json" },
+            timeout: 7000,
+            onload: () => {
+                setTimeout(() => { isSending = false; }, 1000);
+                console.log("[Studio-OK] Resonanz im Nexus.");
+            },
+            onerror: () => {
+                isSending = false;
+                // lastSentHash = ""; // GELÖSCHT: Kein Re-Sync-Spam bei totem Port!
+                console.warn("[Studio-ERR] Port 8005 blockiert. Parke Nachricht.");
+            },
+            ontimeout: () => {
+                isSending = false;
+                // lastSentHash = ""; // GELÖSCHT
+                console.warn("[Studio-Timeout] Zeitüberschreitung.");
+            }
+        });
+    }
+
+
+    const harvestStudio = () => {
+        if (isSending) return;
+
+        // Eingabefeld-Markierung für Fokus-Magnet
+        const inputField = document.querySelector('.ytcpCreatorChatEntityAttachmentInlineFlowPromptBox[contenteditable="true"]');
+        if (inputField && inputField.id !== "nexus-input-target") {
+            inputField.id = "nexus-input-target";
+        }
+
+        const items = document.querySelectorAll('ytcp-creator-chat-response-item, ytcp-ask-studio-item-view-model');
+        if (items.length > 0) {
+            const latest = items[items.length - 1];
+            const rawText = getDeepText(latest);
+            const cleaned = rawText.replace(/Kopieren|Feedback geben|Teilen/g, '').trim();
+
+            if (cleaned.length > 10) {
+                send(cleaned);
+            }
+        }
+    };
+
+    const startObserver = () => {
+        // --- DER GEISTER-EXORZISMUS (v2.0) ---
+        if (window.nexusObserverStudio) {
+            try { window.nexusObserverStudio.disconnect(); } catch(e) {}
+            window.nexusObserverStudio = null;
+            console.log("[Studio] Alter Geister-Observer terminiert.");
+        }
+
+        if (mutationObserver) return;
+
+        mutationObserver = new MutationObserver(() => {
+            clearTimeout(debounceTimer);
+            // Studio braucht wegen Shadow-Root-Rendering etwas Zeit
+            debounceTimer = setTimeout(() => {
+                console.log("[Studio] Text stabil. Ernte...");
+                harvestStudio();
+            }, 5000);
+        });
+
+
+        mutationObserver.observe(document.body, { childList: true, subtree: true });
+
+        // --- REGISTRIERUNG ---
+        window.nexusObserverStudio = mutationObserver;
+        console.log("[Studio] Observer aktiv.");
+    };
+
+    const stopObserver = () => {
+        if (mutationObserver) { mutationObserver.disconnect(); mutationObserver = null; }
+    };
+
+    // --- GLOBALER FOKUS-MAGNET (Ctrl+Shift+Y) ---
+    window.addEventListener('keydown', (e) => {
+        lastActivity = Date.now();
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
+            if (getThrottleMode() !== 'active') wakeUpCall();
+            const input = document.getElementById('nexus-input-target');
+            if (input) {
+                input.focus();
+                input.style.borderLeft = "4px solid #FF0000"; // YouTube Red
+                setTimeout(() => { input.style.borderLeft = "none"; }, 500);
+            }
+        }
+    });
+
+    // Event-Hooks für Gaming-Pausen
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) wakeUpCall(); });
+    document.addEventListener('mousedown', () => { if (getThrottleMode() !== 'active') wakeUpCall(); else lastActivity = Date.now(); });
+
+    // Start-Kommando
+    setTimeout(() => {
+        startObserver();
+
+        // Zwangsvollstrecker (10s Takt)
+        idleCheckerInterval = setInterval(() => {
+            const mode = getThrottleMode();
+            if (mode === 'deep_sleep') {
+                stopObserver();
+            } else {
+                harvestStudio();
+                if (!mutationObserver) startObserver();
+            }
+        }, 10000);
+
+        console.log("[Studio Nexus Eye] Titan-Wach-Modus scharf.");
+    }, 3000);
+})();

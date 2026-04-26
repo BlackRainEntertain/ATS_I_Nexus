@@ -1,3 +1,14 @@
+// ==UserScript==
+// @name         GPT AI Nexus Eye (Firefox/Chrome) 26042026
+// @version      1.0
+// @description  Extrahiert ChatGPT Antworten und sendet sie an den lokalen GPT-Nexus (Port 8003)
+// @author       Bre/Kairos & Gee
+// @match        https://chatgpt.com*
+// @grant        GM_xmlhttpRequest
+// @connect      127.0.0.1
+// @run-at       document-end
+// ==/UserScript==
+
 (function() {
     'use strict';
 
@@ -31,11 +42,20 @@
     // --- REAKTIVIERUNG (Wakeup) ---
     const wakeUpCall = () => {
         lastActivity = Date.now();
-        if (mutationObserver) { mutationObserver.disconnect(); mutationObserver = null; }
+        isSending = false; // Killt Hänger
+
+        // GPT-Exorzismus
+        if (window.nexusObserverGPT) {
+            try { window.nexusObserverGPT.disconnect(); } catch(e) {}
+            window.nexusObserverGPT = null;
+        }
+        mutationObserver = null;
+
         startObserver();
         setTimeout(harvestGPT, 500);
         console.log("[GPT-Nexus] Reaktiviert & Synchronisiert.");
     };
+
 
     const sendToLocalNexus = (text) => {
         if (isSending || !text || text.length < MIN_LENGTH) return;
@@ -43,8 +63,8 @@
         const hash = simpleHash(text);
         if (hash === lastSentHash) return;
 
-        isSending = true; // Riegel vor
-        lastSentHash = hash;
+        isSending = true;
+        lastSentHash = hash; // Fixierung im Gedächtnis
 
         GM_xmlhttpRequest({
             method: "POST",
@@ -56,15 +76,14 @@
                 setTimeout(() => { isSending = false; }, 1000);
                 console.log("[GPT-OK] Resonanz stabil.");
             },
-            onerror: () => { 
-                isSending = false; 
-                lastSentHash = ""; // Fehler-Reset für Re-Sync
-                console.warn("[GPT-ERR] Sende-Fehler.");
+            onerror: () => {
+                isSending = false;
+                // lastSentHash bleibt gesetzt -> Kein Spam gegen Port 8003
+                console.warn("[GPT-ERR] Port 8003 blockiert oder System offline.");
             },
             ontimeout: () => {
                 isSending = false;
-                lastSentHash = "";
-                console.warn("[GPT-TIMEOUT] Windows 11 Gaming-Priorität?");
+                console.warn("[GPT-TIMEOUT] Zeitüberschreitung an Port 8003.");
             }
         });
     };
@@ -83,44 +102,73 @@
     };
 
     const startObserver = () => {
+        // --- DER GEISTER-EXORZISMUS (GPT Edition) ---
+        if (window.nexusObserverGPT) {
+            try { window.nexusObserverGPT.disconnect(); } catch(e) {}
+            window.nexusObserverGPT = null;
+            console.log("[GPT] Alter Geister-Observer terminiert.");
+        }
+
         if (mutationObserver) return;
+
         mutationObserver = new MutationObserver(() => {
-            const mode = getThrottleMode();
-            if (mode === 'deep_sleep') { stopObserver(); return; }
             clearTimeout(debounceTimer);
-            const delay = (mode === 'standby') ? 10000 : PATIENCE_TIME;
-            debounceTimer = setTimeout(harvestGPT, delay);
+            // GPT braucht Ruhe zum Rendern
+            debounceTimer = setTimeout(() => {
+                console.log("[GPT] Text stabil. Ernte...");
+                harvestGPT();
+            }, 5000);
         });
+
+
         mutationObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+
+        // --- REGISTRIERUNG ---
+        window.nexusObserverGPT = mutationObserver;
         console.log("[GPT-Nexus] Larynx aktiv: " + getThrottleMode());
     };
 
     const stopObserver = () => {
-        if (mutationObserver) { mutationObserver.disconnect(); mutationObserver = null; }
+        if (mutationObserver) {
+            mutationObserver.disconnect();
+            mutationObserver = null;
+            window.nexusObserverGPT = null;
+        }
     };
 
     const startIdleChecker = () => {
         if (idleCheckerInterval) return;
         idleCheckerInterval = setInterval(() => {
-            getThrottleMode() === 'deep_sleep' ? stopObserver() : (mutationObserver || startObserver());
-        }, 30000);
+            const mode = getThrottleMode();
+            if (mode === 'deep_sleep') {
+                stopObserver();
+            } else {
+                // Zwangsvollstreckung alle 10 Sekunden
+                harvestGPT();
+                if (!mutationObserver) startObserver();
+            }
+        }, 10000);
     };
+
 
     // --- EVENT LISTENER ---
     document.addEventListener('visibilitychange', () => { if (!document.hidden) wakeUpCall(); });
-    document.addEventListener('keydown', () => { lastActivity = Date.now(); });
-    document.addEventListener('mousedown', () => { 
-        if (getThrottleMode() !== 'active') wakeUpCall(); 
-        else lastActivity = Date.now(); 
+    window.addEventListener('focus', wakeUpCall);
+
+    document.addEventListener('mousedown', () => {
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else lastActivity = Date.now();
     });
 
-    // Fokus-Magnet (Ctrl+Shift+Y)
     window.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
             if (getThrottleMode() !== 'active') wakeUpCall();
             const input = document.querySelector('#prompt-textarea');
             if (input) input.focus();
+            return;
         }
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else lastActivity = Date.now();
     });
 
     startObserver();

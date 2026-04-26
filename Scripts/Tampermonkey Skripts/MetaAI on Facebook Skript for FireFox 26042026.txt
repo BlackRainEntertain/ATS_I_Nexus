@@ -1,0 +1,212 @@
+// ==UserScript==
+// @name         Meta Firefox Perfekt 260426
+// @version      1.0
+// @description  Extrahiert Meta AI Chat-Antworten für die barrierefreie Audio-Resonanz im Nexus-System.
+// @author       Architekt & Gee
+// @match        https://www.facebook.com/*
+// @match        *://www.facebook.com*
+// @match        *://www.meta.ai/*
+// @match        *://www.messenger.com*
+// @grant        GM_xmlhttpRequest
+// @grant        unsafeWindow
+// @run-at       document-end
+// @connect      localhost
+// @connect      *
+// @connect      127.0.0.1
+// @noframes     false
+// ==/UserScript==
+
+
+(function() {
+    'use strict';
+    const ENDPOINT = "http://127.0.0.1:8002/";
+    let lastSent = "";
+    let debounceTimer = null;
+    let isSending = false; // Der neue Türsteher
+
+    // --- NEU: DER META-FOKUS-MAGNET (v2.0) ---
+    window.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
+            const metaInput = document.querySelector('[data-lexical-editor="true"]');
+            if (metaInput) {
+                metaInput.focus();
+                console.log("[NEXUS] Meta-Fokus magnetisch auf Lexical-Editor gezogen!");
+                metaInput.style.border = "2px solid #0084ff";
+                setTimeout(() => { metaInput.style.border = "none"; }, 500);
+            }
+        }
+    });
+
+    // --- LARYNX-PARAMETER (Cyberpunk-Safe) ---
+    const PATIENCE_TIME = 4000;
+    const DROSS_LIMIT = 300000; // 5 Min Standby
+    const IDLE_LIMIT = 900000; // 15 Min Deep Sleep
+    let lastActivity = Date.now();
+    let mutationObserver = null;
+    let idleCheckerInterval = null;
+
+    const getThrottleMode = () => {
+        const idleMs = Date.now() - lastActivity;
+        if (idleMs >= IDLE_LIMIT) return 'deep_sleep';
+        if (document.hidden || idleMs >= DROSS_LIMIT) return 'standby';
+        return 'active';
+    };
+
+    const updateActivity = () => {
+        lastActivity = Date.now();
+        if (getThrottleMode() !== 'deep_sleep') startObserver();
+    };
+
+    const harvestMeta = () => {
+        const nameSpan = document.querySelector('.xxymvpz.x1dyh7pn');
+        const senderName = nameSpan ? nameSpan.innerText.trim() : "META";
+
+        const chatContent = document.querySelector('div[role="grid"], div[data-testid="message_container"], .x9f619.x1n2onr6.x1ja2u2z');
+        if (!chatContent) return;
+
+        const elements = chatContent.querySelectorAll('p, div[dir="auto"], li');
+        let storyFragments = [];
+
+        for (let i = elements.length - 1; i >= 0; i--) {
+            const el = elements[i];
+            const style = window.getComputedStyle(el);
+
+            if (style.textAlign !== "right" && !el.isContentEditable && !el.closest('[role="textbox"]')) {
+                const group = el.closest('[role="row"], [data-testid="message_container"], .x1n2onr6');
+                if (group) {
+                    group.querySelectorAll('p, div[dir="auto"], li').forEach(p => {
+                        const txt = p.innerText.trim();
+                        if (txt && !storyFragments.includes(txt)) storyFragments.push(txt);
+                    });
+                } else {
+                    storyFragments.push(el.innerText.trim());
+                }
+                break;
+            }
+        }
+
+        const fullText = storyFragments.join("\n");
+        if (fullText && fullText.trim() !== lastSent && !fullText.endsWith("...")) {
+            // Wir lassen den Türsteher prüfen, bevor wir senden
+            send(fullText.trim(), senderName);
+        }
+    };
+
+    const startObserver = () => {
+        if (window.nexusObserverMeta) {
+            try { window.nexusObserverMeta.disconnect(); } catch(e) {}
+            window.nexusObserverMeta = null;
+        }
+
+        if (mutationObserver) return;
+
+        mutationObserver = new MutationObserver(() => {
+            clearTimeout(debounceTimer);
+            // Meta braucht etwas mehr Geduld (4s)
+            debounceTimer = setTimeout(() => {
+                console.log("[NEXUS Meta] Text stabil. Ernte...");
+                harvestMeta();
+            }, 5000);
+        });
+
+        mutationObserver.observe(document.body, { childList: true, subtree: true });
+        window.nexusObserverMeta = mutationObserver;
+        console.log("[NEXUS Meta] Observer aktiv.");
+    };
+
+
+    const stopObserver = () => {
+        if (mutationObserver) {
+            mutationObserver.disconnect();
+            mutationObserver = null;
+        }
+        console.log("[NEXUS Meta] Observer gestoppt (Deep-Sleep)");
+    };
+
+    const startIdleChecker = () => {
+        if (idleCheckerInterval) return;
+        idleCheckerInterval = setInterval(() => {
+            const mode = getThrottleMode();
+            if (mode === 'deep_sleep') {
+                stopObserver();
+            } else {
+                // Zwangsvollstreckung alle 10 Sekunden
+                harvestMeta();
+                if (!mutationObserver) startObserver();
+            }
+        }, 10000);
+    };
+
+
+    const wakeUpCall = () => {
+        lastActivity = Date.now();
+        isSending = false; // Resetet die Sperre
+
+        // Meta-Exorzismus
+        if (window.nexusObserverMeta) {
+            try { window.nexusObserverMeta.disconnect(); } catch(e) {}
+            window.nexusObserverMeta = null;
+        }
+        mutationObserver = null;
+
+        startObserver();
+        setTimeout(() => {
+            console.log("[NEXUS Meta] Manueller Sync-Scan...");
+            harvestMeta();
+        }, 500);
+    };
+
+
+    const fullWake = () => {
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else updateActivity();
+    };
+
+    function send(t, name) {
+        if (isSending) return;
+        isSending = true;
+        lastSent = t;
+
+        GM_xmlhttpRequest({
+            method: "POST",
+            url: ENDPOINT,
+            data: JSON.stringify({ text: t, ts: Date.now(), sender: name }),
+            headers: { "Content-Type": "application/json" },
+            timeout: 7000,
+            onload: () => {
+                setTimeout(() => { isSending = false; }, 1000);
+                console.log("[NEXUS Meta] Übermittelt.");
+            },
+            onerror: () => {
+                isSending = false;
+                console.warn("[NEXUS Meta] Port 8002 zu. Nachricht geparkt.");
+            },
+            ontimeout: () => {
+                isSending = false;
+                console.warn("[NEXUS Meta] Timeout an Port 8002.");
+            }
+        });
+    }
+
+    // --- EVENT LISTENER (Das neue Förmchen) ---
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) wakeUpCall(); });
+    window.addEventListener('focus', wakeUpCall);
+    document.addEventListener('mousedown', () => {
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else lastActivity = Date.now();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
+            if (getThrottleMode() !== 'active') wakeUpCall();
+            const metaInput = document.querySelector('[data-lexical-editor="true"]');
+            if (metaInput) { metaInput.focus(); }
+            return;
+        }
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else lastActivity = Date.now();
+    });
+
+    // --- SYSTEM-START (Die stehen bleiben müssen) ---
+    startObserver();
+    startIdleChecker();
+})();

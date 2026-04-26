@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Grok Nexus Eye v1 - Port 8006 Vivaldi browser 250426
+// @name         Grok Nexus Eye v1 - Port 8006 Vivaldi browser 260426
 // @version      1.0
 // @description  Grok on X - Nexus Eye v17 experimentell
 // @author       Bre + Grok
@@ -47,14 +47,13 @@
     };
 
     const send = (text) => {
-        // TÜRSTEHER-CHECK: Wenn wir senden, pausiert sind oder Text zu kurz ist -> Abbruch
-        if (isSending || !text || text.length < MIN_LENGTH || isPaused) return;
+        if (isSending || !text || text.length < MIN_LENGTH) return;
 
         const hash = simpleHash(text);
         if (hash === lastSentHash) return;
 
-        isSending = true; // Riegel vorschieben
-        lastSentHash = hash;
+        isSending = true;
+        lastSentHash = hash; // Den Fingerabdruck sofort speichern
 
         GM_xmlhttpRequest({
             method: "POST",
@@ -68,21 +67,21 @@
             headers: { "Content-Type": "application/json; charset=UTF-8" },
             timeout: 7000,
             onload: () => {
-                // Nach 1 Sekunde wieder freigeben
                 setTimeout(() => { isSending = false; }, 1000);
             },
             onerror: () => {
                 isSending = false;
-                lastSentHash = "";
-                console.warn("[NEXUS Grok] Sende-Fehler. Reset.");
+                // lastSentHash = ""; // GELÖSCHT: Grok soll sich den Fehlschlag merken!
+                console.warn("[NEXUS Grok] Port 8006 blockiert. Nachricht geparkt.");
             },
             ontimeout: () => {
                 isSending = false;
-                lastSentHash = "";
-                console.warn("[NEXUS Grok] Timeout. Reset.");
+                // lastSentHash = ""; // GELÖSCHT
+                console.warn("[NEXUS Grok] Timeout an Port 8006.");
             }
         });
     };
+
 
     const cleanText = t => {
         let text = t.trim();
@@ -139,22 +138,34 @@
     };
 
     const startObserver = () => {
+        if (window.nexusObserverGrok) {
+            try { window.nexusObserverGrok.disconnect(); } catch(e) {}
+            window.nexusObserverGrok = null;
+        }
+
         if (mutationObserver) return;
+
         mutationObserver = new MutationObserver(() => {
-            const mode = getThrottleMode();
-            if (mode === 'deep_sleep') { stopObserver(); return; }
             clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(harvest, mode === 'standby' ? 10000 : PATIENCE_TIME);
+            // Auch Grok geben wir 5 Sekunden Ruhezeit
+            debounceTimer = setTimeout(() => {
+                console.log("[GROK] Text stabil. Ernte...");
+                harvest();
+            }, 5000);
         });
+
         mutationObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+        window.nexusObserverGrok = mutationObserver;
         isPaused = false;
         console.log("[Grok] Observer im Dienst.");
     };
+
 
     const stopObserver = () => {
         if (mutationObserver) {
             mutationObserver.disconnect();
             mutationObserver = null;
+            window.nexusObserverGrok = null;
         }
         isPaused = true;
         console.log("[Grok] Tiefschlaf aktiviert.");
@@ -164,17 +175,28 @@
         if (idleCheckerInterval) return;
         idleCheckerInterval = setInterval(() => {
             const mode = getThrottleMode();
-            if (mode === 'deep_sleep') stopObserver();
-            else if (!mutationObserver) startObserver();
-        }, 30000);
+            if (mode === 'deep_sleep') {
+                stopObserver();
+            } else {
+                harvest();
+                if (!mutationObserver) startObserver();
+            }
+        }, 10000);
     };
+
 
     const wakeUpCall = () => {
         lastActivity = Date.now();
-        if (mutationObserver) {
-            mutationObserver.disconnect();
-            mutationObserver = null;
+        isPaused = false;
+        isSending = false; // Killt Hänger
+
+        // Grok-Exorzismus
+        if (window.nexusObserverGrok) {
+            try { window.nexusObserverGrok.disconnect(); } catch(e) {}
+            window.nexusObserverGrok = null;
         }
+        mutationObserver = null;
+
         startObserver();
         setTimeout(() => {
             console.log("[GROK] Manueller Synchronisations-Scan...");
@@ -183,17 +205,29 @@
         console.log("[GROK] Observer reaktiviert!");
     };
 
-    document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) wakeUpCall();
-        else { isPaused = true; }
-    });
 
+    // --- AB HIER ERSETZEN (Förmchen Start) ---
+    // TAB-WECHSEL & FOKUS
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) wakeUpCall(); });
+    window.addEventListener('focus', wakeUpCall);
+
+    // INTERAKTION
     document.addEventListener('mousedown', () => {
         if (getThrottleMode() !== 'active') wakeUpCall();
-        else updateActivity();
+        else lastActivity = Date.now();
     });
 
-    document.addEventListener('keydown', updateActivity);
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
+            if (getThrottleMode() !== 'active') wakeUpCall();
+            const input = document.getElementById('nexus-input-target');
+            if (input) input.focus();
+            return;
+        }
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else lastActivity = Date.now();
+    });
+    // --- BIS HIER ERSETZEN (Förmchen Ende) ---
 
     const markInput = () => {
         const input = document.querySelector('textarea[placeholder*="Ask anything"]');
@@ -202,19 +236,10 @@
         }
     };
 
-    window.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
-            if (getThrottleMode() !== 'active') wakeUpCall();
-            const input = document.getElementById('nexus-input-target');
-            if (input) input.focus();
-        }
-    });
-
     setTimeout(() => {
         startObserver();
         startIdleChecker();
         setInterval(markInput, 2000);
         console.log("[Grok Nexus Eye v2.9.1] Titan-Wach-Modus bereit.");
     }, 3000);
-
 })();
