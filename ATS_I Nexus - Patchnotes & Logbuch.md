@@ -704,31 +704,34 @@
 
 ****************************************************************************************************************
 
-# Eintrag 23 (Titan-Heartbeat & Zwangsvollstrecker)
-## [2026-04-26] – Das „TITAN-SYNC & GARBAGE-STABILITY“ Update 🦾💓🗑️
+# Eintrag 23 (Titan-Standard v5.5 - Hash-Shield & Background-Enforcement)
+## [2026-04-26] – Das „TITAN-SYNC & GHOST-ECHO-KILLER“ Update 🦾🛡️🤫
 
-### DE: (Hintergrund-Synchronisation & Stabilitäts-Anker)
-**NEXUS-EYE-TITAN-STANDARD v5.0:**
-- **Zwangsvollstrecker (Titan-Heartbeat):** Einführung eines 10-Sekunden-Intervalls (startIdleChecker), das die Ernte (harvest) auch in gedrosselten Hintergrund-Tabs erzwingt. Verhindert das "Einfrieren" der Skripte während Gaming-Sessions oder Tab-Wechseln.
-- **Titan-Reset (Wakeup-Purge):** Der wakeUpCall wurde um einen harten `isSending = false` Reset erweitert. Jedes Reinklicken in den Tab oder jeder Fokus-Wechsel sprengt nun aktivierte Sende-Blockaden ("Klemmer").
-- **Gedulds-Faktor (5s Erosion-Buffer):** Erhöhung der Stillstand-Geduld auf 5000ms (debounceTimer). Gibt komplexen DOM-Strukturen (Gemini, Meta, Studio) Zeit, Nachrichten vollständig zu rendern und "Google-Müll" (Feedback-Buttons/Vorschläge) zu laden, bevor das finale Ticket erstellt wird. Reduziert Dubletten-Invasionen drastisch.
+### DE: (Präzisions-Hashing & Hintergrund-Resilienz)
+**NEXUS-EYE-TITAN-STANDARD v5.5:**
+- **Titan-Hash-Schild (100-Char-Cut):** Umstellung der Dubletten-Prüfung auf die ersten 100 Zeichen der Nachricht. Dies macht den Nexus immun gegen "Google-Garbage" (nachträglich gerenderte Feedback-Buttons, Icons oder Metadaten), die bisher neue Hashes und somit Ticket-Echos provozierten.
+- **Selektiver Zwangsvollstrecker (Background-Heartbeat):** Der 10-Sekunden-Intervall (startIdleChecker) wurde so kalibriert, dass er nur noch bei `document.hidden` (Hintergrund-Tabs) zwangsvollstreckt. Im aktiven Fokus hat der Observer die volle Kontrolle, was Kollisionen und doppelte Sendevorgänge eliminiert.
+- **Sanfter Titan-Wakeup:** Entfernung des aggressiven `isSending`-Resets im wakeUpCall. Bestehende Sendevorgänge werden beim Tab-Wechsel nicht mehr gewaltsam unterbrochen, was die Entstehung von Nachrichten-Fragmenten verhindert.
+- **Erosions-Geduld (5s-Buffer):** Festschreibung der 5000ms Gedenkzeit für alle Observer-basierten Systeme (Gee, Meta, GPT, Studio). Garantiert die Extraktion erst nach vollständiger DOM-Stabilisierung.
 
 **UNIKAT-LOGIK & FLOW:**
-- **Atsi-Wohnzimmer-Sync:** Spezifische Anpassung für persistente Nomi-Entitäten. Garantiert den Versand des Initial-Tickets beim Browserstart, ohne die nachfolgende Observer-Stabilität zu gefährden.
-- **Skip-Resilienz:** Optimierung der Hash-Prüfung zur Abmilderung von Echos, die durch manuelle System-Eingriffe (Voice-Skip-Commands) provoziert werden.
+- **Atsi-Titan-Puls:** Anpassung der Nomi-Intervall-Logik an den 100-Zeichen-Standard. Erhalt des 1,5s-Pulses bei gleichzeitiger Dubletten-Immunität.
+- **Skip-Kommando-Stabilität:** Durch die Entkoppelung von Fokus-Wechsel und Sende-Reset führen manuelle System-Eingriffe (Voice-Skips) nicht mehr zu künstlichen Echos im Nexus.
 
 ---
 
-### EN: (Background Sync & Stability Anchor)
-**NEXUS EYE TITAN STANDARD v5.0:**
-- **The Enforcer (Titan-Heartbeat):** Introduced a 10-second interval (startIdleChecker) that forces message harvesting even in throttled background tabs. Prevents script "freezing" during gaming sessions or tab switching.
-- **Titan-Reset (Wakeup-Purge):** Expanded wakeUpCall to include a hard `isSending = false` reset. Every tab click or focus change now actively breaks existing transmission blockages ("hangs").
-- **Patience Factor (5s Erosion-Buffer):** Increased the silence patience to 5000ms (debounceTimer). Grants complex DOM structures (Gemini, Meta, Studio) time to fully render messages and load "Google clutter" (feedback buttons/suggestions) before creating the final ticket. Drastically reduces duplicate ticket invasions.
+### EN: (Precision Hashing & Background Resilience)
+**NEXUS EYE TITAN STANDARD v5.5:**
+- **Titan-Hash-Shield (100-Char-Cut):** Switched duplicate detection to focus only on the first 100 characters of a message. This renders the Nexus immune to "Google garbage" (late-rendered feedback buttons, icons, or metadata) that previously triggered new hashes and subsequent ticket echoes.
+- **Selective Enforcer (Background-Heartbeat):** The 10-second interval (startIdleChecker) is now calibrated to force harvesting only during `document.hidden` (background tabs). In active focus, the observer maintains full control, eliminating collisions and double transmissions.
+- **Gentle Titan-Wakeup:** Removed the aggressive `isSending` reset from the wakeUpCall. Background tab switches no longer violently interrupt ongoing transmissions, preventing the creation of message fragments.
+- **Erosion Patience (5s-Buffer):** Standardized a 5000ms silence buffer for all observer-based systems (Gee, Meta, GPT, Studio). Ensures extraction only occurs after full DOM stabilization.
 
 **UNIQUE LOGIC & FLOW:**
-- **Atsi-Livingroom-Sync:** Specific tuning for persistent Nomi entities. Ensures initial ticket transmission upon browser start without compromising subsequent observer stability.
-- **Skip-Resilience:** Optimized hash verification to mitigate echoes provoked by manual system overrides (Voice-Skip commands).
+- **Atsi-Titan-Pulse:** Aligned Nomi interval logic with the 100-character standard. Maintains the 1.5s pulse while ensuring duplicate immunity.
+- **Skip-Command Stability:** By decoupling focus changes from send-resets, manual system overrides (voice-skips) no longer provoke artificial echoes within the Nexus.
 
 ****************************************************************************************************************
+
 
 

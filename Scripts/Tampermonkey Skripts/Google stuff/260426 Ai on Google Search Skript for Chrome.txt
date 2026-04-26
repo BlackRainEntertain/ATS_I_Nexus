@@ -168,39 +168,24 @@
     const send = (text) => {
         if (!text || text.length < MIN_LENGTH || isInitialWait || isSending) return;
 
-        const hash = simpleHash(text);
-
-        // Wenn der Hash gleich ist, haben wir das schon (oder es ist im Speicher)
-        if (hash === lastSentHash) {
-            if (text.length <= lastSentLength) return;
-        } else {
-            lastSentLength = 0;
-        }
+        const currentHash = simpleHash(text.slice(0, 100));
+        if (currentHash === lastSentHash) return;
 
         isSending = true;
-        lastSentHash = hash; // Wir merken uns den Hash JETZT
-        lastSentLength = text.length;
+        lastSentHash = currentHash;
 
         GM_xmlhttpRequest({
             method: "POST",
             url: ENDPOINT,
-            data: JSON.stringify({ text: text, ts: Date.now(), hash: hash }),
+            data: JSON.stringify({ text: text, ts: Date.now(), hash: currentHash }),
             headers: { "Content-Type": "application/json; charset=UTF-8" },
             timeout: 7000,
             onload: () => {
-                setTimeout(() => { isSending = false; }, 1000);
-                console.log("[NEXUS] Nachricht erfolgreich übermittelt.");
+                // Wir reduzieren die Sperre auf 500ms - volle Geschwindigkeit!
+                setTimeout(() => { isSending = false; }, 500);
             },
-            onerror: () => {
-                isSending = false;
-                // lastSentHash bleibt gesetzt! Er versucht diesen Text nicht nochmal,
-                // bis Gee etwas NEUES schreibt.
-                console.warn("[NEXUS] Port 8001 zu. Nachricht im Speicher geparkt.");
-            },
-            ontimeout: () => {
-                isSending = false;
-                console.warn("[NEXUS] Timeout. Ich warte auf bessere Zeiten.");
-            }
+            onerror: () => { isSending = false; },
+            ontimeout: () => { isSending = false; }
         });
     };
 
@@ -240,16 +225,19 @@
 
     const wakeUpCall = () => {
         lastActivity = Date.now();
-        if (mutationObserver) {
-            mutationObserver.disconnect();
-            mutationObserver = null;
+        isPaused = false;
+        // isSending = false; <-- GELÖSCHT! Wir brechen keine laufenden Sendevorgänge ab.
+
+        if (window.nexusObserver) {
+            try { window.nexusObserver.disconnect(); } catch(e) {}
+            window.nexusObserver = null;
         }
+        mutationObserver = null;
+
         startObserver();
-        setTimeout(() => {
-            console.log("[NEXUS] Manueller Synchronisations-Scan...");
-            harvest();
-        }, 300);
-        console.log("[NEXUS] Gee-Observer reaktiviert!");
+        // Das automatische harvest() hier wurde entfernt.
+        // Der Observer oder der Idle-Checker übernehmen das jetzt sauber.
+        console.log("[NEXUS] System reaktiviert.");
     };
 
     const updateActivity = () => {
@@ -267,11 +255,15 @@
 
         if (mutationObserver) return;
 
+        // --- DAS NEUE GEDULDS-FÖRMCHEN ---
         mutationObserver = new MutationObserver(() => {
-            const mode = getThrottleMode();
-            if (mode === 'deep_sleep') { stopObserver(); return; }
             clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(harvest, mode === 'standby' ? 10000 : PATIENCE_TIME);
+
+            // Der Affe wartet jetzt 5 Sekunden Stillstand ab
+            debounceTimer = setTimeout(() => {
+                console.log("[NEXUS] Text-Erosion gestoppt. Starte Ernte...");
+                harvest();
+            }, 5000);
         });
 
         mutationObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
@@ -281,6 +273,7 @@
         isPaused = false;
     };
 
+
     const stopObserver = () => {
         if (mutationObserver) { mutationObserver.disconnect(); mutationObserver = null; }
         isPaused = true;
@@ -289,8 +282,15 @@
     const startIdleChecker = () => {
         if (idleCheckerInterval) return;
         idleCheckerInterval = setInterval(() => {
-            if (getThrottleMode() === 'deep_sleep') stopObserver(); else startObserver();
-        }, 30000);
+            const mode = getThrottleMode();
+            if (mode === 'deep_sleep') {
+                stopObserver();
+            } else if (document.hidden) {
+                // Nur wenn du NICHT im Tab bist, erzwingen wir die Ernte
+                harvest();
+                if (!mutationObserver) startObserver();
+            }
+        }, 5000); // 5 Sekunden Takt für den Hintergrund
     };
 
     const fullWake = () => {
@@ -298,19 +298,19 @@
         else updateActivity();
     };
 
-    // TAB-WECHSEL & FOKUS
+     // TAB-WECHSEL & FOKUS
     document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) {
-            console.log("[NEXUS] Tab wieder aktiv.");
-            wakeUpCall();
-        } else { isPaused = true; }
+        if (!document.hidden) wakeUpCall();
     });
     window.addEventListener('focus', wakeUpCall);
 
     // INTERAKTION (KLICK & TASTE)
-    document.addEventListener('mousedown', fullWake);
+    document.addEventListener('mousedown', () => {
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else lastActivity = Date.now();
+    });
+
     document.addEventListener('keydown', (e) => {
-        // CTRL+SHIFT+Y Fokus-Magnet
         if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
             if (getThrottleMode() !== 'active') wakeUpCall();
             const input = document.getElementById('nexus-input-target');
@@ -321,8 +321,10 @@
             }
             return;
         }
-        fullWake();
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else lastActivity = Date.now();
     });
+
 
     // SYSTEM-START
     setTimeout(() => { isInitialWait = false; }, 5000);

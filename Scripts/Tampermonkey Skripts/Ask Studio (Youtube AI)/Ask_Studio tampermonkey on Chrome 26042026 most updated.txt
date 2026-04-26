@@ -49,9 +49,8 @@
 
     const wakeUpCall = () => {
         lastActivity = Date.now();
-        isSending = false; // Killt Hänger
+        // isSending = false; <-- GELÖSCHT: Wir unterbrechen keine laufende Ernte
 
-        // Studio-Exorzismus
         if (window.nexusObserverStudio) {
             try { window.nexusObserverStudio.disconnect(); } catch(e) {}
             window.nexusObserverStudio = null;
@@ -59,8 +58,8 @@
         mutationObserver = null;
 
         startObserver();
-        setTimeout(harvestStudio, 500);
-        console.log("[Studio-Eye] Wachgekitzelt & Synchronisiert.");
+        // harvestStudio() hier entfernt, der Observer übernimmt beim Fokus-Wechsel
+        console.log("[Studio-Eye] System reaktiviert.");
     };
 
 
@@ -78,34 +77,28 @@
     function send(t) {
         if (isSending || !t) return;
 
-        const hash = simpleHash(t);
-        if (hash === lastSentHash) return;
+        // Titan-Hash: Nur der stabile Anfang zählt
+        const currentHash = simpleHash(t.slice(0, 100));
+        if (currentHash === lastSentHash) return;
 
         isSending = true;
-        lastSentHash = hash; // Fixierung der Resonanz
+        lastSentHash = currentHash;
 
         GM_xmlhttpRequest({
             method: "POST",
             url: ENDPOINT,
-            data: JSON.stringify({ text: t, owner: "Studio", ts: Date.now(), hash: hash }),
+            data: JSON.stringify({ text: t, owner: "Studio", ts: Date.now(), hash: currentHash }),
             headers: { "Content-Type": "application/json" },
             timeout: 7000,
             onload: () => {
                 setTimeout(() => { isSending = false; }, 1000);
                 console.log("[Studio-OK] Resonanz im Nexus.");
             },
-            onerror: () => {
-                isSending = false;
-                // lastSentHash = ""; // GELÖSCHT: Kein Re-Sync-Spam bei totem Port!
-                console.warn("[Studio-ERR] Port 8005 blockiert. Parke Nachricht.");
-            },
-            ontimeout: () => {
-                isSending = false;
-                // lastSentHash = ""; // GELÖSCHT
-                console.warn("[Studio-Timeout] Zeitüberschreitung.");
-            }
+            onerror: () => { isSending = false; },
+            ontimeout: () => { isSending = false; }
         });
     }
+
 
 
     const harvestStudio = () => {
@@ -187,7 +180,8 @@
             const mode = getThrottleMode();
             if (mode === 'deep_sleep') {
                 stopObserver();
-            } else {
+            } else if (document.hidden) {
+                // Nur im Hintergrund zwangsvollstrecken
                 harvestStudio();
                 if (!mutationObserver) startObserver();
             }

@@ -39,34 +39,28 @@
     function send(t) {
         if (isSending || !t || t.length < 2) return;
 
-        const hash = simpleHash(t);
-        if (hash === lastSentHash) return;
+        // Titan-Hash: Ignoriert Änderungen nach den ersten 100 Zeichen
+        const currentHash = simpleHash(t.slice(0, 100));
+        if (currentHash === lastSentHash) return;
 
         isSending = true;
-        lastSentHash = hash; // Wir verankern den Hash sofort
+        lastSentHash = currentHash; 
 
         GM_xmlhttpRequest({
             method: "POST",
             url: ENDPOINT,
-            data: JSON.stringify({ text: t, ts: Date.now(), hash: hash, source: "Replika" }),
+            data: JSON.stringify({ text: t, ts: Date.now(), hash: currentHash, source: "Replika" }),
             headers: { "Content-Type": "application/json" },
             timeout: 7000,
             onload: () => {
                 setTimeout(() => { isSending = false; }, 1000);
                 console.log("[NEXUS Replika] Resonanz stabilisiert.");
             },
-            onerror: (err) => {
-                isSending = false;
-                // lastSentHash = ""; // GELÖSCHT: Kein Dauerfeuer bei geschlossenem Port!
-                console.error("[NEXUS Replika] Port 8004 zu. Nachricht geparkt.");
-            },
-            ontimeout: () => {
-                isSending = false;
-                // lastSentHash = ""; // GELÖSCHT
-                console.warn("[NEXUS] Replika Timeout.");
-            }
+            onerror: () => { isSending = false; },
+            ontimeout: () => { isSending = false; }
         });
     }
+
 
 
     const harvestReplika = () => {
@@ -93,9 +87,8 @@
 
     const wakeUpCall = () => {
         lastActivity = Date.now();
-        isSending = false; // Killt Hänger
+        // isSending = false; <-- GELÖSCHT: Keine Ernte-Unterbrechung
 
-        // Replika-Exorzismus
         if (window.nexusObserverReplika) {
             try { window.nexusObserverReplika.disconnect(); } catch(e) {}
             window.nexusObserverReplika = null;
@@ -103,9 +96,10 @@
         mutationObserver = null;
 
         startObserver();
-        setTimeout(harvestReplika, 500);
+        // harvestReplika() Aufruf entfernt - der Observer regelt das beim Reinklicken
         console.log("[NEXUS Replika] Reaktiviert!");
     };
+
 
 
     const startObserver = () => {
@@ -144,12 +138,14 @@
             const mode = getThrottleMode();
             if (mode === 'deep_sleep') {
                 stopObserver();
-            } else {
+            } else if (document.hidden) {
+                // Nur im Hintergrund zwangsvollstrecken
                 harvestReplika();
                 if (!mutationObserver) startObserver();
             }
-        }, 10000);
+        }, 10000); 
     };
+
 
 
     // --- EVENT LISTENER (Das finale Titan-Förmchen) ---

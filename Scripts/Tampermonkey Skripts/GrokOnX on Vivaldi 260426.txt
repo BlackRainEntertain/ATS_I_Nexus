@@ -49,11 +49,12 @@
     const send = (text) => {
         if (isSending || !text || text.length < MIN_LENGTH) return;
 
-        const hash = simpleHash(text);
-        if (hash === lastSentHash) return;
+        // Titan-Hash: Ignoriert Änderungen nach den ersten 100 Zeichen
+        const currentHash = simpleHash(text.slice(0, 100));
+        if (currentHash === lastSentHash) return;
 
         isSending = true;
-        lastSentHash = hash; // Den Fingerabdruck sofort speichern
+        lastSentHash = currentHash;
 
         GM_xmlhttpRequest({
             method: "POST",
@@ -61,7 +62,7 @@
             data: JSON.stringify({
                 text: text,
                 ts: Date.now(),
-                hash: hash,
+                hash: currentHash,
                 source: "grok"
             }),
             headers: { "Content-Type": "application/json; charset=UTF-8" },
@@ -69,18 +70,11 @@
             onload: () => {
                 setTimeout(() => { isSending = false; }, 1000);
             },
-            onerror: () => {
-                isSending = false;
-                // lastSentHash = ""; // GELÖSCHT: Grok soll sich den Fehlschlag merken!
-                console.warn("[NEXUS Grok] Port 8006 blockiert. Nachricht geparkt.");
-            },
-            ontimeout: () => {
-                isSending = false;
-                // lastSentHash = ""; // GELÖSCHT
-                console.warn("[NEXUS Grok] Timeout an Port 8006.");
-            }
+            onerror: () => { isSending = false; },
+            ontimeout: () => { isSending = false; }
         });
     };
+
 
 
     const cleanText = t => {
@@ -177,7 +171,8 @@
             const mode = getThrottleMode();
             if (mode === 'deep_sleep') {
                 stopObserver();
-            } else {
+            } else if (document.hidden) {
+                // Nur im Hintergrund zwangsvollstrecken
                 harvest();
                 if (!mutationObserver) startObserver();
             }
@@ -185,12 +180,12 @@
     };
 
 
+
     const wakeUpCall = () => {
         lastActivity = Date.now();
         isPaused = false;
-        isSending = false; // Killt Hänger
+        // isSending = false; <-- GELÖSCHT: Keine Ernte-Unterbrechung
 
-        // Grok-Exorzismus
         if (window.nexusObserverGrok) {
             try { window.nexusObserverGrok.disconnect(); } catch(e) {}
             window.nexusObserverGrok = null;
@@ -198,12 +193,10 @@
         mutationObserver = null;
 
         startObserver();
-        setTimeout(() => {
-            console.log("[GROK] Manueller Synchronisations-Scan...");
-            harvest();
-        }, 500);
+        // harvest() Aufruf entfernt - der Observer regelt das beim Reinklicken
         console.log("[GROK] Observer reaktiviert!");
     };
+
 
 
     // --- AB HIER ERSETZEN (Förmchen Start) ---
