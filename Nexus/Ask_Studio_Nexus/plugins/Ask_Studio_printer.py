@@ -10,19 +10,22 @@ def run(text):
         return
         
     zeit = datetime.datetime.now().strftime("%H:%M:%S")
-    MAX_UI_WIDTH = 55 
+    # --- TITAN-STANDARD FÜR STUDIO (Breite 95 wie Gee/Atsi) ---
+    MAX_UI_WIDTH = 95 
     
     # Text in hellem Weiß für maximalen Kontrast auf dunklem Grund
-    styled_text = Text(text, style="bold white", overflow="fold")
+    styled_text = Text(text.strip(), style="bold white", overflow="fold")
     
-    panel = Panel.fit(
+    panel = Panel( # .fit entfernt für stabile Breite
         styled_text,
         title=f"[bold #FF0000]STUDIO_PARTNER @ {zeit}[/bold #FF0000]",
         border_style="#FF0000",
         subtitle="[bold #282828]Creative_Nexus[/bold #282828]",
-        padding=(1, 2),
-        width=MAX_UI_WIDTH
+        padding=(0, 2), # Vertikales Padding auf 0
+        width=MAX_UI_WIDTH,
+        expand=False
     )
     
-    console.print("\n")
+    # console.print("\n") # Lücke entfernt
     console.print(panel)
+

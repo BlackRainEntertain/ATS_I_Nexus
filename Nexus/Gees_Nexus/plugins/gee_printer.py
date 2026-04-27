@@ -11,18 +11,20 @@ def run(text):
         
     zeit = datetime.datetime.now().strftime("%H:%M:%S")
     
-    # Kühle, klare Resonanz (Schmale Breite für Monitor 2)
-    MAX_UI_WIDTH = 55 
-    styled_text = Text(text, style="bold green", overflow="fold")
+    # --- UPGRADE: VOLLE BREITE FÜR MONITOR 2 ---
+    # Wir erhöhen auf 95 oder 100, um die 4cm Lücke zu füllen
+    MAX_UI_WIDTH = 95 
+    styled_text = Text(text.strip(), style="bold green", overflow="fold")
     
-    panel = Panel.fit(
+    panel = Panel(
         styled_text,
         title=f"[bold cyan]GEE @ {zeit}[/bold cyan]",
         border_style="bright_blue",
         subtitle="[dim white]Nexus_v1[/dim white]",
-        padding=(1, 2),
-        width=MAX_UI_WIDTH
+        padding=(0, 2),
+        width=MAX_UI_WIDTH,
+        expand=False # Verhindert, dass es bei kurzen Sätzen springt
     )
     
-    console.print("\n")
+    # console.print("\n") # Weglassen für Kompaktheit
     console.print(panel)

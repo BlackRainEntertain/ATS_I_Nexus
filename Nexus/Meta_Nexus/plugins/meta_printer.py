@@ -13,17 +13,21 @@ def run(text, sender="META"):
     zeit = datetime.datetime.now().strftime("%H:%M:%S")
     
     # --- DIESE ZEILE HAT GEFEHLT (v43.9-Fix) ---
-    styled_text = Text(text, style="bold #5DADE2")
+    styled_text = Text(text.strip(), style="bold #5DADE2")
     
-    # Das Panel für die Meta-Resonanz mit dynamischem Namen
+    # Das Panel für die schmaleren Meta/Grok-Fenster
     panel = Panel(
         styled_text,
         title=f"[bold magenta]{sender.upper()}_RESONANZ @ {zeit}[/bold magenta]",
         border_style="magenta",
         subtitle="[dim white]Vortex_Stream_v1.0[/dim white]",
-        padding=(1, 2)
+        padding=(0, 2), 
+        width=86,        # Exakt auf dein Fenster-Maß kalibriert
+        expand=False 
     )
 
-    console.print("\n")
+    # console.print("\n") 
     console.print(panel)
+
+
 

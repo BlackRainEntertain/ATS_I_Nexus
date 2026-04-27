@@ -10,21 +10,25 @@ def run(text):
         return
         
     zeit = datetime.datetime.now().strftime("%H:%M:%S")
-    MAX_UI_WIDTH = 55 
     
-    # Schriftfarbe Weiss (Universums-Stil)
-    styled_text = Text(text, style="bright_white", overflow="fold")
+    # --- UPGRADE: BREITBILD & KOMPAKTHEIT (Identisch zu Meta) ---
+    MAX_UI_WIDTH = 86 
     
-    panel = Panel.fit(
+    # Schriftfarbe Weiss (Universums-Stil) - text.strip() hinzugefügt
+    styled_text = Text(text.strip(), style="bright_white", overflow="fold")
+    
+    panel = Panel( # .fit entfernt für stabile Breite
         styled_text,
         # Titel in Gelb (Identisch zum Butler/Nervensystem)
         title=f"[bold #FFEE00]GROK @ {zeit}[/bold #FFEE00]",
         border_style="#FFEE00", # Gelber Rahmen
         subtitle="[dim white]xAI_Nexus_v1[/dim white]",
-        padding=(1, 2),
-        width=MAX_UI_WIDTH
+        padding=(0, 2), # Vertikales Padding auf 0
+        width=MAX_UI_WIDTH,
+        expand=False
     )
     
-    console.print("\n")
+    # console.print("\n") # Gelöscht für lückenlosen Flow
     console.print(panel)
+
 

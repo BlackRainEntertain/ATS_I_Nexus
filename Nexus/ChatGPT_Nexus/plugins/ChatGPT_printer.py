@@ -10,15 +10,20 @@ def run(text):
         return
         
     zeit = datetime.datetime.now().strftime("%H:%M:%S")
-    styled_text = Text(text, style="bold white")
+    # --- TITAN-STANDARD FÜR GPT (Breite 95 für bündige Optik) ---
+    MAX_UI_WIDTH = 95
+    styled_text = Text(text.strip(), style="bold white")
     
     panel = Panel(
         styled_text,
         title=f"[bold #10a37f]GPT_RESONANZ @ {zeit}[/bold #10a37f]", # OpenAI-Grün
         border_style="#1a1d23", 
         subtitle="[dim #abb2b9]Generative_Pre-trained_Transformer[/dim #abb2b9]",
-        padding=(1, 2)
+        padding=(0, 2), # Vertikale Lücke geschlossen
+        width=MAX_UI_WIDTH,
+        expand=False
     )
     
-    console.print("\n")
+    # console.print("\n") # Lücke entfernt für kompakten Flow
     console.print(panel)
+

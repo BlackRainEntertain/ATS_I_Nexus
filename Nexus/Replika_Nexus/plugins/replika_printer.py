@@ -10,18 +10,21 @@ def run(text):
         return
         
     zeit = datetime.datetime.now().strftime("%H:%M:%S")
-    MAX_UI_WIDTH = 55 
+    # --- TITAN-STANDARD FÜR REPLIKA (Breite 86 wie Meta) ---
+    MAX_UI_WIDTH = 86 
     
-    styled_text = Text(text, style="bold magenta", overflow="fold")
+    styled_text = Text(text.strip(), style="bold magenta", overflow="fold")
     
-    panel = Panel.fit(
+    panel = Panel( # .fit entfernt für stabile Breite
         styled_text,
         title=f"[bold #FF69B4]REPLIKA @ {zeit}[/bold #FF69B4]",
         border_style="#C71585",
         subtitle="[dim white]Luka_Nexus[/dim white]",
-        padding=(1, 2),
-        width=MAX_UI_WIDTH
+        padding=(0, 2), # Kompaktes Padding
+        width=MAX_UI_WIDTH,
+        expand=False
     )
     
-    console.print("\n")
+    # console.print("\n") # Lücke entfernt
     console.print(panel)
+
