@@ -4,38 +4,37 @@ title NEXUS_ALL_SYSTEMS_GO_v6.8_EXCLUSIVE_SESSION
 color 0b
 
 echo [!] Komplette System-Reinigung (Tabula Rasa)...
-:: Killt den Titan-Butler gezielt über seinen Fenstertitel
 taskkill /F /FI "WINDOWTITLE eq AUDIO_MASTER_BUTLER_V43.9_TITAN_ULTRA" /T >nul 2>&1
-:: Killt alle Python-Instanzen
-taskkill /F /IM python.exe /T >nul 2>&1
-taskkill /F /IM pythonw.exe /T >nul 2>&1
+taskkill /F /IM python.exe /IM pythonw.exe /IM powershell.exe /IM pwsh.exe /T >nul 2>&1
+
 :: Räumt hängende Explorer-Zombies auf
 taskkill /F /IM explorer.exe /FI "WINDOWTITLE eq LM Projekte" >nul 2>&1
 taskkill /F /FI "WINDOWTITLE ne NEXUS_ALL_SYSTEMS_GO_v6.8_EXCLUSIVE_SESSION" /IM cmd.exe /T >nul 2>&1
 timeout /t 2 >nul
 
 echo [!] Bereinige EXKLUSIV die Voice-Queue UND den Tresor...
-:: Harter Schnitt: Löscht alle Dateien (*.*), nicht nur .json
 if exist "Nexus\_Voice_Queue" del /f /s /q "Nexus\_Voice_Queue\*.*" >nul 2>&1
 if exist "Nexus\_Active_Ticket" del /f /s /q "Nexus\_Active_Ticket\*.*" >nul 2>&1
 
-:: Spezifische Vernichtung der Blockade-Dateien im Hauptverzeichnis
+:: Blockade-Dateien entfernen
 if exist "Nexus\NEXUS_PAUSE.tmp" del /f /q "Nexus\NEXUS_PAUSE.tmp" >nul 2>&1
 if exist "Nexus\NEXUS_NEXT.tmp" del /f /q "Nexus\NEXUS_NEXT.tmp" >nul 2>&1
 if exist "NEXUS_PAUSE.tmp" del /f /q "NEXUS_PAUSE.tmp" >nul 2>&1
-
-:: Säuberung des Audio-Caches (optional, falls du dort auch aufräumen willst)
-:: if exist "Nexus\_Audio_Cache" del /f /q "Nexus\_Audio_Cache\*.mp3" >nul 2>&1
+if exist "Nexus\_Audio_Cache" del /f /q "Nexus\_Audio_Cache\*.mp3" >nul 2>&1
 
 timeout /t 1 >nul
 
-
-echo [!] Kalibriere Explorer-Sichtbarkeit...
-powershell -Command "$ws = New-Object -ComObject Shell.Application; if (!($ws.Windows() | Where-Object { $_.LocationName -eq 'LM Projekte' })) { start explorer.exe 'C:\Users\René\Desktop\LM Projekte' }"
+echo [!] Starte Explorer-Trinity (Separated Mode)...
+:: Wir öffnen die drei Fenster jetzt nacheinander mit Pausen
+start explorer.exe "C:\Users\René\Desktop\LM Projekte"
 timeout /t 1 >nul
+start explorer.exe "C:\Users\René\Desktop\LM Projekte\Nexus"
+timeout /t 1 >nul
+start explorer.exe "C:\Users\René\Desktop\LM Projekte\Nexus\_Voice_Queue"
+timeout /t 2 >nul
 
 echo [1] Wecke den MASTER_BUTLER...
-start /d "Nexus" cmd /k "python master_butler.py"
+start /d "Nexus" cmd /k "py master_butler.py"
 timeout /t 3 >nul
 
 echo [2] Starte GROK_NEXUS...
@@ -58,10 +57,12 @@ echo [VISUAL] Zünde Lava-Resonanz...
 start "" /d "Nexus\System_Visuals" pythonw lava_stream.py
 
 echo [HUD] Kalibriere Cockpit-Layout...
+:: Wir geben dem System 5 Sekunden, damit alle Fenster-Titel registriert sind
+timeout /t 5 >nul
 py cockpit_layout.py
 
-:: JETZT DER FINALE AKT (Wiederbelebung der Services)
-echo [FINAL] Aktiviere das Gehör via Launcher-VBS...
+:: SERVICES
+echo [FINAL] Aktiviere das Gehör...
 start "" "C:\Users\René\Desktop\LM Projekte\Nexus_Service\Gee_Ear_Launcher.vbs"
 
 echo [SERVICE] Aktiviere Explorer-Exorzist...
@@ -70,3 +71,4 @@ start "" "C:\Users\René\Desktop\LM Projekte\Nexus_Service\Gee_Exorcist_Launcher
 echo [DONE] Cockpit stabilisiert. Resonanz auf 100%.
 timeout /t 3 >nul
 exit
+

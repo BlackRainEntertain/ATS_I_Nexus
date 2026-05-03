@@ -68,12 +68,16 @@ async def speak_and_wait(ticket):
 
             await edge_tts.Communicate(chunk, voice, rate="+15%").save(temp_mp3)
             
+            # --- DER SAUBERE AUDIO-VEKTOR ---
             max_sec = max(5, int(len(chunk.split()) * 0.8) + 10)
             ps_script = f"""
             Add-Type -AssemblyName PresentationCore
             $p = New-Object System.Windows.Media.MediaPlayer
             $p.Open("$([System.IO.Path]::GetFullPath('{temp_mp3.replace("'", "''")}'))")
-            $w = 0; while (!$p.NaturalDuration.HasTimeSpan -and $w -lt 40) {{ Start-Sleep -m 100; $w++ }}
+            
+            # Warte kurz, bis die Datei geladen ist (Win 11 Puffer)
+            Start-Sleep -m 300
+            
             $p.Play()
             $s = Get-Date
             while ($p.Position -lt $p.NaturalDuration.TimeSpan -and (Get-Date) -lt $s.AddSeconds({max_sec})) {{
@@ -82,22 +86,36 @@ async def speak_and_wait(ticket):
             }}
             $p.Close()
             """
-            # NUTZT JETZT PWSH (POWER-VEKTOR)
-            proc = subprocess.Popen(["pwsh", "-Command", ps_script], creationflags=0x08000000)
+
+            # --- START DER AUDIO-ENGINE (v44.5) ---
+            proc = subprocess.Popen(["pwsh", "-Command", f"$host.ui.RawUI.WindowTitle = 'NEXUS_AUDIO_ENGINE'; {ps_script}"], creationflags=0x08000000)
             
+            # --- DIE NEUE SICHERHEITS-ÜBERWACHUNG ---
+            start_time = time.time()
+            timeout_seconds = max_sec + 5 # Wir geben ihm 5 Sek Puffer zur berechneten Zeit
+
             while proc.poll() is None:
+                # 1. NOT-AUS BEI HÄNGER (Deadlock-Schutz)
+                if (time.time() - start_time) > timeout_seconds:
+                    console.print("[bold red][TIMEOUT][/bold red] Audio-Hänger erkannt. Notabschaltung.")
+                    proc.terminate()
+                    break
+
+                # 2. PAUSE-CHECK (Gezielter als der Hammer)
                 if os.path.exists(P_FILE): 
-                    subprocess.run("taskkill /f /t /im pwsh.exe", shell=True, capture_output=True)
+                    proc.terminate() # Killt NUR den aktuellen Sound-Prozess
                     return "PAUSED"
+
+                # 3. SKIP-CHECK (Gezielter als der Hammer)
                 if os.path.exists(N_FILE):
-                    subprocess.run("taskkill /f /t /im pwsh.exe", shell=True, capture_output=True)
-                    # Sofort-Reinigung des gerade abgebrochenen Chunks, falls > 0
+                    proc.terminate() # Killt NUR den aktuellen Sound-Prozess
                     if idx > 0 and os.path.exists(temp_mp3):
                         try: os.remove(temp_mp3)
                         except: pass
                     return "SKIPPED"
 
-                await asyncio.sleep(0.2)
+                await asyncio.sleep(0.3)
+
                 
             if idx > 0 and os.path.exists(temp_mp3):
                 try: os.remove(temp_mp3)

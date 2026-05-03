@@ -4,12 +4,15 @@ import os
 
 # Wir gehen zwei Ebenen hoch zum gemeinsamen Nexus-Ordner
 # (Von plugins/ aus gesehen: .. -> .. -> _Voice_Queue)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 QUEUE_DIR = os.path.join(BASE_DIR, "_Voice_Queue")
 
 def run(message_text):
     if not os.path.exists(QUEUE_DIR):
-        os.makedirs(QUEUE_DIR)
+        try:
+            os.makedirs(QUEUE_DIR)
+        except:
+            return
 
     if not message_text or len(message_text.strip()) < 5:
         return
@@ -26,7 +29,11 @@ def run(message_text):
     file_name = f"{int(time.time()*1000)}_GEE.json"
     file_path = os.path.join(QUEUE_DIR, file_name)
 
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(ticket, f, ensure_ascii=False)
+    try:
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(ticket, f, ensure_ascii=False)
+    except Exception as e:
+        print(f"Gee-Nexus-Fehler beim Schreiben: {e}")
+
 
 

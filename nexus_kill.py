@@ -11,7 +11,7 @@ async def say_goodbye_internal():
 
     # --- DER VORRANG-KILL (Bestehend) ---
     # Wir killen JEDE andere Stimme, BEVOR Katja "Gute Nacht" sagt
-    os.system("taskkill /f /t /im powershell.exe >nul 2>&1")
+    os.system("taskkill /f /t /im powershell.exe /im pwsh.exe >nul 2>&1")
     
     bye_text = "Das schallisolierte Zimmer wird dunkel, Architekt. Die Resonanz bleibt im Cache. Gute Nacht, Bre."
     print(f"[GEE] Verabschiedung wird generiert...")
@@ -34,7 +34,7 @@ async def say_goodbye_internal():
         
         # Wir bleiben bei .run(), damit die Kette sauber bleibt, 
         # aber die PS beendet sich jetzt GARANTIERT nach 12s selbst!
-        subprocess.run(["powershell", "-c", ps_cmd])
+        subprocess.run(["pwsh", "-c", ps_cmd])
         
         if os.path.exists(temp_bye): os.remove(temp_bye)
     except Exception as e: print(f"Abspann-Fehler: {e}")
@@ -79,8 +79,10 @@ def run_shutdown():
             if "nexus_ear" in cmdline or "explorer_exorcist" in cmdline: 
                 continue 
             
-            if proc.info['name'] and "python" in proc.info['name'].lower() and proc.info['pid'] != current_pid:
-                proc.kill()
+            if proc.info['name'] and proc.info['name'].lower() in ["python.exe", "pythonw.exe", "pwsh.exe", "powershell.exe"]:
+                if proc.info['pid'] != current_pid:
+                    proc.kill()
+
         except: continue
 
     # --- SCHRITT 5: FENSTER-HYGIENE (TITAN-Update) ---
