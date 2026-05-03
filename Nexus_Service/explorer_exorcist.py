@@ -4,30 +4,28 @@ import win32process
 import time
 import os
 
-# --- KONFIGURATION (v2.3 - Die Titan-Lösung) ---
-os.system("title --- DER_ULTIMATIVE_EXORZIST_SMART_v2.3 ---")
+# --- KONFIGURATION (v2.4 - Die Titan-Lösung / FFPLAY-Update) ---
+os.system("title --- DER_ULTIMATIVE_EXORZIST_SMART_v2.4 ---")
 BASE_PATH = r"C:\Users\René\Desktop\LM Projekte"
 SAFE_PATH = os.path.join(BASE_PATH, "Nexus", "_Active_Ticket")
 INTERVAL = 240 
 
 def butler_is_actually_speaking():
-    """Prüft, ob der Butler wirklich gerade Audio ausgibt."""
+    """Prüft, ob der Butler wirklich gerade Audio via ffplay ausgibt."""
     # 1. Nur wenn ein Ticket im Safe-Ordner liegt, ist der Butler 'besetzt'
     try:
         if os.path.exists(SAFE_PATH) and len(os.listdir(SAFE_PATH)) > 0:
             return True
     except: pass
 
-    # 2. Check: Läuft ein Audio-Kellner mit dem NEXUS-Namensschild?
-    for proc in psutil.process_iter(['name', 'cmdline']):
+    # 2. Check: Läuft die ffplay-Engine?
+    for proc in psutil.process_iter(['name']):
         try:
-            cmdline = " ".join(proc.info['cmdline'] if proc.info['cmdline'] else [])
-            if "NEXUS_AUDIO_ENGINE" in cmdline:
+            if proc.info['name'] and proc.info['name'].lower() == "ffplay.exe":
                 return True
         except:
             continue
     return False
-
 
 def get_visible_pids():
     visible_pids = set()
@@ -40,7 +38,7 @@ def get_visible_pids():
 
 def perform_exorcism():
     if butler_is_actually_speaking():
-        print(f"[{time.strftime('%H:%M:%S')}] Butler aktiv. Exorzismus verschoben.")
+        print(f"[{time.strftime('%H:%M:%S')}] Butler aktiv (ffplay). Exorzismus verschoben.")
         return
 
     try:
@@ -49,11 +47,17 @@ def perform_exorcism():
     except: shell_pid = None
 
     visible_pids = get_visible_pids()
-    target_shells = ['powershell.exe', 'pwsh.exe', 'explorer.exe']
+    target_shells = ['powershell.exe', 'pwsh.exe', 'explorer.exe', 'ffplay.exe']
 
-    for proc in psutil.process_iter(['pid', 'name']):
+    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
         try:
             name = proc.info['name'].lower()
+            cmdline = " ".join(proc.info['cmdline'] if proc.info['cmdline'] else [])
+
+            # --- DER SCHUTZSCHILD: Ignoriere den Butler und seine Audio-Engine ---
+            if "master_butler.py" in cmdline or "ffplay.exe" in name:
+                continue 
+
             if name in target_shells:
                 pid = proc.info['pid']
                 if pid == shell_pid or pid in visible_pids:
@@ -64,7 +68,8 @@ def perform_exorcism():
         except: continue
 
 if __name__ == "__main__":
-    print(f"Exorzismus-Protokoll v2.3 aktiv. Intervall: {INTERVAL}s.")
+    print(f"Exorzismus-Protokoll v2.4 (Independent) aktiv. Intervall: {INTERVAL}s.")
     while True:
         perform_exorcism()
         time.sleep(INTERVAL)
+

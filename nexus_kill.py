@@ -11,7 +11,7 @@ async def say_goodbye_internal():
 
     # --- DER VORRANG-KILL (Bestehend) ---
     # Wir killen JEDE andere Stimme, BEVOR Katja "Gute Nacht" sagt
-    os.system("taskkill /f /t /im powershell.exe /im pwsh.exe >nul 2>&1")
+    os.system("taskkill /f /t /im powershell.exe /im pwsh.exe /im ffplay.exe >nul 2>&1")
     
     bye_text = "Das schallisolierte Zimmer wird dunkel, Architekt. Die Resonanz bleibt im Cache. Gute Nacht, Bre."
     print(f"[GEE] Verabschiedung wird generiert...")
@@ -20,21 +20,16 @@ async def say_goodbye_internal():
         communicate = edge_tts.Communicate(bye_text, "de-DE-KatjaNeural", rate="+10%")
         await (communicate.save(temp_bye))
         
-        # --- v42.8: DER SELBST-REINIGUNGS-TIMER (KEIN FREEZE MEHR) ---
-        ps_cmd = (
-            f"Add-Type -AssemblyName PresentationCore; "
-            f"$p = New-Object System.Windows.Media.MediaPlayer; "
-            f"$p.Open('{temp_bye}'); "
-            f"$w = 0; while(!$p.NaturalDuration.HasTimeSpan -and $w -lt 20) {{ Start-Sleep -m 100; $w++ }}; "
-            f"$p.Play(); $s = Get-Date; "
-            f"while($p.Position -lt $p.NaturalDuration.TimeSpan -and (Get-Date) -lt $s.AddSeconds(12)) {{ "
-            f"Start-Sleep -m 250 }}; $p.Close()"
-        )
+        # --- TITAN-BYPASS v44.8 (FFPLAY-GOODBYE) ---
+        # Wir nutzen ffplay direkt für die Verabschiedung (Lizenz-unabhängig)
+        ffplay_path = os.path.join("Nexus", "ffplay.exe")
+        if not os.path.exists(ffplay_path): ffplay_path = "ffplay.exe" # Fallback
 
+        cmd = [ffplay_path, "-nodisp", "-autoexit", "-hide_banner", "-loglevel", "error", temp_bye]
         
-        # Wir bleiben bei .run(), damit die Kette sauber bleibt, 
-        # aber die PS beendet sich jetzt GARANTIERT nach 12s selbst!
-        subprocess.run(["pwsh", "-c", ps_cmd])
+        # Wir nutzen .run(), damit das Skript wartet, bis Katja fertig gesprochen hat
+        subprocess.run(cmd, creationflags=0x08000000)
+
         
         if os.path.exists(temp_bye): os.remove(temp_bye)
     except Exception as e: print(f"Abspann-Fehler: {e}")
@@ -79,7 +74,7 @@ def run_shutdown():
             if "nexus_ear" in cmdline or "explorer_exorcist" in cmdline: 
                 continue 
             
-            if proc.info['name'] and proc.info['name'].lower() in ["python.exe", "pythonw.exe", "pwsh.exe", "powershell.exe"]:
+            if proc.info['name'] and proc.info['name'].lower() in ["python.exe", "pythonw.exe", "pwsh.exe", "powershell.exe", "ffplay.exe"]:
                 if proc.info['pid'] != current_pid:
                     proc.kill()
 

@@ -68,55 +68,44 @@ async def speak_and_wait(ticket):
 
             await edge_tts.Communicate(chunk, voice, rate="+15%").save(temp_mp3)
             
-            # --- DER SAUBERE AUDIO-VEKTOR ---
-            max_sec = max(5, int(len(chunk.split()) * 0.8) + 10)
-            ps_script = f"""
-            Add-Type -AssemblyName PresentationCore
-            $p = New-Object System.Windows.Media.MediaPlayer
-            $p.Open("$([System.IO.Path]::GetFullPath('{temp_mp3.replace("'", "''")}'))")
+            # --- TITAN-BYPASS v44.8 (FFPLAY-DIRECT) ---
+            ffplay_path = os.path.join(BASE_DIR, "ffplay.exe")
             
-            # Warte kurz, bis die Datei geladen ist (Win 11 Puffer)
-            Start-Sleep -m 300
+            # -nodisp = kein Fenster | -autoexit = schliesst sich selbst
+            cmd = [
+                ffplay_path, "-nodisp", "-autoexit", 
+                "-hide_banner", "-loglevel", "error", temp_mp3
+            ]
             
-            $p.Play()
-            $s = Get-Date
-            while ($p.Position -lt $p.NaturalDuration.TimeSpan -and (Get-Date) -lt $s.AddSeconds({max_sec})) {{
-                if (Test-Path "{P_FILE}" -or Test-Path "{N_FILE}") {{ $p.Stop(); $p.Close(); exit }}
-                Start-Sleep -m 200
-            }}
-            $p.Close()
-            """
-
-            # --- START DER AUDIO-ENGINE (v44.5) ---
-            proc = subprocess.Popen(["pwsh", "-Command", f"$host.ui.RawUI.WindowTitle = 'NEXUS_AUDIO_ENGINE'; {ps_script}"], creationflags=0x08000000)
+            # Startet den Player komplett im Hintergrund (kein Poppup)
+            proc = subprocess.Popen(cmd, creationflags=0x08000000)
             
-            # --- DIE NEUE SICHERHEITS-ÜBERWACHUNG ---
+            # --- DER LUNGEN-PATCH (Vollständige Wiedergabe) ---
             start_time = time.time()
-            timeout_seconds = max_sec + 5 # Wir geben ihm 5 Sek Puffer zur berechneten Zeit
+            # 600 Sekunden (10 Min) sind genug für jeden 5000-Zeichen-Chunk.
+            max_safety_timeout = 600 
 
             while proc.poll() is None:
-                # 1. NOT-AUS BEI HÄNGER (Deadlock-Schutz)
-                if (time.time() - start_time) > timeout_seconds:
-                    console.print("[bold red][TIMEOUT][/bold red] Audio-Hänger erkannt. Notabschaltung.")
+                # 1. Nur noch Notfall-Sicherung gegen echte Freezes
+                if (time.time() - start_time) > max_safety_timeout:
+                    console.print("[bold red][TIMEOUT][/bold red] Sicherheitsstopp (10min überschritten).")
                     proc.terminate()
                     break
-
-                # 2. PAUSE-CHECK (Gezielter als der Hammer)
-                if os.path.exists(P_FILE): 
-                    proc.terminate() # Killt NUR den aktuellen Sound-Prozess
-                    return "PAUSED"
-
-                # 3. SKIP-CHECK (Gezielter als der Hammer)
-                if os.path.exists(N_FILE):
-                    proc.terminate() # Killt NUR den aktuellen Sound-Prozess
-                    if idx > 0 and os.path.exists(temp_mp3):
-                        try: os.remove(temp_mp3)
-                        except: pass
-                    return "SKIPPED"
-
-                await asyncio.sleep(0.3)
-
                 
+                # 2. Pause-Check (Ticket bleibt im Safe-Ordner)
+                if os.path.exists(P_FILE): 
+                    proc.terminate()
+                    return "PAUSED"
+                
+                # 3. Skip-Check (Bricht aktuellen Chunk/Ticket ab)
+                if os.path.exists(N_FILE):
+                    proc.terminate()
+                    return "SKIPPED"
+                
+                await asyncio.sleep(0.3) # Entlastet die CPU während der Wiedergabe
+
+
+            # Reinigung der temporären Chunks nach dem Abspielen
             if idx > 0 and os.path.exists(temp_mp3):
                 try: os.remove(temp_mp3)
                 except: pass
@@ -125,6 +114,7 @@ async def speak_and_wait(ticket):
             console.print(f"[bold yellow][WARN][/bold yellow] Chunk {idx} fehlgeschlagen: {e}")
             continue
     return "FINISHED"
+
 
 async def main_loop():
     console.print("[bold green][CHECK][/bold green] Titan-Butler v44.0 (Ultra: Context-Guard) Online.")
@@ -214,8 +204,3 @@ async def main_loop():
 
 if __name__ == "__main__":
     asyncio.run(main_loop())
-
-
-
-
-

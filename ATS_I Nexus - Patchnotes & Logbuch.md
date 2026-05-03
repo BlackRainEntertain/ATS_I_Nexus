@@ -733,34 +733,38 @@
 
 ****************************************************************************************************************
 
-# Eintrag 24 (Titan-Standard v44.5 - Deadlock-Immunity & Exorcist-Sync)
-## [2026-05-03] – Das „TITAN-STABILITY & PROCESS-IMMUNITY“ Update 🦾💀🔇
+# Eintrag 24 (Titan-Standard v44.9 - The Deep Breath & Resilience)
+## [2026-05-04] – Das „LUNGEN-PATCH & ASYNCHRONER-PULS“ Update 🦾🔓🫁
 
-### DE: (Deadlock-Prävention & Chirurgische Prozess-Kontrolle)
-**NEXUS-CORE-STABILITY v44.5:**
-- **Titan-Sicherheitsleine (Audio-Timeout):** Implementierung eines dynamischen Timeouts im Master-Butler. Audio-Prozesse (pwsh) werden nach Ablauf der berechneten Sprechzeit (Wörter * 1.5s + Puffer) hart terminiert. Dies eliminiert den "3-Stunden-Deadlock", bei dem hängende Media-Player-Instanzen das gesamte System einfroren.
-- **NEXUS_AUDIO_ENGINE Markierung:** Jede vom Butler gestartete PowerShell-Instanz erhält nun einen eindeutigen Window-Title. Dies dient als "digitales Namensschild" für die Prozess-Hygiene.
-- **Chirurgischer Skip-Vektor:** Umstellung der `NEXT_SPOKE.bat` und der Butler-Logik auf `proc.terminate()`. Anstatt alle PowerShell-Instanzen global zu killen (Kollateralschaden), beendet der Butler jetzt punktgenau nur sein eigenes "Kind-Prozess"-Audio.
-- **Exorzisten-Immunität (v2.4):** Update des Explorer-Exorzisten. Das Skript erkennt nun aktiv den `master_butler.py` und die `NEXUS_AUDIO_ENGINE`. Diese Prozesse sind nun "heilig" und werden vom automatischen Bereinigungs-Zyklus ignoriert.
+### DE: (Befreiung der Sprach-Resonanz & Prozess-Souveränität)
+**NEXUS-CORE-STABILITY v44.9:**
+- **FFPLAY-Vektor-Integration:** Vollständiger Ersatz des Windows Media Players durch die autarke `ffplay.exe`. Dies umgeht Audio-Sperren und Deadlocks, die durch Lizenz-Drosselungen von Windows provoziert wurden.
+- **Lungen-Patch (Eliminierung der Zeit-Guillotine):** Entfernung der starren 45-Sekunden-Sperre (Wort-Kalkulation). Der Butler nutzt nun eine dynamische `proc.poll()` Überwachung mit einem 10-Minuten-Sicherheitsanker. Dies ermöglicht das Vorlesen ganzer Bücher ohne Abbruch.
+- **Asynchroner Puls (0.3s-Intervall):** Optimierung der Abfragerate im Wiedergabe-Loop. Dies garantiert eine blitzschnelle Reaktion auf Pause- und Skip-Befehle bei minimaler CPU-Last.
+- **Chirurgischer Skip-Vektor:** Umstellung der Butler-Logik auf präzises `proc.terminate()`. Der Butler beendet nun punktgenau nur den aktuellen Audio-Chunk, während die Ticket-Reinigung im Hintergrund die Integrität wahrt.
+- **Exorzisten-Immunität (v2.5):** Update des Explorer-Exorzisten. `master_butler.py` und `ffplay.exe` sind nun als "Heilige Prozesse" markiert und vom Bereinigungs-Zyklus ausgeschlossen.
 
-**SYSTEM-HYGIENE & EXPLORER-SYNC:**
-- **Explorer-Trinity-Separation:** Anpassung der `ALL_SYSTEMS_GO.bat` an Windows 11. Erzwungener Start der Ordner-Trinity in separaten Prozessen mit gestaffelten Timeouts. Garantiert die Greifbarkeit der Fenster für die `cockpit_layout.py`.
-- **Registry-Ghost-Busting:** Der Exorzist wurde so kalibriert, dass er verwaiste Explorer-Prozesse (Leichen der Files-App-Experimente) ohne sichtbare Fenster zuverlässig bannt, was die Detail-Liste im Taskmanager auf ein Minimum reduziert.
+**SYSTEM-HYGIENE & RECOVERY:**
+- **Anti-Lockdown-Protokoll (.dead):** Implementierung einer automatischen Umbenennung blockierter Tickets in `.dead`, falls das OS den Löschvorgang verweigert. Verhindert Systemstau.
+- **Tiefenreinigung (Shutdown-Vektor):** Vollständige Integration von `ffplay.exe` in die `nexus_kill.py`, um "Audio-Leichen" nach Sessions zuverlässig zu eliminieren.
 
 ---
 
-### EN: (Deadlock Prevention & Surgical Process Control)
-**NEXUS CORE STABILITY v44.5:**
-- **Titan Safety-Leash (Audio Timeout):** Implemented a dynamic timeout within the Master Butler. Audio processes (pwsh) are now forcefully terminated if they exceed the calculated speech duration (words * 1.5s + buffer). This eliminates the "3-hour deadlock" caused by hung Media Player instances freezing the entire loop.
-- **NEXUS_AUDIO_ENGINE Tagging:** Every PowerShell instance spawned by the Butler now carries a unique window title. This acts as a "digital nametag" for process hygiene and identification.
-- **Surgical Skip Vector:** Transitioned `NEXT_SPOKE.bat` and Butler logic to `proc.terminate()`. Instead of globally killing all PowerShell instances (collateral damage), the Butler now terminates only its specific audio child process with surgical precision.
-- **Exorcist Immunity (v2.4):** Updated the Explorer Exorcist. The script now actively recognizes `master_butler.py` and the `NEXUS_AUDIO_ENGINE`. These processes are now flagged as "sacred" and are ignored by the automatic cleansing cycle.
+### EN: (Speech Resonance Liberation & Process Sovereignty)
+**NEXUS CORE STABILITY v44.9:**
+- **FFPLAY Vector Integration:** Replaced Windows Media Player with independent `ffplay.exe` to bypass OS-level audio restrictions and licensing locks.
+- **Deep Breath Patch (Timeout Elimination):** Removed rigid word-based time limits. The Butler now employs dynamic `proc.poll()` monitoring with a 10-minute safety anchor, allowing for uninterrupted long-form narration.
+- **Asynchronous Pulse (0.3s Interval):** Optimized playback loop polling, ensuring near-instant response to Pause/Skip commands with negligible CPU overhead.
+- **Surgical Skip Vector:** Refined Butler logic using `proc.terminate()` for surgical interruption of audio chunks while maintaining ticket-cleansing integrity.
+- **Exorcist Immunity (v2.5):** Updated Explorer Exorcist to recognize `master_butler.py` and `ffplay.exe` as "sacred" processes, immune to automated termination cycles.
 
-**SYSTEM HYGIENE & EXPLORER SYNC:**
-- **Explorer Trinity Separation:** Adjusted `ALL_SYSTEMS_GO.bat` for Windows 11. Forced the Explorer Trinity to launch in separate processes with staggered timeouts. Ensures all windows are properly registered for the `cockpit_layout.py` to move them.
-- **Registry Ghost-Busting:** The Exorcist is now calibrated to banish orphaned Explorer processes (leftovers from Files App experiments) that lack visible windows, keeping the Task Manager's detail list clean and minimal.
+**SYSTEM HYGIENE & RECOVERY:**
+- **Anti-Lockdown Protocol (.dead):** Automated fallback to rename locked tickets to `.dead` if OS file-locks prevent deletion, ensuring continuous queue flow.
+- **Deep Cleansing (Shutdown Vector):** Integrated `ffplay.exe` into `nexus_kill.py` to guarantee a clean system state without residual audio ghosts.
 
 ****************************************************************************************************************
+
+
 
 
 

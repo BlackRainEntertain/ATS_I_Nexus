@@ -49,4 +49,9 @@ Nexus/NEXUS_NEXT.tmp
 Nexus/_Audio_Cache/*
 !Nexus/_Audio_Cache/.gitkeep
 
+# --- TITAN-BYPASS (FFPLAY-ENGINE) ---
+# Binäre Audio-Engine (Manueller Download erforderlich)
+Nexus/ffplay.exe
+
+
 

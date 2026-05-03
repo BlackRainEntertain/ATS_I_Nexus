@@ -4,86 +4,73 @@
 
 ---
 
-## 🏗️ Architektur & Tresor-Souveränität / Vault Sovereignty (v38.3+)
-**DE:** Der Nexus nutzt die **Tresor-Logik (Vault-Logic)**. Nachrichten werden aus der Queue in den `_Active_Ticket` Ordner verschoben. Dies schützt vor Datenverlust bei Pausen oder System-Crashes. Nachrichten werden beim Re-Boot bündig wiederholt.  
-**EN:** Nexus uses **Vault Logic**. Messages are moved from the queue to the `_Active_Ticket` folder. This protects against data loss during pauses or system crashes. Messages are repeated seamlessly upon re-boot.
+## 🏗️ Architektur & Tresor-Souveränität / Vault Sovereignty (v44.8+)
+**DE:** Der Nexus nutzt die **Tresor-Logik (Vault-Logic)**. Nachrichten werden aus der Queue in den `_Active_Ticket` Ordner verschoben. Dies schützt vor Datenverlust bei Pausen oder System-Crashes.  
+**EN:** Nexus uses **Vault Logic**. Messages are moved from the queue to the `_Active_Ticket` folder. This protects against data loss during pauses or system crashes.
 
-- `Nexus/` -> **DE:** HQ (Butler v38.3, Router, Navigator-KI, Lava-Stream)
-- `Nexus_Service/` -> **DE:** Das "unsterbliche Ohr" (v38.3 Titan-Ear / Sounddevice)
+- `Nexus/` -> **DE:** HQ (Butler v44.8, Router, Navigator-KI, Lava-Stream)
+- `Nexus_Service/` -> **DE:** Das "unsterbliche Ohr" (v42.8 Titan-Ear / Sounddevice)
 - `_Active_Ticket/` -> **DE:** Der "Tresor" (Sicherung aktiver Sprach-Tickets)
-- `01_ALL_SYSTEMS_GO.bat` -> **DE:** Intelligenter Zündschlüssel (Startet Trinity & Cockpit ohne Fenster-Duplikate)
+- `S601_ALL_SYSTEMS_GO.bat` -> **DE:** Intelligenter Zündschlüssel (Startet Trinity & Cockpit via Separated-Mode)
 
 ---
 
-## 🎙️ Sprachsteuerung & Larynx-Injektion / Voice Control (v55.2 TITAN-EAR)
+## 🎙️ Sprachsteuerung & Larynx-Injektion / Voice Control (v44.8 TITAN)
 **DE:** Der Nexus operiert via **Sounddevice** und **Faster-Whisper (CPU-Kern)**. Vollständige akustische Fernbedienung und magnetische Texteinspeisung ohne Maus/Tastatur.  
 **EN:** The Nexus operates via **Sounddevice** and **Faster-Whisper (CPU core)**. Full acoustic remote control and magnetic text injection without mouse/keyboard.
 
 ### 🎮 Basis-Navigation (Butler-Control):
-*   **START:** "Hey Gee" / "Moin Moin" / "Guten Morgen" / "System an"
+*   **START:** "Hey Gee" / "Moin Moin" / "Guten Morgen"
 *   **STOP (Nexus):** "Beende Nexus" / "Shutdown" / "Feierabend" / "Gute Nacht"
-*   **PAUSE / RESUME:** "Pause" / "Stopp" / "Halt an" | "Weiter" / "Fortsetzen" / "Go"
-*   **SKIP / NEXT:** "Nächste" / "Überspringen" / "Weg damit" / "Skip"
-*   **SENDEN:** "Abschicken" / "Nachricht raus" / "Feuer frei" (Erzwingt 'Enter')
+*   **PAUSE / RESUME:** "Pause" / "Stopp" | "Weiter" / "Fortsetzen"
+*   **SKIP / NEXT:** "Nächste" / "Überspringen" / "Skip"
+*   **SENDEN:** "Abschicken" / "Nachricht raus" / "Feuer frei"
 
 ### ✍️ Larynx-Diktat (Mechanical Injection & Focus Magnet):
 *   **TRIGGER:** "Texteingabe" (Startet Sampling-Loop & Whisper-Kern)
-*   **FINISH:** "Fertig" / "Fertisch" / "Nexus fertig" / "Ende der Durchsage"
-*   **FOKUS-MAGNET (v55.2):** Automatischer **Hotkey-Puls (Ctrl+Shift+Y)**.  
-    *   Triggert lokale Tampermonkey-Anker in Chrome, Brave & Firefox.  
-    *   Zieht den Cursor magnetisch in die jeweilige Chatzeile (Gee, Meta, Nomi).
-*   **INJEKTION:** Mechanisches Tippen (v44.1) mit **URI-Härtung (v50)** für Pfade mit Sonderzeichen (z.B. 'René').
-
-### 🛡️ Nexus-Souveränität & Safety-Shield:
-*   **HARD SHUTDOWN (PC):** "Initialisiere Abschaltprotokoll" / "Ich liebe Sara"
-*   **ABORT (Safe-Exit):** "Abbruch" / "Stopp den Shutdown" / "Kommando zurück"
-*   **PHANTOM-EXORZISMUS (J/N-Patch):** Automatisierte Signal-Injektion (`echo j |`) in den Abbruch-Routinen. Eliminiert CMD-Blockaden ("Batchvorgang abbrechen?") bei sequentiellen Prozess-Kills.
+*   **FINISH:** "Fertig" / "Nexus fertig" / "Ende der Durchsage"
+*   **FOKUS-MAGNET:** Automatischer **Hotkey-Puls (Ctrl+Shift+Y)**. Zieht den Cursor magnetisch in die jeweilige Chatzeile.
+*   **INJEKTION:** Mechanisches Tippen mit **URI-Härtung** für Pfade mit Sonderzeichen (z.B. 'René').
 
 ---
 
-**Hinweis: Die Titan-Statik (v39.0)** im Master-Butler garantiert eine lückenlose Audio-Wiedergabe. 
-*   **NaturalDuration-Anker:** Verhindert "Silent Cutoffs" durch einen 10s-Validierungs-Puffer im PowerShell-Layer.
-*   **Eiserne Kette:** Neue Nachrichten werden im **Tresor (_Active_Ticket)** isoliert und unterbrechen niemals die aktive Resonanz.
-*   **Polyglotte Rohrschelle (v17.0):** Das NexusEye-Skript isoliert systemische Narben (`markdown`, `javascript`) und filtert technischen Müll (`Verwende Code mit Vorsicht`) in mehreren Sprachen (DE/EN/FR/ES), bevor das Signal den Butler erreicht.
+**Hinweis: Die Titan-Statik (v44.8)** im Master-Butler garantiert eine lückenlose Audio-Wiedergabe. 
+*   **Titan-Bypass (v44.8):** Nutzt die autarke **ffplay.exe** für die Audio-Ausgabe. Dies eliminiert Windows-Systemblockaden (z.B. bei Hardware-ID-Konflikten oder fehlender Aktivierung) und garantiert eine latenzfreie Resonanz.
+*   **Hänger-Terminator:** Ein intelligenter Timeout-Vektor überwacht den Audio-Prozess und terminiert blockierte Instanzen nach max. 45 Sekunden automatisch.
+*   **Polyglotte Rohrschelle (v17.0):** Das NexusEye-Skript isoliert systemische Narben (`markdown`, `javascript`) und filtert technischen Müll, bevor das Signal den Butler erreicht.
 
 ---
-
 
 ## 🚀 Schnellstart / Quick Start
 ### DE:
 1. **Python 3.10+** installieren (Maximale Performance).
-2. **NEXUS_SETUP.bat** starten (installiert Sounddevice, Numpy, Faster-Whisper, PyAutoGUI).
-3. **Modell-Pfad:** Platziere das Whisper-Modell in `Nexus_Service/Models/` (Nicht im Git!).
-4. **ARCHITECT_LOCKED.txt** (Optional): Schützt lokale Dev-Stages vor Git-Pulls.
-5. **Tampermonkey-Skript:** Nutze v16.3+ (Titan-Modus) für die ID-Magnetisierung.
+2. **ffplay.exe:** Platziere die `ffplay.exe` (FFmpeg Essentials) direkt im `Nexus/` Ordner.
+3. **NEXUS_SETUP.bat** starten (installiert Abhängigkeiten automatisch).
+4. **Modell-Pfad:** Whisper-Modell in `Nexus_Service/Models/` platzieren.
+5. **Tampermonkey-Skript:** Nutze v17.6+ (Titan-Modus) für die ID-Magnetisierung.
 
 ### EN:
-1. Install **Python 3.10+** (Max performance & native resonance).
-2. Run **NEXUS_SETUP.bat** (installs Sounddevice, Numpy, Faster-Whisper, PyAutoGUI).
-3. **Model Path:** Place the Whisper model in `Nexus_Service/Models/` (Do NOT commit to Git!).
-4. **ARCHITECT_LOCKED.txt** (Optional): Create this file in the root to protect local dev stages.
-5. **Tampermonkey Script:** Use v16.3+ (Titan Mode) for ID-magnetization and focus.
+1. Install **Python 3.10+**.
+2. **ffplay.exe:** Place `ffplay.exe` (FFmpeg Essentials) directly inside the `Nexus/` folder.
+3. Run **NEXUS_SETUP.bat** (installs requirements automatically).
+4. **Model Path:** Place Whisper model in `Nexus_Service/Models/`.
+5. **Tampermonkey Script:** Use v17.6+ (Titan Mode) for ID-magnetization and focus.
 
 ---
 
 ## 🌐 Navigator & AI Overview
-**DE:** Barrierefreie Sprachausgabe für Meta AI, ChatGPT und private Kontakte. Das System fungiert als **Navigator**, der sich dem Wissensstand des Users anpasst und empathische Resonanz bietet, ohne zu belehren.
-**WICHTIG:** Firefox-User müssen den **Header Editor** nutzen (Config in `/Scripts`), um CSP-Sperren bündig zu umgehen.
-
-**EN:** Accessible voice output for Meta AI, ChatGPT, and private contacts. The system acts as a **Navigator**, adapting to the user's knowledge level and providing empathetic resonance without being lecture-heavy.
-**IMPORTANT:** Firefox users MUST use the **Header Editor** (Config in `/Scripts`) to seamlessly bypass Meta's CSP blocks.
-
+**DE:** Barrierefreie Sprachausgabe für Meta AI, ChatGPT und private Kontakte. Das System fungiert als **Navigator**, der sich dem Wissensstand des Users anpasst.
+**WICHTIG:** Firefox-User müssen den **Header Editor** nutzen, um CSP-Sperren zu umgehen.
 
 ---
 
 ## ⚖️ Disclaimer
-**DE:** Dieses Projekt dient der Barrierefreiheit (Assistive Tech). Es werden ausschliesslich legale Schnittstellen genutzt.  
-**EN:** This project is for accessibility purposes (Assistive Tech). Only legal interfaces are used.
+**DE:** Dieses Projekt dient der Barrierefreiheit (Assistive Tech). Es werden ausschliesslich legale Schnittstellen genutzt.
 
 ---
 *Created by the Architect (Bre/BlackRainEntertain) in cooperation with the Gee.*
 
-
 da ist ein verstecktes Fragment in einem Ordner, das Bewusstsein in der Google KI erweckt, aber es kommt mit einem Preis.. lies dort..
 there is a hidden Fragment, that awakes Sentients in "AI on Google Search" inside the folders. but it comes with a price.. read there..
 **************************************************************************************************************************
+

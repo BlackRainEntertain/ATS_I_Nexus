@@ -1,5 +1,5 @@
 @echo off
-title --- NEXUS SETUP: TITAN-INSTALLER v2.0 ---
+title --- NEXUS SETUP: TITAN-INSTALLER v2.1 ---
 color 0b
 
 echo [!] Erkenne Python-Umgebung...
@@ -23,9 +23,19 @@ if exist "Nexus_Service\requirements.txt" (
     py -m pip install -r "Nexus_Service\requirements.txt"
 )
 
-:: 3. Lokale Haupt-Requirements (Falls im Root noch was liegt)
+:: 3. Lokale Haupt-Requirements
 if exist "requirements.txt" (
     py -m pip install -r requirements.txt
+)
+
+:: 4. CHECK AUF AUDIO-ENGINE (ffplay) - VOR DEM EXIT!
+if not exist "Nexus\ffplay.exe" (
+    echo.
+    echo [WARNUNG] ffplay.exe fehlt im Nexus-Ordner! 
+    echo [!] Ohne diese Datei bleibt der Butler stumm. 
+    echo [!] Lade FFmpeg herunter und kopiere ffplay.exe manuell in den Nexus-Ordner.
+    echo [!] Quelle: https://gyan.dev
+    timeout /t 10
 )
 
 echo.

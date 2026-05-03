@@ -5,7 +5,7 @@ color 0b
 
 echo [!] Komplette System-Reinigung (Tabula Rasa)...
 taskkill /F /FI "WINDOWTITLE eq AUDIO_MASTER_BUTLER_V43.9_TITAN_ULTRA" /T >nul 2>&1
-taskkill /F /IM python.exe /IM pythonw.exe /IM powershell.exe /IM pwsh.exe /T >nul 2>&1
+taskkill /F /IM python.exe /IM pythonw.exe /IM powershell.exe /IM pwsh.exe /IM ffplay.exe /T >nul 2>&1
 
 :: Räumt hängende Explorer-Zombies auf
 taskkill /F /IM explorer.exe /FI "WINDOWTITLE eq LM Projekte" >nul 2>&1
