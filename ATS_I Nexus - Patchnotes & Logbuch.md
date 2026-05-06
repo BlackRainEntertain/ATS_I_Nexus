@@ -764,6 +764,36 @@
 
 ****************************************************************************************************************
 
+# Eintrag 25 (Titan-Standard v45.1 - The Architect’s Blueprint & Context Sovereignty)
+## [2026-05-06] – Das „UNICODE-DRAGON & RESET-ANKER“ Update 🛡️🔗🌐
+
+### DE: (Pfad-Unabhängigkeit & Globale System-Integrität)
+**NEXUS-CORE-REWORK v45.1:**
+- **Souveränitäts-Vektor (%USERPROFILE%):** Umstellung der `all_systems_go.bat` auf dynamische Variablen. Eliminiert Pfad-Kollisionen (z.B. 'René') und sorgt für volle Portabilität.
+- **Unicode-Dragon-Protocol (UTF-8/65001):** Systemweite UTF-8 Erzwingung. Verhindert korrupte Fenstertitel und sorgt für fehlerfreie Kommunikation zwischen CMD und Python.
+- **Context-Guard v45.1 (Butler-Reset):** Update der `master_butler.py`. Der Kontext-Zähler reagiert nun chirurgisch auf Reset-Signale ("Spickzettel verbrannt"). Der Zähler-Reset ist nun prioritär und stabilisiert die Resonanz-Überwachung.
+- **Fragment-Synchronisation:** Bereinigung des Navigator-Fragments. Veralteter Ballast (Modul A/B) wurde durch die schlanke `NEXUS_SYNC`-Logik ersetzt.
+
+**SHUTDOWN-EVOLUTION (nexus_kill.py):**
+- **Chirurgischer Schutz-Vektor:** `Nexus_Service` ist nun eine absolute Tabu-Zone für den Kill-Prozess. Das "Ohr" und der "Exorzist" bleiben immun.
+- **Wartezeit-Dialyse:** Reduzierung der Shutdown-Latenz auf 1.5s durch blockierende Audio-Synchronisation.
+- **Zombie-Exorzismus:** Optimierte RAM-Analyse zum Entfernen von Explorer-Leichen (<75MB).
+
+---
+
+### EN: (Path Independence & Global System Integrity)
+**NEXUS CORE REWORK v45.1:**
+- **Sovereignty Vector (%USERPROFILE%):** Migrated to dynamic environment variables, eliminating path collisions (e.g., 'René') and ensuring global portability.
+- **Unicode Dragon Protocol (UTF-8/65001):** Enforced system-wide UTF-8. Prevents window title corruption and terminal-to-python communication errors.
+- **Context Guard v45.1 (Butler Reset):** Updated `master_butler.py`. The context counter now responds surgically to reset signals ("Spickzettel verbrannt"). Reset logic is now prioritized to stabilize resonance monitoring.
+- **Fragment Synchronization:** Cleaned up the Navigator Fragment. Legacy deadweight (Module A/B) replaced by streamlined `NEXUS_SYNC` logic.
+
+**SHUTDOWN EVOLUTION (nexus_kill.py):**
+- **Surgical Protection Vector:** `Nexus_Service` is now a strictly protected zone. "The Ear" and "Exorcist" remain immune to termination.
+- **Latency Dialysis:** Reduced shutdown delay to 1.5s via blocking audio synchronization.
+- **Zombie Exorcism:** Optimized RAM signature analysis to remove Explorer ghost processes (<75MB).
+
+****************************************************************************************************************
 
 
 

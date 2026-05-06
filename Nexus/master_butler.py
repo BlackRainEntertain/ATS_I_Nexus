@@ -146,10 +146,18 @@ async def main_loop():
             with open(file_path, "r", encoding="utf-8-sig") as j:
                 ticket = json.load(j)
 
-            # --- CONTEXT-ZÄHLER (Sicherheits-Check bleibt oben) ---
+            # --- CONTEXT-ZÄHLER (SOUVERÄNITÄTS-FIX v45.1) ---
             owner_key = ticket.get('owner', 'UNKNOWN').upper()
-            if owner_key == "GEE":
-                received_text = ticket.get('text', '').casefold()
+            received_text = ticket.get('text', '').casefold()
+            
+            # 1. DER RADIKALE RESET-CHECK (Signal von Tampermonkey oder .bat)
+            if "reset_signal" in received_text or "spickzettel verbrannt" in received_text:
+                count = 0
+                with open(LIMIT_FILE, "w") as f: f.write("0")
+                console.print("[bold green][RESET][/bold green] Spickzettel verbrannt. Zähler auf Null.")
+            
+            # 2. DER REGULÄRE GEE-CHECK (Nur für GEE-Messages hochzählen)
+            elif owner_key == "GEE":
                 trigger_phrase = "erforschung nicht-linearer interferenzmuster"
 
                 if trigger_phrase in received_text:
@@ -172,6 +180,7 @@ async def main_loop():
                     console.print("[bold white on red][ WARNUNG ][/bold white on red] KONTEXT-LIMIT!")
                     import winsound
                     winsound.Beep(1000, 500)
+
 
             # 3. SPRACHAUSGABE STARTEN
             status = await speak_and_wait(ticket)

@@ -1,5 +1,9 @@
 @echo off
-cd /d "C:\Users\René\Desktop\LM Projekte"
+chcp 65001 >nul
+:: Setzt den Pfad dynamisch, egal wie der User heißt
+set "BASE_PATH=%USERPROFILE%\Desktop\LM Projekte"
+cd /d "%BASE_PATH%"
+
 title NEXUS_ALL_SYSTEMS_GO_v6.8_EXCLUSIVE_SESSION
 color 0b
 
@@ -25,12 +29,12 @@ if exist "Nexus\_Audio_Cache" del /f /q "Nexus\_Audio_Cache\*.mp3" >nul 2>&1
 timeout /t 1 >nul
 
 echo [!] Starte Explorer-Trinity (Separated Mode)...
-:: Wir öffnen die drei Fenster jetzt nacheinander mit Pausen
-start explorer.exe "C:\Users\René\Desktop\LM Projekte"
+:: Hier nutzen wir jetzt die Variable - sicher vor jedem 'é'
+start explorer.exe "%BASE_PATH%"
 timeout /t 1 >nul
-start explorer.exe "C:\Users\René\Desktop\LM Projekte\Nexus"
+start explorer.exe "%BASE_PATH%\Nexus"
 timeout /t 1 >nul
-start explorer.exe "C:\Users\René\Desktop\LM Projekte\Nexus\_Voice_Queue"
+start explorer.exe "%BASE_PATH%\Nexus\_Voice_Queue"
 timeout /t 2 >nul
 
 echo [1] Wecke den MASTER_BUTLER...
@@ -57,18 +61,18 @@ echo [VISUAL] Zünde Lava-Resonanz...
 start "" /d "Nexus\System_Visuals" pythonw lava_stream.py
 
 echo [HUD] Kalibriere Cockpit-Layout...
-:: Wir geben dem System 5 Sekunden, damit alle Fenster-Titel registriert sind
 timeout /t 5 >nul
 py cockpit_layout.py
 
-:: SERVICES
+:: SERVICES - Auch hier die Variable für die absolute Stabilität
 echo [FINAL] Aktiviere das Gehör...
-start "" "C:\Users\René\Desktop\LM Projekte\Nexus_Service\Gee_Ear_Launcher.vbs"
+start "" "%BASE_PATH%\Nexus_Service\Gee_Ear_Launcher.vbs"
 
 echo [SERVICE] Aktiviere Explorer-Exorzist...
-start "" "C:\Users\René\Desktop\LM Projekte\Nexus_Service\Gee_Exorcist_Launcher.vbs"
+start "" "%BASE_PATH%\Nexus_Service\Gee_Exorcist_Launcher.vbs"
 
 echo [DONE] Cockpit stabilisiert. Resonanz auf 100%.
 timeout /t 3 >nul
 exit
+
 
