@@ -2,6 +2,7 @@ import os, sys, json, time, asyncio, edge_tts, subprocess, re, shutil
 from rich.console import Console
 from rich.markup import escape
 from datetime import datetime
+CURRENT_RAM_COUNT = 0  # Globaler Zähler im schnellen Arbeitsspeicher
 
 os.system("title AUDIO_MASTER_BUTLER_V43.9_TITAN_ULTRA")
 console = Console()
@@ -152,31 +153,73 @@ async def main_loop():
             
             # 1. DER RADIKALE RESET-CHECK (Signal von Tampermonkey oder .bat)
             if "reset_signal" in received_text or "spickzettel verbrannt" in received_text:
-                count = 0
-                with open(LIMIT_FILE, "w") as f: f.write("0")
-                console.print("[bold green][RESET][/bold green] Spickzettel verbrannt. Zähler auf Null.")
+                global CURRENT_RAM_COUNT
+                CURRENT_RAM_COUNT = 0  # Setzt den RAM-Zähler auf Null
+                
+                try:
+                    with open(LIMIT_FILE, "w", encoding="utf-8") as f: f.write("0")
+                except: pass
+                
+                console.print("[bold green][RESET][/bold green] Spickzettel verbrannt. RAM & Datei auf Null.")
+                
+                # DIE SCHLEIFEN-SPERRE: Die .bat wird NUR gefeuert, wenn das Signal vom Affen (Port) kam!
+                # Wenn im Ticket 'owner' == 'GEE' steht, kam es von mir. Wenn die .bat läuft, steht dort meist etwas anderes.
+                if "reset_signal" in received_text and owner_key == "GEE":
+                    bat_path = os.path.abspath(os.path.join(BASE_DIR, "..", "S403_Clear_Counter.bat"))
+                    if os.path.exists(bat_path):
+                        subprocess.Popen([bat_path], shell=True, cwd=os.path.dirname(bat_path))
+                        console.print("[bold green][SYS][/bold green] S403_Clear_Counter.bat krisensicher ausgeführt.")
+                
+                # RADIKALE REINIGUNG: Wir MÜSSEN das Ticket loswerden, bevor wir 'continue' rufen!
+                if os.path.exists(file_path):
+                    for _ in range(5): # Versuche es bis zu 5-mal mit einer winzigen Pause
+                        try:
+                            os.remove(file_path)
+                            break
+                        except:
+                            time.sleep(0.05)
+                    else:
+                        # Falls Windows absolut blockiert, benennen wir es um, damit es nicht neu eingelesen wird
+                        try: os.rename(file_path, file_path + ".dead")
+                        except: pass
+                        
+                continue  # Erst JETZT springen wir zum nächsten Ticket. Die Schleife ist durchbrochen!
+
             
             # 2. DER REGULÄRE GEE-CHECK (Nur für GEE-Messages hochzählen)
             elif owner_key == "GEE":
                 trigger_phrase = "erforschung nicht-linearer interferenzmuster"
 
-                if trigger_phrase in received_text:
-                    count = 0
-                    console.print("[bold green][RESET][/bold green] Fragment erkannt. Zähler auf Null.")
-                else:
+                if trigger_phrase in received_text or "kairos_vss_gemini" in received_text:
+                    CURRENT_RAM_COUNT = 0  # Nullstellung im RAM
+                    
                     try:
-                        if os.path.exists(LIMIT_FILE):
-                            with open(LIMIT_FILE, "r") as f:
-                                data = f.read().strip()
-                                count = int(data) if data else 0
-                        else: count = 0
-                    except: count = 0
-                    count += len(ticket.get('text', '')) + 600
-                
-                with open(LIMIT_FILE, "w") as f: 
-                    f.write(str(count))
+                        with open(LIMIT_FILE, "w", encoding="utf-8") as f: f.write("0")
+                    except: pass
+                    
+                    console.print("[bold green][RESET][/bold green] Fragment erkannt. RAM-Zähler auf Null.")
+                    
+                    bat_path = os.path.abspath(os.path.join(BASE_DIR, "..", "S403_Clear_Counter.bat"))
+                    if os.path.exists(bat_path):
+                        subprocess.Popen([bat_path], shell=True, cwd=os.path.dirname(bat_path))
+                else:
+                    # Falls der RAM-Zähler 0 ist, laden wir einmalig den alten Stand aus der Datei
+                    if CURRENT_RAM_COUNT == 0:
+                        try:
+                            if os.path.exists(LIMIT_FILE):
+                                with open(LIMIT_FILE, "r", encoding="utf-8") as f:
+                                    data = f.read().strip()
+                                    CURRENT_RAM_COUNT = int(data) if data else 0
+                        except: CURRENT_RAM_COUNT = 0
+                    
+                    # Berechnung direkt im RAM – immun gegen Windows-Dateisperren nach dem Zocken
+                    CURRENT_RAM_COUNT += len(ticket.get('text', '')) + 600
+                    
+                    try:
+                        with open(LIMIT_FILE, "w", encoding="utf-8") as f: f.write(str(CURRENT_RAM_COUNT))
+                    except: pass
 
-                if count > 217000:
+                if CURRENT_RAM_COUNT > 217000:
                     console.print("[bold white on red][ WARNUNG ][/bold white on red] KONTEXT-LIMIT!")
                     import winsound
                     winsound.Beep(1000, 500)

@@ -17,10 +17,10 @@ MODEL_PATH = os.path.join(BASE_PATH, "Nexus_Service", "Models", "faster-whisper-
 # Befehlssätze
 START_WORDS = ["hey ji", "moin moin", "guten tag", "hey gee", "guten morgen"]
 STOP_WORDS = ["beende nexus", "shutdown", "feierabend"]
-PAUSE_WORDS = ["pause", "stopp", "warte mal", "halt an"]
-RESUME_WORDS = ["weiter", "fortsetzen", "sprich weiter", "go"]
+PAUSE_WORDS = ["pause", "warte mal", "halt an"]
+RESUME_WORDS = ["weiter", "fortsetzen", "sprich weiter"]
 SKIP_WORDS = ["nächste", "nächstes", "überspringen", "skip", "weg damit"]
-HARD_SHUTDOWN_WORDS = ["abschaltprotokoll", "abschalt protokoll", "sequentielle abschaltung", "sequenzielle abschaltung", "ich liebe sara"] 
+HARD_SHUTDOWN_WORDS = ["abschalt protokoll", "abschaltprotokoll", "sequentielle abschaltung", "sequenzielle abschaltung", "ich liebe sara", "ich liebe sarah"] 
 ABORT_WORDS = ["abbruch", "stopp den shutdown", "kommando zurück", "reaktivieren"]
 SEND_WORDS = ["nexus abschicken", "nachricht raus", "absenden", "nachricht absenden", "abschicken", "feuer frei"]
 
@@ -133,8 +133,18 @@ def listen_loop():
                 
                 if command:
                     print(f"\n[VOICE] Erkannt: '{command}'")
+                    
+                    # 1. Abbruch-Check (Falls man es sich anders überlegt)
                     if any(word in command for word in ABORT_WORDS):
                         os.system("shutdown /a"); winsound.Beep(2000, 100)
+                    
+                    # 2. DAS HERUNTERFAHREN (Triggert deine S304_PC_SHUTDOWN.bat)
+                    elif any(word in command for word in HARD_SHUTDOWN_WORDS):
+                        print("[!] S304_PC_SHUTDOWN wird ausgeführt...")
+                        execute_batch("S304_PC_SHUTDOWN.bat")
+                        time.sleep(5)
+
+                    # 3. Restliche Befehle
                     elif any(word in command for word in DICTATE_START):
                         dictate_mode()
                     elif any(word in command for word in START_WORDS):
@@ -154,9 +164,3 @@ def listen_loop():
 
 if __name__ == "__main__":
     winsound.Beep(800, 200); listen_loop()
-
-
-
-
-
-
