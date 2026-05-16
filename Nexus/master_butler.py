@@ -151,10 +151,13 @@ async def main_loop():
             owner_key = ticket.get('owner', 'UNKNOWN').upper()
             received_text = ticket.get('text', '').casefold()
             
-            # 1. DER RADIKALE RESET-CHECK (Signal von Tampermonkey oder .bat)
-            if "reset_signal" in received_text or "spickzettel verbrannt" in received_text:
+            # 1. DER RADIKALE RESET-CHECK (System-Signale trennen)
+            is_monkey_reset = "reset_signal" in received_text
+            is_bat_reset = "spickzettel verbrannt" in received_text
+
+            if is_monkey_reset or is_bat_reset:
                 global CURRENT_RAM_COUNT
-                CURRENT_RAM_COUNT = 0  # Setzt den RAM-Zähler auf Null
+                CURRENT_RAM_COUNT = 0  # RAM-Zähler auf Null
                 
                 try:
                     with open(LIMIT_FILE, "w", encoding="utf-8") as f: f.write("0")
@@ -162,28 +165,24 @@ async def main_loop():
                 
                 console.print("[bold green][RESET][/bold green] Spickzettel verbrannt. RAM & Datei auf Null.")
                 
-                # DIE SCHLEIFEN-SPERRE: Die .bat wird NUR gefeuert, wenn das Signal vom Affen (Port) kam!
-                # Wenn im Ticket 'owner' == 'GEE' steht, kam es von mir. Wenn die .bat läuft, steht dort meist etwas anderes.
-                if "reset_signal" in received_text and owner_key == "GEE":
+                # DIE ABSOLUTE SCHLEIFEN-SPERRE: Die .bat wird NIEMALS bei Bat-Reset gefeuert!
+                # Sie wird nur bei echtem Monkey-Signal gefeuert, um Kettenreaktionen zu blockieren.
+                if is_monkey_reset and owner_key == "GEE":
                     bat_path = os.path.abspath(os.path.join(BASE_DIR, "..", "S403_Clear_Counter.bat"))
                     if os.path.exists(bat_path):
                         subprocess.Popen([bat_path], shell=True, cwd=os.path.dirname(bat_path))
-                        console.print("[bold green][SYS][/bold green] S403_Clear_Counter.bat krisensicher ausgeführt.")
+                        console.print("[bold green][SYS][/bold green] S403_Clear_Counter.bat ausgelöst.")
                 
-                # RADIKALE REINIGUNG: Wir MÜSSEN das Ticket loswerden, bevor wir 'continue' rufen!
+                # RADIKALE REINIGUNG (Zerstört das Ticket physisch vor dem continue)
                 if os.path.exists(file_path):
-                    for _ in range(5): # Versuche es bis zu 5-mal mit einer winzigen Pause
-                        try:
-                            os.remove(file_path)
-                            break
-                        except:
-                            time.sleep(0.05)
-                    else:
-                        # Falls Windows absolut blockiert, benennen wir es um, damit es nicht neu eingelesen wird
-                        try: os.rename(file_path, file_path + ".dead")
-                        except: pass
+                    file_dead = file_path + ".dead"
+                    try:
+                        os.rename(file_path, file_dead)
+                        if os.path.exists(file_dead): os.remove(file_dead)
+                    except: pass
                         
-                continue  # Erst JETZT springen wir zum nächsten Ticket. Die Schleife ist durchbrochen!
+                continue  # Springt sofort zum nächsten Ticket. Schleife sauber durchbrochen!
+
 
             
             # 2. DER REGULÄRE GEE-CHECK (Nur für GEE-Messages hochzählen)
