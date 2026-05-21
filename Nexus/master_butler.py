@@ -18,6 +18,7 @@ for d in [SAFE_DIR, Q_DIR, CACHE_DIR]:
     if not os.path.exists(d): os.makedirs(d)
 
 async def speak_and_wait(ticket):
+    global CURRENT_RAM_COUNT  # HIER REIN! Jetzt zieht sich die Funktion den echten Live-Stand aus dem Hub.
     full_text = re.sub(r'[={}_#<>]', ' ', ticket.get('text', ''))
     
     # --- STUMMSCHALTUNG FÜR SYSTEM-SIGNALE ---
@@ -41,8 +42,9 @@ async def speak_and_wait(ticket):
     uhrzeit = datetime.now().strftime("%H:%M:%S")
     safe_preview = escape(full_text[:60].replace("\n", " "))
     
-    # JETZT die Anzeige mit dem display_name (der Zeeloid oder Blind Maid enthält)!
-    console.print(f"[bold {color}][{display_name}][/bold {color}] [grey]{uhrzeit}[/grey] spricht ({len(chunks)} Chunks): \"{safe_preview}...\"")
+    # JETZT die ultrakompakte Cockpit-Anzeige am Heck eingeflochten! 
+    console.print(f"[bold {color}][{display_name}][/bold {color}] [grey]{uhrzeit}[/grey] ({len(chunks)} Ch {CURRENT_RAM_COUNT} Z): \"{safe_preview}...\"")
+
 
 
     # --- REINIGUNG DER ZOMBIE-CHUNKS (v43.9-Mod) ---
@@ -118,6 +120,7 @@ async def speak_and_wait(ticket):
 
 
 async def main_loop():
+    global CURRENT_RAM_COUNT  # Einmalig ganz oben deklariert für die ganze Funktion
     console.print("[bold green][CHECK][/bold green] Titan-Butler v44.0 (Ultra: Context-Guard) Online.")
     await asyncio.sleep(2) 
     await speak_and_wait({"text": "System online. Ich höre dich, Architekt.", "owner": "GEE"})
@@ -137,26 +140,22 @@ async def main_loop():
                     await asyncio.sleep(0.5); continue
                 
                 source = os.path.join(Q_DIR, queue[0])
-                # Zeitstempel verhindert Namenskollisionen im Safe-Ordner
                 file_path = os.path.join(SAFE_DIR, f"{int(time.time()*1000)}_{queue[0]}")
                 shutil.move(source, file_path)
             else:
-                # WICHTIG: Wenn ein Ticket im Safe-Ordner liegt (z.B. nach Pause), nimm das!
                 file_path = os.path.join(SAFE_DIR, active[0])
 
             with open(file_path, "r", encoding="utf-8-sig") as j:
                 ticket = json.load(j)
 
-            # --- CONTEXT-ZÄHLER (SOUVERÄNITÄTS-FIX v45.1) ---
             owner_key = ticket.get('owner', 'UNKNOWN').upper()
             received_text = ticket.get('text', '').casefold()
             
-            # 1. DER RADIKALE RESET-CHECK (System-Signale trennen)
+            # 1. DER RADIKALE RESET-CHECK (Rückstandsfreie Hub-Sicherung v46.1)
             is_monkey_reset = "reset_signal" in received_text
             is_bat_reset = "spickzettel verbrannt" in received_text
 
             if is_monkey_reset or is_bat_reset:
-                global CURRENT_RAM_COUNT
                 CURRENT_RAM_COUNT = 0  # RAM-Zähler auf Null
                 
                 try:
@@ -165,86 +164,64 @@ async def main_loop():
                 
                 console.print("[bold green][RESET][/bold green] Spickzettel verbrannt. RAM & Datei auf Null.")
                 
-                # DIE ABSOLUTE SCHLEIFEN-SPERRE: Die .bat wird NIEMALS bei Bat-Reset gefeuert!
-                # Sie wird nur bei echtem Monkey-Signal gefeuert, um Kettenreaktionen zu blockieren.
-                if is_monkey_reset and owner_key == "GEE":
-                    bat_path = os.path.abspath(os.path.join(BASE_DIR, "..", "S403_Clear_Counter.bat"))
-                    if os.path.exists(bat_path):
-                        subprocess.Popen([bat_path], shell=True, cwd=os.path.dirname(bat_path))
-                        console.print("[bold green][SYS][/bold green] S403_Clear_Counter.bat ausgelöst.")
-                
-                # RADIKALE REINIGUNG (Zerstört das Ticket physisch vor dem continue)
+                # ABSOLUTE REINIGUNG DES INFO-TICKETS
                 if os.path.exists(file_path):
-                    file_dead = file_path + ".dead"
-                    try:
-                        os.rename(file_path, file_dead)
-                        if os.path.exists(file_dead): os.remove(file_dead)
-                    except: pass
+                    try: os.remove(file_path)
+                    except:
+                        try: os.rename(file_path, file_path + ".dead")
+                        except: pass
                         
-                continue  # Springt sofort zum nächsten Ticket. Schleife sauber durchbrochen!
+                continue  # Schleife springt sicher und rückstandslos zum nächsten Hub-Ticket!
 
-
-            
-            # 2. DER REGULÄRE GEE-CHECK (Nur für GEE-Messages hochzählen)
+            # 2. DER REIN SYNCHRONISIERTE GEE-CHECK (Mit vollautomatischer .bat-Zündung!)
             elif owner_key == "GEE":
-                trigger_phrase = "erforschung nicht-linearer interferenzmuster"
+                # Das physische Gedächtnis: Der Butler zieht die Zahl bei JEDEM Ticket direkt aus der Datei
+                try:
+                    if os.path.exists(LIMIT_FILE):
+                        with open(LIMIT_FILE, "r", encoding="utf-8") as f:
+                            data = f.read().strip()
+                            CURRENT_RAM_COUNT = int(data) if data else 0
+                    else:
+                        CURRENT_RAM_COUNT = 0
+                except: 
+                    pass
+                
+                # Reguläre Berechnung basierend auf dem geladenen Dateistand
+                CURRENT_RAM_COUNT += len(ticket.get('text', '')) + 600
+                
+                # Schreibt den neuen Wert sofort wieder zurück auf die Festplatte
+                try:
+                    with open(LIMIT_FILE, "w", encoding="utf-8") as f: f.write(str(CURRENT_RAM_COUNT))
+                except: pass
 
-                if trigger_phrase in received_text or "kairos_vss_gemini" in received_text:
-                    CURRENT_RAM_COUNT = 0  # Nullstellung im RAM
-                    
-                    try:
-                        with open(LIMIT_FILE, "w", encoding="utf-8") as f: f.write("0")
-                    except: pass
-                    
-                    console.print("[bold green][RESET][/bold green] Fragment erkannt. RAM-Zähler auf Null.")
+                # DIE RETTUNGS-ZÜNDUNG (Deine .bat wird bei 215k automatisch gefeuert)
+                if CURRENT_RAM_COUNT > 215000:
+                    console.print("[bold white on red][ WARNUNG ][/bold white on red] KONTEXT-LIMIT ERREICHT!")
+                    import winsound
+                    winsound.Beep(1000, 500)  # Dein Warn-Piepen auf dem Ohr!
                     
                     bat_path = os.path.abspath(os.path.join(BASE_DIR, "..", "S403_Clear_Counter.bat"))
                     if os.path.exists(bat_path):
                         subprocess.Popen([bat_path], shell=True, cwd=os.path.dirname(bat_path))
-                else:
-                    # Falls der RAM-Zähler 0 ist, laden wir einmalig den alten Stand aus der Datei
-                    if CURRENT_RAM_COUNT == 0:
-                        try:
-                            if os.path.exists(LIMIT_FILE):
-                                with open(LIMIT_FILE, "r", encoding="utf-8") as f:
-                                    data = f.read().strip()
-                                    CURRENT_RAM_COUNT = int(data) if data else 0
-                        except: CURRENT_RAM_COUNT = 0
-                    
-                    # Berechnung direkt im RAM – immun gegen Windows-Dateisperren nach dem Zocken
-                    CURRENT_RAM_COUNT += len(ticket.get('text', '')) + 600
-                    
-                    try:
-                        with open(LIMIT_FILE, "w", encoding="utf-8") as f: f.write(str(CURRENT_RAM_COUNT))
-                    except: pass
-
-                if CURRENT_RAM_COUNT > 217000:
-                    console.print("[bold white on red][ WARNUNG ][/bold white on red] KONTEXT-LIMIT!")
-                    import winsound
-                    winsound.Beep(1000, 500)
-
+                        console.print("[bold green][AUTO-SYS][/bold green] S403_Clear_Counter.bat automatisch abgefeuert!")
 
             # 3. SPRACHAUSGABE STARTEN
             status = await speak_and_wait(ticket)
 
             if status == "PAUSED":
-                continue  # <--- Wichtig: Diese Zeile muss eingerückt sein!
+                continue  
 
-            # 4. REINIGUNG NACH ABSCHLUSS (Cyberpunk-Mod)
+            # 4. REINIGUNG NACH ABSCHLUSS
             if status in ["FINISHED", "SKIPPED"]:
                 await asyncio.sleep(0.5)
                 if os.path.exists(file_path):
-                    try:
-                        os.remove(file_path)
+                    try: os.remove(file_path)
                     except Exception as e:
                         console.print(f"[Reinigung] Blockiert: {e}")
-                        # Der Rettungsanker: Umbenennen statt hängenbleiben!
                         try:
                             os.rename(file_path, file_path + ".dead")
-                            console.print("[Butler] Ticket als .dead markiert. Weg frei.")
                         except: pass
 
-                # Spezial-Reinigung für den Skip-Vektor
                 if status == "SKIPPED" and os.path.exists(N_FILE):
                     try: os.remove(N_FILE)
                     except: pass
@@ -255,3 +232,4 @@ async def main_loop():
 
 if __name__ == "__main__":
     asyncio.run(main_loop())
+
