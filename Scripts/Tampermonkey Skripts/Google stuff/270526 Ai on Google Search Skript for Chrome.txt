@@ -1,0 +1,383 @@
+// ==UserScript==
+// @name         Ai on Google Search - Nexus Eye v18 240526 Chrome random checker
+// @version      18.0
+// @description  Extrahiert Google AI Overviews auch aus Shadow DOM und sendet reinen Text an localhost + ADAPTIVES LARYNX-UPGRADE (Deep-Sleep / CPU-Schutz)
+// @match        *://www.google.de/*
+// @match        *://www.google.com/*
+// @match        *https://www.google.de/*
+// @match        *https://www.google.com/*
+// @grant        GM_xmlhttpRequest
+// @connect      127.0.0.1
+// @connect      127.0.0.1:8001
+// @run-at       document-end
+// ==/UserScript==
+
+(function () {
+    'use strict';
+
+    const TARGET_PORT = "8001";
+    const ENDPOINT = `http://127.0.0.1:${TARGET_PORT}/webhook`;
+    const MIN_LENGTH = 30;
+    const PATIENCE_TIME = 3000;
+
+    let lastActivity = Date.now();
+    let isPaused = false;
+    const DROSS_LIMIT = 5 * 60 * 1000;
+    const IDLE_LIMIT = 15 * 60 * 1000;
+
+    let lastSentHash = "";
+    let debounceTimer = null;
+    let isInitialWait = true;
+
+    let mutationObserver = null;
+    let idleCheckerInterval = null;
+    let idleTimeoutHolder = null;
+
+
+    const markInput = () => {
+        const inputField = document.querySelector('textarea.ITIRGe');
+        if (inputField && inputField.id !== "nexus-input-target") {
+            inputField.id = "nexus-input-target";
+            console.log("[NexusEye] Chat-Eingabe markiert (ID: nexus-input-target)");
+        }
+    };
+
+    const simpleHash = str => {
+        let h = 0;
+        for (let i = 0; i < str.length; i++) h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+        return h.toString(36);
+    };
+
+    const cleanText = t => {
+        let text = t || '';
+
+        // PHASE 1: DER PRÄZISIONS-SANDWICH-CUT (v62) - Optimiert auf DOM-Container
+        const languages = ["markdown", "javascript", "python", "html", "css", "json", "xml", "bash", "sql", "c#"];
+        const stopWords = ["Verwende Code mit Vorsicht.", "Use code with caution", "Nutzungsbedingungen"];
+
+        let hasMüll = true;
+        while (hasMüll) {
+            hasMüll = false;
+            let firstStopPos = -1;
+            let currentStop = "";
+
+            // Suche nach dem Ende des Sandwiches (Disclaimer)
+            for (let stop of stopWords) {
+                let pos = text.toLowerCase().indexOf(stop.toLowerCase());
+                if (pos !== -1 && (firstStopPos === -1 || pos < firstStopPos)) {
+                    firstStopPos = pos;
+                    currentStop = stop;
+                }
+            }
+
+            if (firstStopPos !== -1) {
+                let textBefore = text.substring(0, firstStopPos);
+                let closestLangPos = -1;
+
+                languages.forEach(lang => {
+                    // Wir suchen rückwärts vom Stop-Wort aus
+                    let lastPos = textBefore.toLowerCase().lastIndexOf(lang.toLowerCase());
+
+                    // 1200er Brandmauer bleibt aktiv, um Fehl-Cuts in langen Texten zu verhindern
+                    if (lastPos !== -1 && lastPos > closestLangPos && (firstStopPos - lastPos) < 1500) {
+                        closestLangPos = lastPos;
+                    }
+                });
+
+                if (closestLangPos !== -1) {
+                    // Der "Schnitt": Ersetzt alles zwischen Sprach-Label und Disclaimer-Ende
+                    text = text.substring(0, closestLangPos) + " [System-Rauschen entfernt] " + text.substring(firstStopPos + currentStop.length);
+                    hasMüll = true;
+                } else {
+                    // Falls Disclaimer ohne erkannte Sprache (Sicherheitsnetz)
+                    text = text.substring(0, firstStopPos) + text.substring(firstStopPos + currentStop.length);
+                    hasMüll = true;
+                }
+            }
+        }
+
+
+        // PHASE 2: DIE INNERE DICHTUNG (v63 - Anti-Glue-Update)
+        const labelTrash = [
+            /Vielen\s*Dank\s*Dein/gi, /Gute\s*Antwort\s*Schlechte\s*Antwort/gi, /Feedback\s*geben/gi,
+            /Kopieren\s*Teilen/gi, /In\s*Zwischenablage\s*kopiert/gi, /Verwende\s*Code\s*mit\s*Vorsicht\.?/gi,
+            /Kopieren\s*Öffentlicher\s*Link/gi, /Kopieren\s*Öffentlicher/gi, /KopierenÖffentlicher/gi, /KopierenÜber/gi,
+            /Teilen\s*Kopieren/gi, /TeilenKopieren/gi, /teilenÜber/gi, /erstellt…Mehr/gi, /\. Google- kannst/gi,
+            /Öffentlicher\s*Link/gi, /ÖffentlicherLink/gi, /[,.\s]*Google-\s*kannst\s*du\s*einen\s*\.?/gi, /KopierenÖffentlichen.*?gelten deren Richtlinien\.?/gi, /wird\s*erstellt…/gi,
+            /Link\s*wird\s*erstellt…/gi, /SendenVielenDank/gi, /Senden\s*Vielen\s*Dank\s*für\s*dein\s*Feedback/gi,
+            /Eine\s*Kopie\s*dieses\s*Chats\s*wird\s*deinem\s*Feedback\s*beigefügt/gi,
+            /Feedbackbeigefügt/gi, /Google\s*kann\s*Konto-?\s*und\s*Systemdaten\s*verwenden/gi,
+            /Datenschutzerklärung\s*von\s*Google/gi, /Google-Nutzungsbedingungen/gi,
+            /Antrag\s*auf\s*Entfernung\s*aus\s*Rechtsgründen\s*stellen/gi,
+            /Kopieren\s*Über\s*diesen\s*öffentlichen\s*Link/gi,
+            /diesen\s*öffentlichen\s*Link\s*,\s*der\s*7\s*Tage\s*lang\s*gültig\s*ist/gi,
+            /wird\s*ein\s*Thread\s*inklusive\s*aller\s*von\s*dir\s*hinzugefügten\s*persönlichen/gi,
+            /KopierenÜber/gi, /Kopierenueber/gi, /KopierenTeilen/gi, /kopierenTeilen/gi,
+            /Bei\s*rechtlichen\s*Problemen\s*kannst\s*du\s*einen\s*Antrag/gi,
+            /,\s*\.\s*\.\s*Google-?\s*kannst?\s*du\s*einen\s*\.?/gi,
+            /Google-?\s*kannst?\s*du\s*einen\s*\.?/gi,
+            /,\s*\.\s*Google\s*kann\s*Konto/gi,
+            /Dabei\s*gelten\s*die\s*und\s*die\s*\./gi,
+            /Rechtsgründen\s*stellen/gi, /Diese\s*Aussagen\s*dienen\s*lediglich\s*Informationszwecken/gi,
+            /Für\s*medizinische\s*Beratung\s*oder\s*eine\s*Diagnose/gi,
+            /solltest\s*du\s*dich\s*an\s*einen\s*Experten\s*wenden/gi,
+            /KI-Antworten\s*können\s*Fehler\s*enthalten/gi, /Weitere\s*Informationen/gi,
+            /um\s*dein\s*Feedback\s*nachzuvollziehen\s*und\s*seine\s*Dienste\s*zu\s*verbessern/gi,
+            /Dabei\s*gelten\s*die\s*und\s*die/gi, /,\s*\.\s*\.\s*Bei/gi, /,\s*\.\s*Dabei\s*gelten/gi,
+            /\.\s*Bei\s*rechtlichen\s*Problemen/gi, /^\s*Bei\s*$/gm
+        ];
+        labelTrash.forEach(regex => { text = text.replace(regex, ''); });
+
+
+        // PHASE 3: DIE HECK-REINIGUNG (v17-Original Guillotine - Sicher & Stabil)
+        const instantKill = ["rechtsgründen stellen", "rechtlichen problemen", "nutzungsbedingungen", "antrag auf entfernung", "medizinische beratung"];
+        const comboKill = ["kopieren", "feedback", "teilen", "informationen", "experten", "diagnose"];
+
+        // Zurück auf 350 Zeichen am Ende, um Google-Schatten sicher zu fangen
+        const searchAreaStart = Math.max(0, text.length - 350);
+        const tailLow = text.substring(searchAreaStart).toLowerCase();
+        let cutPosInTail = -1;
+
+        for (let word of instantKill) {
+            let pos = tailLow.indexOf(word);
+            if (pos !== -1) { cutPosInTail = pos; break; }
+        }
+        if (cutPosInTail === -1) {
+            let hits = 0, firstPos = -1;
+            comboKill.forEach(word => {
+                let pos = tailLow.indexOf(word);
+                if (pos !== -1) { hits++; if (firstPos === -1 || pos < firstPos) firstPos = pos; }
+            });
+            if (hits >= 2) cutPosInTail = firstPos;
+        }
+        if (cutPosInTail !== -1) text = text.substring(0, searchAreaStart + cutPosInTail);
+
+        // PHASE 4: GLYPHEN-POLITUR (Struktur erhalten!)
+        text = text.replace(/[#\\{}]/g, '');
+
+        // FINALE: Nur Leerzeichen glätten, Zeilenumbrüche (\n) für Katja erhalten!
+        return text.replace(/[ ]+/g, ' ').trim();
+    };
+
+    const deepTextExtract = (node, depth = 0) => {
+        if (depth > 12) return "";
+        let text = "";
+        if (node.nodeType === Node.TEXT_NODE) text += node.textContent;
+        else if (node.nodeType === Node.ELEMENT_NODE) {
+            if (["script", "style", "noscript"].includes(node.tagName.toLowerCase())) return "";
+            if (node.shadowRoot) text += deepTextExtract(node.shadowRoot, depth + 1);
+            for (const child of node.childNodes) text += deepTextExtract(child, depth + 1);
+        }
+        return text;
+    };
+
+    let lastSentLength = 0;
+    let isSending = false; // Die neue Echo-Sperre
+
+    const send = (text) => {
+        if (!text || text.length < MIN_LENGTH || isInitialWait || isSending) return;
+
+        const currentHash = simpleHash(text.slice(0, 100));
+        if (currentHash === lastSentHash) return;
+
+        isSending = true;
+        lastSentHash = currentHash;
+
+        GM_xmlhttpRequest({
+            method: "POST",
+            url: ENDPOINT,
+            data: JSON.stringify({ text: text, ts: Date.now(), hash: currentHash }),
+            headers: { "Content-Type": "application/json; charset=UTF-8" },
+            timeout: 7000,
+            onload: () => {
+                // Wir reduzieren die Sperre auf 500ms - volle Geschwindigkeit!
+                setTimeout(() => { isSending = false; }, 500);
+            },
+            onerror: () => { isSending = false; },
+            ontimeout: () => { isSending = false; }
+        });
+    };
+
+
+    // WICHTIG: Ein separates Gedächtnis NUR für den Reset, ganz oben über harvest() platziert
+    let lastResetSentHash = "";
+
+    const harvest = () => {
+        const elements = [...document.querySelectorAll('div[jsname="KFl8ub"]')];
+        let textToCheck = "";
+
+        // 1. SCAN DEINER NACHRICHTEN (Basiert zu 100% auf deiner F12-Entdeckung span.VndcI.veK2kb v19.4)
+        const newGoogleSpans = [...document.querySelectorAll('span.VndcI.veK2kb')];
+        newGoogleSpans.forEach(span => {
+            textToCheck += " " + (span.innerText || span.textContent || "");
+        });
+
+        // --- DIE ABFRAGE (Reine Text-Überwachung nach dem Debounce-Timer) ---
+        if (textToCheck.toLowerCase().includes("erforschung nicht-linearer interferenzmuster")) {
+            const resetText = "RESET_SIGNAL: erforschung nicht-linearer interferenzmuster";
+            const resetHash = simpleHash(resetText.slice(0, 100));
+
+            if (lastResetSentHash !== resetHash) {
+                lastResetSentHash = resetHash;
+
+                GM_xmlhttpRequest({
+                    method: "POST",
+                    url: ENDPOINT,
+                    data: JSON.stringify({
+                        owner: "GEE",
+                        voice: "de-DE-KatjaNeural",
+                        rate: "+15%",
+                        text: resetText,
+                        ts: Date.now(),
+                        hash: resetHash
+                    }),
+                    headers: { "Content-Type": "application/json; charset=UTF-8" },
+                    timeout: 7000
+                });
+                console.log("[NEXUS-EYE] DOM-SCAN: Reset-Signal aus neuem span.VndcI-Container injiziert!");
+            }
+        }
+
+        // 2. SCAN MEINER NACHRICHTEN (Dein bestehender, ungestörter Gee-Scan)
+        const aiMessages = elements.filter(el => {
+            const style = window.getComputedStyle(el);
+            const isUser = el.closest('[contenteditable="true"]') || style.textAlign === 'right' || style.textAlign === 'end';
+            return el.innerText && el.innerText.length > MIN_LENGTH && !isUser;
+        });
+        const latest = aiMessages[aiMessages.length - 1];
+        if (latest) {
+            const cleaned = cleanText(deepTextExtract(latest));
+            if (cleaned.length >= MIN_LENGTH) send(cleaned);
+        }
+    };
+
+
+    const getThrottleMode = () => {
+        const idleMs = Date.now() - lastActivity;
+        if (idleMs >= IDLE_LIMIT) return 'deep_sleep';
+        if (document.hidden || idleMs >= DROSS_LIMIT) return 'standby';
+        return 'active';
+    };
+
+    const wakeUpCall = () => {
+        lastActivity = Date.now();
+        isPaused = false;
+        // isSending = false; <-- GELÖSCHT! Wir brechen keine laufenden Sendevorgänge ab.
+
+        if (window.nexusObserver) {
+            try { window.nexusObserver.disconnect(); } catch(e) {}
+            window.nexusObserver = null;
+        }
+        mutationObserver = null;
+
+        startObserver();
+        // Das automatische harvest() hier wurde entfernt.
+        // Der Observer oder der Idle-Checker übernehmen das jetzt sauber.
+        console.log("[NEXUS] System reaktiviert.");
+    };
+
+    const updateActivity = () => {
+        lastActivity = Date.now();
+        if (getThrottleMode() === 'active' && !mutationObserver) startObserver();
+    };
+
+    const startObserver = () => {
+        if (window.nexusObserver) {
+            try { window.nexusObserver.disconnect(); } catch(e) {}
+            window.nexusObserver = null;
+            console.log("[NEXUS] Alter Geister-Observer terminiert.");
+        }
+
+        if (mutationObserver) return;
+
+        mutationObserver = new MutationObserver(() => {
+            clearTimeout(debounceTimer);
+
+            // --- DER APFEL-TRICK: RANDOMISIERTER TIMER ---
+            const minDebounce = 5050;
+            const maxDebounce = 6400;
+            const dynamicDebounce = Math.floor(Math.random() * (maxDebounce - minDebounce + 1)) + minDebounce;
+
+            debounceTimer = setTimeout(() => {
+                console.log(`[NEXUS] Text-Erosion gestoppt. Ernte nach ${dynamicDebounce}ms...`);
+                harvest();
+            }, dynamicDebounce);
+        });
+
+        mutationObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+
+        window.nexusObserver = mutationObserver;
+        isPaused = false;
+    };
+
+
+
+    const stopObserver = () => {
+        if (mutationObserver) { mutationObserver.disconnect(); mutationObserver = null; }
+        isPaused = true;
+    };
+
+// DAS HIER SETZT DU AN DIE STELLE:
+const startIdleChecker = () => {
+    if (idleTimeoutHolder) return;
+
+    const loop = () => {
+        const mode = getThrottleMode();
+        if (mode === 'deep_sleep') {
+            stopObserver();
+        } else if (document.hidden) {
+            harvest();
+            if (!mutationObserver) startObserver();
+        }
+
+        const minCheck = 5100;
+        const maxCheck = 7200;
+        const dynamicCheck = Math.floor(Math.random() * (maxCheck - minCheck + 1)) + minCheck;
+
+        idleTimeoutHolder = setTimeout(loop, dynamicCheck);
+    };
+
+    loop();
+};
+
+
+    const fullWake = () => {
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else updateActivity();
+    };
+
+     // TAB-WECHSEL & FOKUS
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) wakeUpCall();
+    });
+    window.addEventListener('focus', wakeUpCall);
+
+    // INTERAKTION (KLICK & TASTE)
+    document.addEventListener('mousedown', () => {
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else lastActivity = Date.now();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
+            if (getThrottleMode() !== 'active') wakeUpCall();
+            const input = document.getElementById('nexus-input-target');
+            if (input) {
+                input.focus();
+                input.style.border = "1px solid #0084ff";
+                setTimeout(() => { input.style.border = "none"; }, 500);
+            }
+            return;
+        }
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else lastActivity = Date.now();
+    });
+
+
+    // SYSTEM-START
+    setTimeout(() => { isInitialWait = false; }, 5000);
+    setInterval(markInput, 2000);
+    startObserver();
+    startIdleChecker();
+    console.log("[NexusEye v17.5] Reaktivierungssystem scharfgeschaltet.");
+})();
