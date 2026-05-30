@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Meta Firefox Perfekt 260426
+// @name         Meta.ai (ON FACEBOOK) Firefox Perfekt 260426
 // @version      1.0
 // @description  Extrahiert Meta AI Chat-Antworten für die barrierefreie Audio-Resonanz im Nexus-System.
 // @author       Architekt & Gee
@@ -129,20 +129,19 @@
             const mode = getThrottleMode();
             if (mode === 'deep_sleep') {
                 stopObserver();
-            } else {
-                // Zwangsvollstreckung alle 10 Sekunden
+            } else if (document.hidden) {
+                // Nur ernten, wenn wir NICHT im Tab sind
                 harvestMeta();
                 if (!mutationObserver) startObserver();
             }
-        }, 10000);
+        }, 5000); // 5 Sekunden Herzschlag
     };
 
 
     const wakeUpCall = () => {
         lastActivity = Date.now();
-        isSending = false; // Resetet die Sperre
+        // isSending = false; <-- GELÖSCHT: Wir brechen keine laufenden Sendevorgänge ab.
 
-        // Meta-Exorzismus
         if (window.nexusObserverMeta) {
             try { window.nexusObserverMeta.disconnect(); } catch(e) {}
             window.nexusObserverMeta = null;
@@ -150,10 +149,8 @@
         mutationObserver = null;
 
         startObserver();
-        setTimeout(() => {
-            console.log("[NEXUS Meta] Manueller Sync-Scan...");
-            harvestMeta();
-        }, 500);
+        // harvestMeta() hier entfernt, der Observer übernimmt beim Fokus-Wechsel
+        console.log("[NEXUS Meta] System reaktiviert.");
     };
 
 
@@ -163,30 +160,32 @@
     };
 
     function send(t, name) {
-        if (isSending) return;
+        if (!t || isSending) return;
+
+        // Identitäts-Check auf die ersten 100 Zeichen
+        // (Ignoriert Meta-UI-Müll am Ende der Nachricht)
+        const currentHash = btoa(encodeURIComponent(t.slice(0, 100)));
+        if (currentHash === lastSent) return;
+
         isSending = true;
-        lastSent = t;
+        lastSent = currentHash; // Wir speichern den Hash als Referenz
 
         GM_xmlhttpRequest({
             method: "POST",
             url: ENDPOINT,
-            data: JSON.stringify({ text: t, ts: Date.now(), sender: name }),
+            data: JSON.stringify({ text: t, ts: Date.now(), sender: name, hash: currentHash }),
             headers: { "Content-Type": "application/json" },
             timeout: 7000,
             onload: () => {
+                // Kurze Sperre für Snap-Resonanz
                 setTimeout(() => { isSending = false; }, 1000);
                 console.log("[NEXUS Meta] Übermittelt.");
             },
-            onerror: () => {
-                isSending = false;
-                console.warn("[NEXUS Meta] Port 8002 zu. Nachricht geparkt.");
-            },
-            ontimeout: () => {
-                isSending = false;
-                console.warn("[NEXUS Meta] Timeout an Port 8002.");
-            }
+            onerror: () => { isSending = false; },
+            ontimeout: () => { isSending = false; }
         });
     }
+
 
     // --- EVENT LISTENER (Das neue Förmchen) ---
     document.addEventListener('visibilitychange', () => { if (!document.hidden) wakeUpCall(); });
