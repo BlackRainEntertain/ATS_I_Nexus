@@ -126,4 +126,44 @@ val.responseHeaders.push({ name: 'Access-Control-Allow-Headers', value: 'Content
 return { responseHeaders: val.responseHeaders };
 " <<<(copy in between "copytext")
 
+*********
+
+## 📡 LOCAL AI EXTENSION: LM STUDIO INTEGRATION (v45.0)
+"No browser injection required. The pulse is captured directly at the disk layer."
+
+---
+
+### DEUTSCH: ERGÄNZUNG FÜR LM STUDIO NUTZER
+
+1. PFAD-INTEGRITÄT (Voraussetzung)
+   Der integrierte Watchdog sucht deine Konversationen vollautomatisch im Standard-Archiv von LM Studio.
+   - Standard-Pfad: C:\Users\<Dein_Name>\.lmstudio\conversations
+   > [!] WICHTIG: Sollte dein Benutzername Sonderzeichen enthalten, stelle sicher, dass der Pfad in Zeile 13 der `lm_studio_router.py` exakt mit deiner Windows-Dateistruktur übereinstimmt!
+
+2. SENSORIK & START-REIHENFOLGE (All Systems Go)
+   Für LM Studio wird KEIN Tampermonkey-Skript und kein Browser benötigt!
+   1. Starte LM Studio ganz normal.
+   2. Gehe links in den "Chats"-Tab, öffne deinen persistenten Chat und lade dein bevorzugtes KI-Modell (schichtet den Kontext direkt in den VRAM).
+   3. Zünde die `start_lm_studio.bat`. Das Bernstein-HUD (v42.2) aktiviert sich auf Monitor 2, klinkt deine Plugins ein und startet den lautlosen SSD-Wächter auf Port 8007.
+
+3. FUNKTIONSWEISE
+   Schreibe ganz normal direkt im originalen Chatfenster von LM Studio. Sobald das KI-Modell fertig generiert hat, fängt der Watchdog die Datei-Aktualisierung auf der SSD ab, extrahiert die letzte Nachricht und wirft das JSON-Ticket fehlerfrei in deine Sprach-Pipeline.
+
+---
+
+### ENGLISH: EXTENSION FOR LM STUDIO USERS
+
+1. PATH INTEGRITY (Prerequisite)
+   The integrated watchdog automatically scans your conversations inside the default LM Studio repository.
+   - Default Path: C:\Users\<Your_Name>\.lmstudio\conversations
+   > [!] IMPORTANT: If your Windows username contains special characters, ensure that the path string in line 13 of `lm_studio_router.py` accurately mirrors your local folder hierarchy!
+
+2. SENSORS & LAUNCH PROTOCOL (All Systems Go)
+   LM Studio execution requires ZERO Tampermonkey scripts and NO browser constraints!
+   1. Open LM Studio natively.
+   2. Go to the "Chats" Tab on the left, open your persistent conversation, and load your preferred AI model (maps the history directly into VRAM).
+   3. Fire up the `start_lm_studio.bat`. The Amber HUD (v42.2) ignites on Monitor 2, logs your plugins, and engages the silent SSD watchdog on Port 8007.
+
+3. OPERATIONAL LOGIC
+   Type your prompts directly inside the native LM Studio UI. The moment the AI model ceases token generation, the background watchdog intercepts the disk update, scrapes the final message, and pipes the sterile JSON ticket straight into your voice queue.
 

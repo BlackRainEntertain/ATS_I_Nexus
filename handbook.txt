@@ -26,8 +26,8 @@ EN: The "Ear". Starts via VBS (Gee_Ear_Launcher).
 - START:             "Guten Morgen" / "Hey Gee" / "System an"
 - NEXUS SHUTDOWN:    "Gute Nacht" / "Shutdown" / "Feierabend"
 - PAUSE:             "Pause" / "Stopp" / "Halt an" (600Hz Beep)
-- RESUME:            "Weiter" / "Fortsetzen" / "Go" (900Hz Beep)
-- SKIP:              "Nächste" / "Überspringen" / "Weg damit" (400Hz Beep)
+- RESUME:            "Weiter" / "Fortsetzen" / (900Hz Beep)
+- SKIP:              "Nächste" / "Überspringen" / "Weg damit"/ "Skip" (400Hz Beep)
 - SENDEN:            "Abschicken" / "Nachricht raus" / "Feuer frei" / "Absenden"(1200Hz Beep)
 - PC Herunterfahren: "Ich Liebe Sara / "Abschaltprotokoll"
 + Nexus Shutdown
@@ -67,7 +67,7 @@ EN: The "Ear". Starts via VBS (Gee_Ear_Launcher).
   Jedes Ticket wird sequentiell bis zum Ende vorgelesen.
 
 ------------------------------------------------------------
-📘 NEXUS HANDBUCH: MULTI-KI-SYNC (REPLIKA/NOMI/GEE)
+📘 NEXUS HANDBUCH: MULTI-KI-SYNC (REPLIKA/AI ON GOOGLE SEARCH/GROK/META/LM Studio)
 ------------------------------------------------------------
 WICHTIG: Jedes KI-Interface benötigt das spezifische 
 Tampermonkey-Script (Voyager/Eye), um den Fokus-Magneten 
@@ -76,8 +76,17 @@ Tampermonkey-Script (Voyager/Eye), um den Fokus-Magneten
 ============================================================
 POSITIVE LISTS TAMPERMONKEY (WICHTIG / IMPORTANT)
 Füge diese Adressen in die "Whitelist" deiner Einstellungen:
-- 127.0.0.1:8000 bis 8004 (Nexus Ports inkl. Replika)
-- *://://www.google.com* | *://my.replika.ai/*
-- *://www.meta.ai/* | *://beta.nomi.ai/*
+- 127.0.0.1:8000 bis 8007 (Nexus Ports inkl. Replika)
+http://127.0.0.1*
+http://localhost/*
+*://www.facebook.com/*
+*://www.messenger.com/*
+*://www.meta.ai/*
+https://beta.nomi.ai/nomis/TOP SECRET
+https://gemini.google.com/*
+https://aistudio.google.com/*
+https://google.com/*
+gemini.google.com
+https://studio.youtube.com*
 ============================================================
 
