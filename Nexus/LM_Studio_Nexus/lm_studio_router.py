@@ -3,18 +3,25 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import importlib, pkgutil, os, uvicorn, re, threading, time
 import json
+import hashlib
 import pygetwindow as gw
 import ctypes
 import httpx
 from rich.console import Console
 from rich.panel import Panel
+from rich.text import Text
 
-# Pfad zu deinem echten LM-Studio Konversations-Archiv
+# --- SYSTEM-PFADE (DEIN ABSOLUTES HARDWARE-GEFÜGE) ---
 CONV_DIR = r"C:\Users\René\.lmstudio\conversations"
-# Ziel-Mündung für dein zentrales Butler-System (Port 8007 Webhook!)
-VOICE_ENDPOINT = "http://127.0.0.1:8007/webhook"
+QUEUE_DIR = r"C:\Users\René\Desktop\LM Projekte\Nexus\Nexus\_Voice_Queue"
 
-last_seen_texts = {}
+# Falls der Hauptpfad hakt, relativer Fallback
+if not os.path.exists(QUEUE_DIR):
+    QUEUE_DIR = r"C:\Users\René\Desktop\LM Projekte\Nexus\_Voice_Queue"
+
+stabilization_cache = {}
+last_sent_hashes = {}
+console = Console()
 
 # --- COCKPIT SNAP LOGIK ---
 def snap_to_grid():
@@ -34,25 +41,24 @@ def snap_to_grid():
 
 def print_lm_studio_banner():
     os.system("title LM_STUDIO_NEXUS")
-    console = Console()
     lm_core = r"""
- [bold #FF8C00]     ▄▄████████▄▄      ▄▄████████▄▄    [/bold #FF8C00]
- [bold #FF4500]    ███▀    ▀████    ████▀    ▀███   [/bold #FF4500]
- [bold #FF4500]    ██   [bold #FFFF00]▄██▄[/bold #FFFF00]  ██████████  [bold #FFFF00]▄██▄[/bold #FFFF00]   ██   [/bold #FF4500]
- [bold #FF4500]    ▀██▄ [bold #FFFF00]▀██▀[/bold #FFFF00]  ▀▀▀[bold #FFA500][ LM ][/bold #FFA500]▀▀▀  [bold #FFFF00]▀██▀[/bold #FFFF00] ▄██▀   [/bold #FF4500]
- [bold #990000]      ▀██████▀▀   ▀▀   ▀▀██████▀     [/bold #990000]
- [bold #660000]                ▀▀▀▀                 [/bold #660000]
- [bold #330000] ─── LM Studio Universal Engine // Port 8007 ─── [/bold #330000]
+ [bold #8A2BE2]      ▄▄          ▄▄      [/bold #8A2BE2]
+ [bold #9400D3]    ▄████▄      ▄████▄    [/bold #9400D3]
+ [bold #9400D3]    ██▄████████████▄██    [/bold #9400D3]
+ [bold #BA55D3]    ███▀██████████▀███    [/bold #BA55D3]
+ [bold #DA70D6]    ██████████████████    [/bold #DA70D6]
+ [bold #DA70D6]      ▀██▀▀▀▀▀▀▀▀██▀      [/bold #DA70D6]
+ [bold #8B008B]     ▄██  ▀▀  ▀▀  ██▄     [/bold #8B008B]
+ [bold #4B0082] ─── LM Studio Space Invader Engine // Port 8007 ─── [/bold #4B0082]
 """
     console.print(lm_core)
     console.print(Panel(
         "[bold white]LM_NEXUS_CORE: ONLINE (Frequenz-Kanal 8007)[/bold white]", 
-        subtitle="[bold #FF4500]Pure Archive Sync Modus[/bold #FF4500]", 
-        border_style="#FF4500", 
+        subtitle="[bold #9400D3]Froggit Archive Sync[/bold #9400D3]", 
+        border_style="#9400D3", 
         expand=False
     ))
 
-    # --- DAS INTERAKTIVE HUD (v42.2) ---
     console.print("\n [bold cyan]NEXUS LARYNX PROTOKOLL:[/bold cyan]")
     console.print(" [white]Diktat:[/white] [bold green]Texteingabe[/bold green] ➔ [bold red]Abbruch[/bold red] ➔ [bold yellow]Nexus Fertig[/bold yellow] ➔ [bold blue]Absenden[/bold blue]")
     console.print(" [white]Audio: [/white] [bold dim]Pause, Weiter, Skip, Stopp[/bold dim]")
@@ -61,7 +67,6 @@ def print_lm_studio_banner():
     console.print(" [dim]─────────────────────────────────────────────────────────────[/dim]\n")
 
 def extract_last_assistant_text(file_path):
-    """Extrahiert blitzschnell die allerletzte KI-Antwort aus der LM-Studio JSON"""
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
@@ -86,8 +91,7 @@ def extract_last_assistant_text(file_path):
     return None
 
 def archive_watchdog():
-    """Überwacht das Archiv im lautlosen Jitter-Takt (0.0% CPU-Last beim Zocken)"""
-    print("[*] Archiv-Wächter AKTIV. Lausche stur auf deine LM-Studio Chats...")
+    console.print("[bold #8B008B][*] Archiv-Wächter AKTIV. Lausche stur auf deine LM-Studio Chats...[/bold #8B008B]")
     while True:
         time.sleep(1.0)
         if not os.path.exists(CONV_DIR): continue
@@ -95,14 +99,58 @@ def archive_watchdog():
             for file in os.listdir(CONV_DIR):
                 if file.endswith(".json"):
                     full_path = os.path.join(CONV_DIR, file)
-                    if (time.time() - os.path.getmtime(full_path)) < 2.0:
-                        last_text = extract_last_assistant_text(full_path)
-                        if last_text and len(last_text) > 2:
-                            if last_seen_texts.get(file) != last_text:
-                                last_seen_texts[file] = last_text
-                                print(f"[+] Neue Nachricht im Archiv erkannt ➔ Sende Ticket an Webhook.")
-                                try: httpx.post(VOICE_ENDPOINT, json={"text": last_text}, timeout=5.0)
-                                except: pass
+                    
+                    if (time.time() - os.path.getmtime(full_path)) < 30.0:
+                        current_text = extract_last_assistant_text(full_path)
+                        if not current_text or len(current_text) <= 5: continue
+                        
+                        state = stabilization_cache.get(file, {"text": "", "count": 0})
+                        
+                        if state["text"] == current_text:
+                            state["count"] += 1
+                        else:
+                            state["text"] = current_text
+                            state["count"] = 0
+                            
+                        stabilization_cache[file] = state
+                        
+                        # DER 5-SEKUNDEN-GOLDSTANDARD
+                        if state["count"] >= 5:
+                            current_hash = hashlib.md5(current_text.encode('utf-8')).hexdigest()
+                            
+                            if last_sent_hashes.get(file) != current_hash:
+                                last_sent_hashes[file] = current_hash
+                                
+                                # Physisches JSON-Ticket generieren
+                                ticket_data = {
+                                    "owner": "LM_Studio",
+                                    "voice": "de-DE-SeraphinaMultilingualNeural",
+                                    "rate": "-4%",
+                                    "pitch": "-2Hz",
+                                    "text": current_text,
+                                    "timestamp": time.time()
+                                }
+                                
+                                if os.path.exists(QUEUE_DIR):
+                                    ticket_file = os.path.join(QUEUE_DIR, f"ticket_lm_studio_{int(time.time())}.json")
+                                    with open(ticket_file, "w", encoding="utf-8") as tf:
+                                        json.dump(ticket_data, tf, ensure_ascii=False, indent=2)
+                                    
+                                    # --- DAS INTEGRATION-BOX-PROTOKOLL ---
+                                    # Formatiert das lila Froggit-Interface live im CMD-Fenster!
+                                    current_time = time.strftime("%H:%M:%S")
+                                    panel_text = Text(current_text, style="#DA70D6")
+                                    
+                                    console.print(Panel(
+                                        panel_text,
+                                        title=f"[bold #BA55D3]LM_STUDIO @ {current_time}[/bold #BA55D3]",
+                                        subtitle="[dim white]Nexus_v1[/dim white]",
+                                        border_style="#9400D3",
+                                        width=57,  # Perfekt zugeschnitten auf dein 625px-Fenster-Grid!
+                                        expand=False
+                                    ))
+                                else:
+                                    console.print(f"[bold red][!] FEHLER: _Voice_Queue nicht gefunden unter {QUEUE_DIR}[/bold red]")
         except: pass
 
 app = FastAPI()
@@ -120,9 +168,8 @@ def load_plugins():
             importlib.reload(module)
             if hasattr(module, 'run'):
                 plugins.append(module.run)
-                print(f"    -> LM-Studio-Platte geladen: {name}")
-        except Exception as e:
-            print(f"    [!] Fehler bei {name}: {e}")
+                console.print(f"    [#DA70D6]-> LM-Studio-Platte geladen: {name}[/#DA70D6]")
+        except: pass
 
 @app.post("/webhook")
 async def receive(request: Request):
@@ -131,13 +178,12 @@ async def receive(request: Request):
     if not raw_text: return {"status": "empty"}
     for p in plugins:
         try: p(raw_text) 
-        except Exception as e: print(f"LM-Studio-Nexus-Fehler: {e}")
+        except: pass
     return {"status": "ok"}
 
 if __name__ == "__main__":
     print_lm_studio_banner()
     load_plugins()
-    # Zünde die beiden Hintergrund-Antriebe (Snap & Watchdog) parallel im RAM!
     threading.Thread(target=snap_to_grid, daemon=True).start()
     threading.Thread(target=archive_watchdog, daemon=True).start()
     uvicorn.run(app, host="127.0.0.1", port=8007, log_level="error")
