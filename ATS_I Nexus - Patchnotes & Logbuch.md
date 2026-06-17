@@ -849,5 +849,9 @@
 
 ****************************************************************************************************************
 
+18.06.2026
+Claude on DuckDuckGo got a tampermoneky Skript hooked up to Grok´s Nexus (Vivaldi browser)
 
+Claude auf DuckduckGo bekam ein tampermonkey Skript das an Grok´s Nexus sendet (Vivaldi browser)
 
+****************************************************************************************************************
