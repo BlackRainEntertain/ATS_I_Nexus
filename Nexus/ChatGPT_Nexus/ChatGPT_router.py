@@ -2,10 +2,38 @@ import asyncio
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import importlib, pkgutil, os, uvicorn
+import threading
+import time
+import pygetwindow as gw
+import ctypes
 from rich.console import Console
 from rich.panel import Panel
 
+# --- COCKPIT SNAP LOGIK (v6.8) ---
+def snap_to_grid():
+    # Wir geben dem Fenster 2 Sekunden Zeit, um nach dem Kaltstart zu existieren
+    time.sleep(2.0)
+    # Sucht nach dem Titel, den wir in print_gpt_banner() setzen
+    title_part = "GPT_NEXUS"
+    OFFSET_X = 2560
+    # Exakte Cockpit-Koordinaten der Wechsel-Ebene (identisch mit Replika)
+    X, Y, W, H = OFFSET_X + 625, 540, 625, 548
+    
+    windows = [w for w in gw.getWindowsWithTitle('') if title_part in w.title.upper()]
+    if windows:
+        win = windows[0]
+        try:
+            win.restore()
+            win.moveTo(X, Y)
+            win.resizeTo(W, H)
+            # Zwingt das Fenster kompromisslos in den Vordergrund (Always on Top)
+            ctypes.windll.user32.SetWindowPos(win._hWnd, -1, 0, 0, 0, 0, 0x0001 | 0x0002)
+        except Exception as e:
+            print(f"[!] Snap-Fehler für GPT_NEXUS: {e}")
+
 def print_gpt_banner():
+    # Setzt den Titel im OS-System, damit die Snap-Logik anschlägt
+    os.system("title GPT_NEXUS")
     console = Console()
     gpt_logo = r"""
  [bold #00A67E]  █████████   █████████   █████████ [/bold #00A67E]
@@ -34,8 +62,6 @@ def print_gpt_banner():
     console.print(" [white]System:[/white] [bold #FF4500]PC VOLLSTÄNDIG HERUNTERFAHREN[/bold #FF4500] ➔ [italic]Ich Liebe Sara[/italic] [dim](oder Abschaltprotokoll)[/dim]")
     
     console.print(" [dim]─────────────────────────────────────────────────────────────[/dim]\n")
-
-
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
@@ -70,6 +96,8 @@ async def receive(request: Request):
 if __name__ == "__main__":
     print_gpt_banner()
     load_plugins()
+    # Zündung des Snap-Threads vor dem uvicorn-Serverstart
+    threading.Thread(target=snap_to_grid, daemon=True).start()
     # Zündung auf Port 8003
     uvicorn.run(app, host="127.0.0.1", port=8003, log_level="error")
 
