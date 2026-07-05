@@ -909,6 +909,30 @@ Claude auf DuckduckGo bekam ein tampermonkey Skript das an Grok´s Nexus sendet 
 - **Local API Stability:** Enhanced JSON ticket stream processing under Python 3.10+ within the local core to prevent memory buffer congestion during parallel multi-browser sessions.
 
 
+****************************************************************************************************************
+
+# Eintrag 30 (Titan-Ultra v46.0 - Brave Leo AI Springer-Nexus & Chromium API-Blockade)
+## [2026-07-05] – Das „BRAVE-LEO-NEXUS-INITIALIZATION & PROTOCOL-BARRIER“ Update 🦁⚡🛡️
+
+### DE: (Infrastruktur-Aufbau & Evaluierung der Browser-Sicherheitsarchitektur)
+**LEO_NEXUS EVOLUTION v1.0.0 (Port 8008):**
+- **Lokale Core-Architektur:** Erfolgreiche Bereitstellung des dedizierten Löwennexus-Moduls im lokalen Systemverzeichnis (`\Leo_Nexus`). Integration der `start_leo.bat` zur automatisierten Instanziierung der FastAPI-Instanz auf Port 8008. Das integrierte Rich-HUD sorgt für eine saubere visuelle Einpassung in das bestehende Cockpit-Layout (Titan-Maß Breite 86).
+- **Neuronale Sprach-Pipeline:** Implementierung der `nexus_voice.py` und `leo_printer.py` im lokalen Plugin-Zweig. Die Pipeline ist erfolgreich auf Florians Frequenz (`de-DE-FlorianMultilingualNeural`) kalibriert und leitet strukturierte JSON-Tickets synchron an die zentrale `_Voice_Queue` weiter.
+- **Unzerstörbare DOM-Identifikation:** Konzeptionierung einer zukunftssicheren Ernte-Sensorik (`harvest`) basierend auf den persistenten Chromium-Testattributen `data-testid="assistant-turn"`. Die Logik filtert systemseitigen Link- und Feedback-Müll (z.B. Link-Blöcke) vor der Ticket-Erstellung lokal auf Regex-Ebene heraus.
+
+**CHROMIUM-EMBARGO & RESTRIKTIONS-ANALYSE:**
+- **Protokoll-Blockade im Brave Browser:** Dokumentation einer kritischen Injektions-Sperre. Trotz aktivierter Browser-Flags (`#extensions-on-chrome-urls`), freigegebenen Datei-URLs und angepasster Tampermonkey-Whitelist blockiert der Brave-Kern die Ausführung von Userscripts auf internen App-Schnittstellen (`brave://leo-ai/` bzw. der impliziten App-ID `chrome://leo-ai/`) auf Kernel-Ebene. Das Skript verbleibt im aktuellen Zustand als nicht funktionsfähig auf dem Brave Browser. Alternative Übertragungswege (z.B. native API-Inversionen) befinden sich in der Testphase.
+
+---
+
+### EN: (Infrastructure Deployment & Browser Security Architecture Evaluation)
+**LEO_NEXUS EVOLUTION v1.0.0 (Port 8008):**
+- **Local Core Architecture:** Successful deployment of the dedicated Leo Nexus module inside the local system directory (`\Leo_Nexus`). Integration of `start_leo.bat` for automated instantiation of the FastAPI instance on port 8008. The integrated Rich-HUD ensures clean visual alignment with the existing cockpit layout (Titan-standard width 86).
+- **Neural Speech Pipeline:** Implementation of `nexus_voice.py` and `leo_printer.py` within the local plugin branch. The pipeline is successfully calibrated to Florian's frequency (`de-DE-FlorianMultilingualNeural`) and forwards structured JSON tickets synchronously to the central `_Voice_Queue`.
+- **Indestructible DOM Identification:** Conceptualized a future-proof harvesting routine (`harvest`) utilizing persistent Chromium test attributes (`data-testid="assistant-turn"`). The routine effectively strips system-generated link and feedback debris via local regex layers prior to ticket generation.
+
+**CHROMIUM EMBARGO & RESTRICTION ANALYSIS:**
+- **Protocol Blockade within Brave Browser:** Documentation of a critical injection barrier. Despite activated browser flags (`#extensions-on-chrome-urls`), granted file URL access, and modified Tampermonkey whitelists, the Brave core rigidly blocks user script execution on internal app interfaces (`brave://leo-ai/` or the implicit App ID `chrome://leo-ai/`) at the kernel level. The script remains non-functional on the Brave browser in its current state. Alternative transmission methods (e.g., native API inversion) are currently undergoing evaluation.
 
 
 
