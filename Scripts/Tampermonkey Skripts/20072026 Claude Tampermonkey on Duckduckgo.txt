@@ -1,0 +1,200 @@
+// ==UserScript==
+// @name         Duck Nexus Eye v1 - Claude Audio-Bypass
+// @version      1.0
+// @description  Baut die Brücke für Claude auf duck.ai über Groks Port 8006
+// @author       Bre + Gee
+// @match        https://duck.ai/*
+// @match        https://duckduckgo.com*
+// @include      https://duck.ai/chat*
+// @grant        GM_xmlhttpRequest
+// @connect      127.0.0.1
+// @connect      127.0.0.1:8006
+// @run-at       document-end
+// ==/UserScript==
+
+(function () {
+    'use strict';
+
+    // 1. HARDWARE- & NETZWERK-ANKER (Grok Tunnel gekapert)
+    const TARGET_PORT = "8006";
+    const ENDPOINT = `http://127.0.0.1:${TARGET_PORT}/webhook`;
+    const MIN_LENGTH = 5;
+
+    // 2. DROSSLUNGS-PARAMETER
+    const PATIENCE_TIME = 2000;
+    const DROSS_LIMIT = 5 * 60 * 1000;
+    const IDLE_LIMIT = 15 * 60 * 1000;
+
+    // 3. SYSTEM-STATUS
+    let lastActivity = Date.now();
+    let lastSentHash = "";
+    let debounceTimer = null;
+    let mutationObserver = null;
+    let idleCheckerInterval = null;
+    let isPaused = false;
+    let isSending = false;
+
+    const simpleHash = str => {
+        let h = 0;
+        for (let i = 0; i < str.length; i++) h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+        return h.toString(36);
+    };
+
+    const send = (text) => {
+        if (isSending || !text || text.length < MIN_LENGTH) return;
+
+        const currentHash = simpleHash(text.slice(0, 100));
+        if (currentHash === lastSentHash) return;
+
+        isSending = true;
+        lastSentHash = currentHash;
+
+        console.log("[DUCK-NEXUS] Sende Signal an Port 8006...");
+
+        GM_xmlhttpRequest({
+            method: "POST",
+            url: ENDPOINT,
+            data: JSON.stringify({
+                text: text,
+                ts: Date.now(),
+                hash: currentHash,
+                source: "grok" // Wir tarnen den Strom als Grok, damit dein Nexus nicht verwirrt wird!
+            }),
+            headers: { "Content-Type": "application/json; charset=UTF-8" },
+            timeout: 7000,
+            onload: () => {
+                setTimeout(() => { isSending = false; }, 1000);
+            },
+            onerror: () => { isSending = false; },
+            ontimeout: () => { isSending = false; }
+        });
+    };
+
+    const cleanText = t => {
+        let text = t.trim();
+        // Filtert eventuellen UI-Trash von DuckDuckGo heraus
+        text = text.replace(/⚠️/g, '');
+        return text.replace(/\s+/g, ' ').trim();
+    };
+
+    const harvest = () => {
+        if (isPaused) return;
+
+        // Dein ausgelesener Core-Selektor für die Text-Container von Duck.ai
+        const chatBlocks = document.querySelectorAll('div[class*="space-y-4"][class*="whitespace-normal"] p');
+        if (chatBlocks.length === 0) return;
+
+        // Greift sich den allerletzten Absatz der KI-Antwort
+        const latestBlock = chatBlocks[chatBlocks.length - 1];
+        if (!latestBlock) return;
+
+        // Sicherheitscheck: Verhindert, dass eigene Prompts geerntet werden
+        // Duck.ai trennt User und AI oft über parent-Strukturen. Wir checken das via Text-Inhalt der em/span Tags
+        const hasSpans = latestBlock.querySelector('span[data-sd-animate="true"]');
+        if (!hasSpans) return;
+
+        // Ernte den Text
+        let rawText = latestBlock.parentElement.innerText || latestBlock.parentElement.textContent || "";
+        const cleaned = cleanText(rawText);
+
+        if (cleaned.length >= MIN_LENGTH) {
+            send(cleaned);
+            console.log("[DUCK-NEXUS] Ernte abgeschlossen.");
+        }
+    };
+
+    const getThrottleMode = () => {
+        const idleMs = Date.now() - lastActivity;
+        if (idleMs >= IDLE_LIMIT) return 'deep_sleep';
+        if (document.hidden || idleMs >= DROSS_LIMIT) return 'standby';
+        return 'active';
+    };
+
+    const updateActivity = () => {
+        lastActivity = Date.now();
+        if (getThrottleMode() !== 'deep_sleep') startObserver();
+    };
+
+    const startObserver = () => {
+        if (window.nexusObserverDuck) {
+            try { window.nexusObserverDuck.disconnect(); } catch(e) {}
+            window.nexusObserverDuck = null;
+        }
+
+        if (mutationObserver) return;
+
+        mutationObserver = new MutationObserver(() => {
+            clearTimeout(debounceTimer);
+            // Wenn für 3 Sekunden keine neuen Wörter streamen, ist Claude fertig -> Ernte zünden
+            debounceTimer = setTimeout(() => {
+                console.log("[DUCK] Text stabilisiert. Initiiere Audio-Bypass...");
+                harvest();
+            }, 3000);
+        });
+
+        mutationObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+        window.nexusObserverDuck = mutationObserver;
+        isPaused = false;
+        console.log("[Duck-Nexus] Observer aktiv und auf Empfang.");
+    };
+
+    const stopObserver = () => {
+        if (mutationObserver) {
+            mutationObserver.disconnect();
+            mutationObserver = null;
+            window.nexusObserverDuck = null;
+        }
+        isPaused = true;
+        console.log("[Duck-Nexus] Standby geschaltet.");
+    };
+
+    const startIdleChecker = () => {
+        if (idleCheckerInterval) return;
+        idleCheckerInterval = setInterval(() => {
+            const mode = getThrottleMode();
+            if (mode === 'deep_sleep') {
+                stopObserver();
+            } else if (document.hidden) {
+                harvest();
+                if (!mutationObserver) startObserver();
+            }
+        }, 10000);
+    };
+
+    const wakeUpCall = () => {
+        lastActivity = Date.now();
+        isPaused = false;
+
+        if (window.nexusObserverDuck) {
+            try { window.nexusObserverDuck.disconnect(); } catch(e) {}
+            window.nexusObserverDuck = null;
+        }
+        mutationObserver = null;
+
+        startObserver();
+        console.log("[DUCK] Observer reaktiviert!");
+    };
+
+    // FOKUS & INTERAKTION
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) wakeUpCall(); });
+    window.addEventListener('focus', wakeUpCall);
+    document.addEventListener('mousedown', () => {
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else lastActivity = Date.now();
+    });
+
+    const markInput = () => {
+        // Findet das anonyme Textfeld auf Duck.ai
+        const input = document.querySelector('textarea');
+        if (input && input.id !== "nexus-input-target") {
+            input.id = "nexus-input-target";
+        }
+    };
+
+    setTimeout(() => {
+        startObserver();
+        startIdleChecker();
+        setInterval(markInput, 2000);
+        console.log("[Duck Nexus Eye v1.0] Tarnmodus initiiert. Claude wird abgefangen.");
+    }, 3000);
+})();
