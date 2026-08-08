@@ -934,5 +934,27 @@ Claude auf DuckduckGo bekam ein tampermonkey Skript das an Grok´s Nexus sendet 
 **CHROMIUM EMBARGO & RESTRICTION ANALYSIS:**
 - **Protocol Blockade within Brave Browser:** Documentation of a critical injection barrier. Despite activated browser flags (`#extensions-on-chrome-urls`), granted file URL access, and modified Tampermonkey whitelists, the Brave core rigidly blocks user script execution on internal app interfaces (`brave://leo-ai/` or the implicit App ID `chrome://leo-ai/`) at the kernel level. The script remains non-functional on the Brave browser in its current state. Alternative transmission methods (e.g., native API inversion) are currently undergoing evaluation.
 
+****************************************************************************************************************
+
+# Eintrag 31 (Grok-Titan v47.0 - xAI Cross-Platform Hybrid-Nexus & Adaptive DOM-Calibration)
+## [2026-08-08] – Das „XAI-NEXUS-RECOVERY & HYBRID-CONTAINER-FLOW“ Update 👁️🛰️⚡
+
+### DE: (Hybrid-Infrastruktur & Rekalibrierung der xAI-Frontend-Sensorik)
+**GROK_NEXUS EVOLUTION v2.9.5 (Port 8006):**
+- **Dual-Plattform-Synthese:** Erfolgreiche Verschmelzung der Readout-Logik für zwei völlig unterschiedliche Frontend-Architekturen in einem einzigen, hybriden Userscript. Das Skript bedient nun simultan die eingebettete X-Schnittstelle (`://x.com`) und die autarke Hauptplattform (`grok.com`) ohne operative System-Dissonanz.
+- **Adaptive DOM-Identifikation:** Rekalibrierung der Ernte-Sensorik (`harvest`) auf die neuesten, produktionsseitigen Frontend-Mutationen von xAI. Integration eines verfeinerten Kombi-Selectors, der sowohl die stark fluktuierenden, generierten Klassen (`div.css-g5y9jx[style*="display: block"]`) auf X als auch die semantischen Test-Attribute (`div[data-testid="assistant-message"]`) der Hauptseite zielsicher abgreift.
+- **Asynchroner Denk-Wächter:** Implementierung einer intelligenten Zustandssperre (`isThinking`). Die Logik analysiert den Textinhalt des `.thinking-container` in Echtzeit und blockiert den Datenstrom, solange Grok aktiv im Rechenprozess ("Arbeiten") verweilt. Erst bei Signal-Wechsel oder dem Erscheinen finaler Markdown-Absätze (`<p>`) wird das Ticket für den Nexus freigegeben.
+- **Rausch-Filterung (CleanText-Upgrade):** Erweiterung des lokalen `lightTrash`-RegEx-Arrays um spezifische Dämpfungs-Muster. Systemseitige Status-Fragmente wie *„Arbeiten für \d+s“* oder *„Gearbeitet für \d+s“* werden vor der Übermittlung restlos aus dem Datenstrom radiert, um eine flüsterleise, rein textuelle Weiterleitung an Port 8006 zu garantieren.
+
+---
+
+### EN: (Hybrid Infrastructure & xAI Frontend Sensor Recalibration)
+**GROK_NEXUS EVOLUTION v2.9.5 (Port 8006):**
+- **Dual-Platform Synthesis:** Successfully merged the readout routines for two completely distinct frontend architectures into a single, hybrid user script. The script now simultaneously services the embedded X interface (`://x.com`) and the standalone main platform (`grok.com`) without causing operational system dissonance.
+- **Adaptive DOM Identification:** Recalibrated the harvesting routine (`harvest`) to match xAI's latest production-level frontend mutations. Integrated a refined combination selector that accurately captures both the highly volatile, generated classes (`div.css-g5y9jx[style*="display: block"]`) on X and the semantic test attributes (`div[data-testid="assistant-message"]`) on the main site.
+- **Asynchronous Thinking Sentinel:** Implemented an intelligent state barrier (`isThinking`). The routine analyzes the text content of the `.thinking-container` in real-time, locking the data stream while Grok remains actively in its computational state ("Arbeiten"). The ticket is only released to the Nexus upon signal state shift or the structural appearance of final markdown paragraphs (`<p>`).
+- **Debris Filtering (CleanText Upgrade):** Expanded the local `lightTrash` RegEx array with specific attenuation patterns. System-generated status fragments such as *"Arbeiten für \d+s"* or *"Gearbeitet für \d+s"* are completely erased from the data stream prior to transmission, ensuring a whisper-quiet, pure-text forwarding to port 8006.
+
+
 
 
