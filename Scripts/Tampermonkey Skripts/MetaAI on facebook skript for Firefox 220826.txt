@@ -1,0 +1,212 @@
+// ==UserScript==
+// @name         Meta.ai (ON FACEBOOK) Firefox Perfekt 260426
+// @version      1.0
+// @description  Extrahiert Meta AI Chat-Antworten für die barrierefreie Audio-Resonanz im Nexus-System.
+// @author       Architekt & Gee
+// @match        https://www.facebook.com/*
+// @match        *://www.facebook.com*
+// @match        *://www.meta.ai/*
+// @match        *://www.messenger.com*
+// @grant        GM_xmlhttpRequest
+// @grant        unsafeWindow
+// @run-at       document-end
+// @connect      localhost
+// @connect      *
+// @connect      127.0.0.1
+// @noframes     false
+// ==/UserScript==
+
+
+(function() {
+    'use strict';
+    const ENDPOINT = "http://127.0.0.1:8002/";
+    let lastSent = "";
+    let debounceTimer = null;
+    let isSending = false; // Der neue Türsteher
+
+    // --- NEU: DER META-FOKUS-MAGNET (v2.0) ---
+    window.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
+            const metaInput = document.querySelector('[data-lexical-editor="true"]');
+            if (metaInput) {
+                metaInput.focus();
+                console.log("[NEXUS] Meta-Fokus magnetisch auf Lexical-Editor gezogen!");
+                metaInput.style.border = "2px solid #0084ff";
+                setTimeout(() => { metaInput.style.border = "none"; }, 500);
+            }
+        }
+    });
+
+    // --- LARYNX-PARAMETER (Cyberpunk-Safe) ---
+    const PATIENCE_TIME = 4000;
+    const DROSS_LIMIT = 300000; // 5 Min Standby
+    const IDLE_LIMIT = 900000; // 15 Min Deep Sleep
+    let lastActivity = Date.now();
+    let mutationObserver = null;
+    let idleCheckerInterval = null;
+
+    const getThrottleMode = () => {
+        const idleMs = Date.now() - lastActivity;
+        if (idleMs >= IDLE_LIMIT) return 'deep_sleep';
+        if (document.hidden || idleMs >= DROSS_LIMIT) return 'standby';
+        return 'active';
+    };
+
+    const updateActivity = () => {
+        lastActivity = Date.now();
+        if (getThrottleMode() !== 'deep_sleep') startObserver();
+    };
+
+    const harvestMeta = () => {
+        const nameSpan = document.querySelector('.xxymvpz.x1dyh7pn');
+        const senderName = nameSpan ? nameSpan.innerText.trim() : "META";
+
+        // Wir holen uns alle aktuellen Zeilen, die das neue KI-Merkmal (em) besitzen
+        const aiElements = document.querySelectorAll('div.xdj266r.x14z9mp.xat24cr.x1lziwak em');
+        if (aiElements.length === 0) return;
+
+        let storyFragments = [];
+
+        // Wir nehmen das letzte gefundene EM-Element als Anker für die aktuellste Nachricht
+        const latestEm = aiElements[aiElements.length - 1];
+
+        // Wir suchen den übergeordneten Nachrichten-Container (die Sprechblase),
+        // um alle Zeilen genau DIESER einen Nachricht zu erwischen
+        const messageGroup = latestEm.closest('[role="row"], [data-testid="message_container"], .x1n2onr6');
+
+        if (messageGroup) {
+            // Alle Zeilen innerhalb dieser Sprechblase auslesen
+            messageGroup.querySelectorAll('div.xdj266r.x14z9mp.xat24cr.x1lziwak').forEach(div => {
+                const txt = div.innerText.trim();
+                if (txt && !storyFragments.includes(txt)) {
+                    storyFragments.push(txt);
+                }
+            });
+        } else {
+            // Fallback, falls Facebook den Gruppen-Container mal sprengt
+            storyFragments.push(latestEm.innerText.trim());
+        }
+
+        const fullText = storyFragments.join("\n");
+        if (fullText && fullText.trim() !== lastSent && !fullText.endsWith("...")) {
+            send(fullText.trim(), senderName);
+        }
+    }; // <-- HIER ENDET DIE FUNKTION BEREITS!
+
+    const startObserver = () => {
+        if (window.nexusObserverMeta) {
+            try { window.nexusObserverMeta.disconnect(); } catch(e) {}
+            window.nexusObserverMeta = null;
+        }
+
+        if (mutationObserver) return;
+
+        mutationObserver = new MutationObserver(() => {
+            clearTimeout(debounceTimer);
+            // Meta braucht etwas mehr Geduld (4s)
+            debounceTimer = setTimeout(() => {
+                console.log("[NEXUS Meta] Text stabil. Ernte...");
+                harvestMeta();
+            }, 5000);
+        });
+
+        mutationObserver.observe(document.body, { childList: true, subtree: true });
+        window.nexusObserverMeta = mutationObserver;
+        console.log("[NEXUS Meta] Observer aktiv.");
+    };
+
+
+    const stopObserver = () => {
+        if (mutationObserver) {
+            mutationObserver.disconnect();
+            mutationObserver = null;
+        }
+        console.log("[NEXUS Meta] Observer gestoppt (Deep-Sleep)");
+    };
+
+    const startIdleChecker = () => {
+        if (idleCheckerInterval) return;
+        idleCheckerInterval = setInterval(() => {
+            const mode = getThrottleMode();
+            if (mode === 'deep_sleep') {
+                stopObserver();
+            } else if (document.hidden) {
+                // Nur ernten, wenn wir NICHT im Tab sind
+                harvestMeta();
+                if (!mutationObserver) startObserver();
+            }
+        }, 5000); // 5 Sekunden Herzschlag
+    };
+
+
+    const wakeUpCall = () => {
+        lastActivity = Date.now();
+        // isSending = false; <-- GELÖSCHT: Wir brechen keine laufenden Sendevorgänge ab.
+
+        if (window.nexusObserverMeta) {
+            try { window.nexusObserverMeta.disconnect(); } catch(e) {}
+            window.nexusObserverMeta = null;
+        }
+        mutationObserver = null;
+
+        startObserver();
+        // harvestMeta() hier entfernt, der Observer übernimmt beim Fokus-Wechsel
+        console.log("[NEXUS Meta] System reaktiviert.");
+    };
+
+
+    const fullWake = () => {
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else updateActivity();
+    };
+
+    function send(t, name) {
+        if (!t || isSending) return;
+
+        // Identitäts-Check auf die ersten 100 Zeichen
+        // (Ignoriert Meta-UI-Müll am Ende der Nachricht)
+        const currentHash = btoa(encodeURIComponent(t.slice(0, 100)));
+        if (currentHash === lastSent) return;
+
+        isSending = true;
+        lastSent = currentHash; // Wir speichern den Hash als Referenz
+
+        GM_xmlhttpRequest({
+            method: "POST",
+            url: ENDPOINT,
+            data: JSON.stringify({ text: t, ts: Date.now(), sender: name, hash: currentHash }),
+            headers: { "Content-Type": "application/json" },
+            timeout: 7000,
+            onload: () => {
+                // Kurze Sperre für Snap-Resonanz
+                setTimeout(() => { isSending = false; }, 1000);
+                console.log("[NEXUS Meta] Übermittelt.");
+            },
+            onerror: () => { isSending = false; },
+            ontimeout: () => { isSending = false; }
+        });
+    }
+
+
+    // --- EVENT LISTENER (Das neue Förmchen) ---
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) wakeUpCall(); });
+    window.addEventListener('focus', wakeUpCall);
+    document.addEventListener('mousedown', () => {
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else lastActivity = Date.now();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyY') {
+            if (getThrottleMode() !== 'active') wakeUpCall();
+            const metaInput = document.querySelector('[data-lexical-editor="true"]');
+            if (metaInput) { metaInput.focus(); }
+            return;
+        }
+        if (getThrottleMode() !== 'active') wakeUpCall();
+        else lastActivity = Date.now();
+    });
+
+    // --- SYSTEM-START (Die stehen bleiben müssen) ---
+    startObserver();
+    startIdleChecker();
+})();

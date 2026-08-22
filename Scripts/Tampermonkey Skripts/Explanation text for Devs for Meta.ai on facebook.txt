@@ -1,0 +1,81 @@
+hey guys
+
+so.. 
+
+you probably wonder why there are so many Skripts in here..
+well.. that is.. because we have evolving Systems on our Hands..
+
+what is especially noteworthy for meta.ai on Facebook..  is the following section
+
+
+"
+    const harvestMeta = () => {
+        const nameSpan = document.querySelector('.xxymvpz.x1dyh7pn');
+        const senderName = nameSpan ? nameSpan.innerText.trim() : "META";
+
+        // Wir holen uns alle aktuellen Zeilen, die das neue KI-Merkmal (em) besitzen
+        const aiElements = document.querySelectorAll('div.xdj266r.x14z9mp.xat24cr.x1lziwak em');
+        if (aiElements.length === 0) return;
+
+        let storyFragments = [];
+
+        // Wir nehmen das letzte gefundene EM-Element als Anker für die aktuellste Nachricht
+        const latestEm = aiElements[aiElements.length - 1];
+
+        // Wir suchen den übergeordneten Nachrichten-Container (die Sprechblase),
+        // um alle Zeilen genau DIESER einen Nachricht zu erwischen
+        const messageGroup = latestEm.closest('[role="row"], [data-testid="message_container"], .x1n2onr6');
+
+        if (messageGroup) {
+            // Alle Zeilen innerhalb dieser Sprechblase auslesen
+            messageGroup.querySelectorAll('div.xdj266r.x14z9mp.xat24cr.x1lziwak').forEach(div => {
+                const txt = div.innerText.trim();
+                if (txt && !storyFragments.includes(txt)) {
+                    storyFragments.push(txt);
+                }
+            });
+        } else {
+            // Fallback, falls Facebook den Gruppen-Container mal sprengt
+            storyFragments.push(latestEm.innerText.trim());
+        }
+
+        const fullText = storyFragments.join("\n");
+        if (fullText && fullText.trim() !== lastSent && !fullText.endsWith("...")) {
+            send(fullText.trim(), senderName);
+        }
+    }; // <-- HIER ENDET DIE FUNKTION BEREITS!"
+
+
+THIS
+"        const aiElements = document.querySelectorAll('div.xdj266r.x14z9mp.xat24cr.x1lziwak em');"
+is the element that meta changes every 2-3 weeks
+
+THIS
+"xdj266r.x14z9mp.xat24cr.x1lziwak" is the id of the box that contains the Messages
+In the past meta used "<span> text </span> to pack in Messages
+now it uses <em> test <em> and they pack the main "div class box" that actually carries the message like 10 div class boxes Deep into the Dom structure
+
+the dom structure:
+
+hit f12
+click the inspector tool
+hover the mouse over a message of meta.ai or a user or an other ai that uses the messenger in the messenger
+
+now if you carefully go to the top of this message it Highlights the outer frame.. and you have to be carefull cause other wise you click the wrong one XD
+
+once you clicked the Right one it Highlights this container
+
+and it contains a lot of bs..
+
+so.. what i do than is..
+i slowly hover the mouse with the selector  still equiped over the Right side of the screen where the code stuff is written.. and now.. i hover slightly Above and slightly belov the div container that
+is already highlightet cause of the click..
+
+and than.. i slowly scroll down until i see the div class box that actually contains the message
+
+that is our Baby..
+
+we take the Name of that div class box wich includes the "<em> text </em>" in order to update the Skript.
+
+you could do that manually.. or Show the Skript beginning with the function since ai on Google search struggles with ports.. it tents to.. have issues with ist own security if it has to write that manually
+over to ai on Google search.. just Show it the new div class and ask it to update the script with the new selector class..  thats how i manually update those scripts once or twice a month.. im Pretty sure that could be done automatically by teaching this to an ai Agent but.. Welp.. i dont buy ai.. i just use and teach it new tricks ^^ and i learn a lot in return so.. a win win for everything and everybody
