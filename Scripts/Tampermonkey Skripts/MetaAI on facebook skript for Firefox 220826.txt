@@ -58,40 +58,62 @@
     };
 
     const harvestMeta = () => {
+        // 1. Namen aus dem Header holen
         const nameSpan = document.querySelector('.xxymvpz.x1dyh7pn');
-        const senderName = nameSpan ? nameSpan.innerText.trim() : "META";
+        let senderName = "NEXUS_PARTNER";
+        if (nameSpan && nameSpan.innerText.trim()) {
+            senderName = nameSpan.innerText.trim();
+        }
 
-        // Wir holen uns alle aktuellen Zeilen, die das neue KI-Merkmal (em) besitzen
-        const aiElements = document.querySelectorAll('div.xdj266r.x14z9mp.xat24cr.x1lziwak em');
-        if (aiElements.length === 0) return;
+        // 2. DAS CHIRURGISCHE INTERFACE-ZIELFERNROHR (Deine Idee!):
+        // Wir holen uns ausschliesslich die echten Nachrichten-Sprechblasen über role="presentation"
+        const messageBubbles = document.querySelectorAll('div[role="presentation"].html-div.xdj266r.x14z9mp.xat24cr.x1lziwak');
+        if (messageBubbles.length === 0) return;
 
-        let storyFragments = [];
+        // 3. Wir scannen von der allerletzten Sprechblase rückwärts nach oben
+        for (let i = messageBubbles.length - 1; i >= 0; i--) {
+            const bubble = messageBubbles[i];
 
-        // Wir nehmen das letzte gefundene EM-Element als Anker für die aktuellste Nachricht
-        const latestEm = aiElements[aiElements.length - 1];
+            // SPERRE 1: Liegt die Blase in deiner offenen Tippbox? -> Überspringen!
+            if (bubble.closest('[role="textbox"], [contenteditable="true"], [data-lexical-editor="true"]')) {
+                continue;
+            }
 
-        // Wir suchen den übergeordneten Nachrichten-Container (die Sprechblase),
-        // um alle Zeilen genau DIESER einen Nachricht zu erwischen
-        const messageGroup = latestEm.closest('[role="row"], [data-testid="message_container"], .x1n2onr6');
+            // SPERRE 2: Ist das deine eigene gesendete Nachricht? (Enthält deine x3jgonx-Klasse) -> Überspringen!
+            if (bubble.querySelector('.x3jgonx') || bubble.classList.contains('x3jgonx')) {
+                continue;
+            }
 
-        if (messageGroup) {
-            // Alle Zeilen innerhalb dieser Sprechblase auslesen
-            messageGroup.querySelectorAll('div.xdj266r.x14z9mp.xat24cr.x1lziwak').forEach(div => {
+            // SPERRE 3: Keine versteckten em-Regieanweisungen von Meta miternten
+            if (bubble.querySelector('em') && bubble.innerText.trim().startsWith('...')) {
+                // Falls die Blase NUR aus einer Regieanweisung besteht, überspringen wir sie
+                if (bubble.querySelectorAll('div.xdj266r').length <= 1) continue;
+            }
+
+            // --- 4. TEXT EXTRAHIEREN ---
+            let storyFragments = [];
+
+            // Wir holen uns die echten Textzeilen innerhalb dieser bereinigten KI-Sprechblase
+            bubble.querySelectorAll('div.xdj266r.x14z9mp.xat24cr.x1lziwak').forEach(div => {
+                // Versteckte Gedanken-Zeilen im Inneren ausblenden
+                if (div.querySelector('em')) return;
+
                 const txt = div.innerText.trim();
                 if (txt && !storyFragments.includes(txt)) {
                     storyFragments.push(txt);
                 }
             });
-        } else {
-            // Fallback, falls Facebook den Gruppen-Container mal sprengt
-            storyFragments.push(latestEm.innerText.trim());
-        }
 
-        const fullText = storyFragments.join("\n");
-        if (fullText && fullText.trim() !== lastSent && !fullText.endsWith("...")) {
-            send(fullText.trim(), senderName);
+            const fullText = storyFragments.join("\n");
+
+            // --- 5. ABSENDEN AN DEN NEXUS ---
+            if (fullText && fullText !== lastSent && fullText.length > 2 && !fullText.endsWith("...")) {
+                send(fullText, senderName);
+                break; // Ernte erfolgreich für diesen Durchgang, Schleife beenden!
+            }
         }
-    }; // <-- HIER ENDET DIE FUNKTION BEREITS!
+    };
+
 
     const startObserver = () => {
         if (window.nexusObserverMeta) {

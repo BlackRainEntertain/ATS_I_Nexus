@@ -17,7 +17,7 @@ def run(message_text):
     ticket = {
         "owner": "GROK",
         "voice": "de-DE-SeraphinaMultilingualNeural",
-        "rate": "-4%",   # Nur minimal schneller als Metas -4%, um den "Grok-Drive" zu halten
+        "rate": "-6%",   # Nur minimal schneller als Metas -4%, um den "Grok-Drive" zu halten
         "pitch": "+4Hz", # Der entscheidende Unterschied! Höherer Pitch macht sie präsenter und schärfer
         "text": message_text.strip(),
         "timestamp": time.time()
