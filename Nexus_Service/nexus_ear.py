@@ -134,9 +134,24 @@ def listen_loop():
                 if command:
                     print(f"\n[VOICE] Erkannt: '{command}'")
                     
-                    # 1. Abbruch-Check (Falls man es sich anders überlegt)
+                    # 1. Abbruch-Check (Architekt-Notbremse v1.0)
                     if any(word in command for word in ABORT_WORDS):
-                        os.system("shutdown /a"); winsound.Beep(2000, 100)
+                        # Windows-Shutdown stoppen (Falls aktiv durch Abschalt-Protokoll)
+                        os.system("shutdown /a")
+                        
+                        # --- ABBRUCH-FLAGGE ERZEUGEN ---
+                        # Wir legen die Flagge direkt im zentralen Nexus-Ordner ab
+                        abort_flag = os.path.join(BASE_PATH, "Nexus", "NEXUS_ABBRUCH.tmp")
+                        try:
+                            with open(abort_flag, "w") as f: 
+                                f.write("ABORT")
+                            print("[EAR] Notbremsen-Signal 'NEXUS_ABBRUCH.tmp' erzeugt.")
+                        except Exception as e:
+                            print(f"[EAR-ERR] Konnte Notbremse nicht schreiben: {e}")
+                            
+                        # Akustischer Doppel-Beep: Das Ohr bestätigt den Abbruch
+                        winsound.Beep(2000, 100)
+                        winsound.Beep(2000, 100)
                     
                     # 2. DAS HERUNTERFAHREN (Triggert deine S304_PC_SHUTDOWN.bat)
                     elif any(word in command for word in HARD_SHUTDOWN_WORDS):
@@ -161,6 +176,7 @@ def listen_loop():
                         pyautogui.press('enter'); winsound.Beep(1200, 100)
         except:
             time.sleep(0.1)
+
 
 if __name__ == "__main__":
     winsound.Beep(800, 200); listen_loop()

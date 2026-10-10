@@ -75,6 +75,7 @@ async def receive(request: Request):
         except Exception as e: print(f"Gee-Nexus-Fehler: {e}")
     return {"status": "ok"}
 
+
 if __name__ == "__main__":
     # FIX: Hier muss der Name mit der Definition oben übereinstimmen!
     print_gee_banner()

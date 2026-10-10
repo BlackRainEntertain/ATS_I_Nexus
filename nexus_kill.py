@@ -100,7 +100,7 @@ def run_shutdown():
                 try: win.close()
                 except: pass
 
-    # --- SCHRITT 6 & 7: DATEI-HYGIENE ---
+    # --- SCHRITT 6 & 7: DATEI-HYGIENE & PAPIERKORB-EXORZISMUS ---
     print("[!] Bereinige Cache & Tresore...")
     file_corpses = ["current_voice_GEE.mp3", "current_voice_META.mp3", "current_voice_GPT.mp3", "goodbye_GEE.mp3", "NEXUS_PAUSE.tmp", "NEXUS_NEXT.tmp", "NEXUS_RESUME.tmp", "next_spoke.tmp"]
     
@@ -110,6 +110,21 @@ def run_shutdown():
             if f in file_corpses or f.endswith(".json") or f.endswith(".tmp"):
                 try: os.unlink(os.path.join(folder, f))
                 except: pass
+
+    # --- DER AUTOMATISCHE PAPIERKORB-EXORZISMUS (NATIVE WINDOWS-API) ---
+    print("[!] Leere Windows-Papierkorb rückstandsfrei...")
+    try:
+        # Nutze die native Windows-API über ctypes (0% PowerShell, 100% Rechte-safe)
+        import ctypes
+        # SHERB_NOCONFIRMATION = 0x00000001 (Keine Nachfrage)
+        # SHERB_NOPROGRESSUI   = 0x00000002 (Kein Ladebalken)
+        # SHERB_NOSOUND        = 0x00000004 (Kein Papierkorb-Raschel-Sound)
+        flags = 0x00000001 | 0x00000002 | 0x00000004
+        ctypes.windll.shell32.SHEmptyRecycleBinW(None, None, flags)
+        print("[DONE] Papierkorb sterilisiert.")
+    except Exception as e:
+        print(f"Papierkorb-Fehler: {e}")
+
 
     # --- SCHRITT 8: EXPLORER-EXORZISMUS (RAM-SIGNATUR) ---
     print("[!] Exorziere Explorer-Zombies...")

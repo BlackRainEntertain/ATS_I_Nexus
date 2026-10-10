@@ -10,8 +10,10 @@ def run(text):
     if trigger in text:
         print(f"\n[INFO] {trigger} erkannt. X-Schnittstelle wird versiegelt.")
 
+        # Der Power-Beep via PowerShell
         subprocess.Popen(["powershell", "-c", "[System.Media.SystemSounds]::Asterisk.Play()"], creationflags=0x08000000)
 
+        # Ticket-Daten für die Pole-Position (Serafina-Stimme)
         abmeldung = {
             "owner": "GROK", 
             "text": "X-Schnittstelle terminiert. Ich bin raus, Bre.",
@@ -32,10 +34,28 @@ def run(text):
         except Exception as e:
             print(f"[FEHLER] Exit-Queue fehlgeschlagen: {e}")
 
+        # Der visuelle Countdown-Timer (JETZT MIT SAPI-ABBRUCH-SENSOR)
         def sequenzielle_terminierung():
-            for i in range(10, 0, -1): # Grok ist schneller weg (10 Sek)
+            # Das unumstößliche Pfad-Gesetz für deine Notbremse
+            abort_flag = r"C:\Users\René\Desktop\LM Projekte\Nexus\NEXUS_ABBRUCH.tmp"
+            
+            # Alte Dateileichen vorab löschen
+            if os.path.exists(abort_flag):
+                try: os.remove(abort_flag)
+                except: pass
+
+            for i in range(10, 0, -1): # Grok-Countdown (10 Sek)
+                # SENSOR-CHECK: Hat das Ohr (nexus_ear.py) die Flagge über deine Stimme gesetzt?
+                if os.path.exists(abort_flag):
+                    print(f"\n\n[ABBRUCH] Grok-Exit gestoppt! X-Schnittstelle bleibt versiegelt und online.")
+                    try: os.remove(abort_flag)
+                    except: pass
+                    return # Bricht den Thread ab! Das Fenster bleibt offen.
+
                 print(f"\r[STATUS] Grok-Exit in {i} Sekunden... ", end="", flush=True)
                 time.sleep(1)
+                
+            print("\n[LOGOUT] X-Schnittstelle terminiert. Gute Nacht, Bre.")
             os._exit(0)
 
         threading.Thread(target=sequenzielle_terminierung, daemon=True).start()

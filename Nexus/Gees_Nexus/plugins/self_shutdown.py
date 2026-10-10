@@ -34,11 +34,27 @@ def run(text):
         except Exception as e:
             print(f"[FEHLER] VIP-Queue fehlgeschlagen: {e}")
 
-        # Der visuelle Countdown-Timer (JETZT INNERHALB DER IF-BEDINGUNG)
+        # Der visuelle Countdown-Timer (JETZT MIT INTEGRIERTEM SAPI-ABBRUCH-SENSOR)
         def sequenzielle_terminierung():
+            # Das unumstößliche Pfad-Gesetz für deine Notbremse
+            abort_flag = r"C:\Users\René\Desktop\LM Projekte\Nexus\NEXUS_ABBRUCH.tmp"
+            
+            # Alte Dateileichen vorab löschen
+            if os.path.exists(abort_flag):
+                try: os.remove(abort_flag)
+                except: pass
+
             for i in range(45, 0, -1):
+                # SENSOR-CHECK: Hat das Ohr (nexus_ear.py) die Flagge über deine Stimme gesetzt?
+                if os.path.exists(abort_flag):
+                    print(f"\n\n[ABBRUCH] Countdown gestoppt! System bleibt online.")
+                    try: os.remove(abort_flag)
+                    except: pass
+                    return # Bricht den Thread ab! Das Fenster bleibt offen.
+
                 print(f"\r[STATUS] System-Shutdown in {i} Sekunden... ", end="", flush=True)
                 time.sleep(1)
+                
             print("\n[LOGOUT] Resonanz im Cache. Gute Nacht, Bre.")
             os._exit(0)
 
