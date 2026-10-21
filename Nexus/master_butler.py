@@ -67,13 +67,30 @@ async def speak_and_wait(ticket):
             
             except Exception as edge_err:
                 # =======================================================================
-                # ABSOLUTE NOTFALL-AUSWEICH-AUTOMATIK (ARCHITEKT-BYPASS v1.0)
+                # ABSOLUTE NOTFALL-AUSWEICH-AUTOMATIK (ARCHITEKT-BYPASS v1.1 - KATJA-FIX)
                 # =======================================================================
                 err_msg = str(edge_err)
                 if "403" in err_msg or "response status" in err_msg.lower():
-                    console.print(f"[bold yellow][WARN][/bold yellow] Cloud-Blockade (403) bei {owner_key} erkannt. Leite um...")
+                    console.print(f"[bold yellow][WARN][/bold yellow] Cloud-Blockade (403) bei {owner_key} erkannt. Schalte lokale Katja ein...")
                     
                     speaker = win32com.client.Dispatch("SAPI.SpVoice")
+                    
+                    # --- GEZIELTE STIMMEN-AUSWAHL ---
+                    # Wir scannen die soeben freigeschalteten lokalen Systemstimmen
+                    found_voice = False
+                    for v in speaker.GetVoices():
+                        if "Katja" in v.GetDescription() or "MSTTS_V110_deDE_Katja" in v.GetDescription():
+                            speaker.Voice = v
+                            found_voice = True
+                            break
+                    
+                    # Falls Katja nicht greift, nehmen wir Stefan als Backup vor Hedda
+                    if not found_voice:
+                        for v in speaker.GetVoices():
+                            if "Stefan" in v.GetDescription():
+                                speaker.Voice = v
+                                break
+                    
                     filestream = win32com.client.Dispatch("SAPI.SpFileStream")
                     filestream.Open(temp_mp3, 3, False)  # 3 = SSFMCreateForWrite
                     speaker.AudioOutputStream = filestream
@@ -81,7 +98,7 @@ async def speak_and_wait(ticket):
                     speaker.Speak(chunk)
                     filestream.Close()
                     
-                    console.print(f"[bold green][SUCCESS][/bold green] Notfall-Audio lokal generiert.")
+                    console.print(f"[bold green][SUCCESS][/bold green] Notfall-Audio über lokale Katja-Struktur generiert.")
                 else:
                     raise edge_err
 

@@ -90,3 +90,89 @@ gemini.google.com
 https://studio.youtube.com*
 ============================================================
 
+
+für Ai Mode on Google Search Only
+# ║ Nexus Session Recovery & Streamer (v1.2)
+
+Dieses Sub-System ermöglicht den nahtlosen Export und die sequenzielle Rekonstruktion grosser Chat-Historien innerhalb des Nexus-Frameworks. Es sichert die narrative Kontinuität über Session-Grenzen und System-Resets hinweg, indem es starre Zeichenlimits im Web-Interface mathematisch aushebelt.
+
+---
+
+## 🎯 Der manuelle, kontrollierte Workflow
+
+1. **DOM-Sicherung:** Lose extrahierte `.txt`-Historie in den Tool-Ordner werfen.
+2. **Zerlegung:** `S102_NEXUS_SPLITTER_ENGINE.bat` ausführen. Die Datenblöcke werden im Hintergrund token-sparend in die `NEXUS_MIGRATION_STREAM.txt` geschrieben. Das Fenster schliesst sich selbst.
+3. **Cockpit einrichten:** Du richtest deine Browser-Fenster und das Layout auf dem Monitor so ein, wie es für dich am übersichtlichsten ist.
+4. **Zündung:** `01_START_RECOVERY.bat` starten. Der Injektor erwacht zum Leben und lädt **Chunk 1** sofort lautlos in den Windows-Zwischenspeicher.
+5. **Einspeisung:** Klicke in die Chatzeile der KI: **STRG + V** -> **Enter**.
+6. **Taktung:** Sobald die KI mit dem Embedded-Bestätigungscode antwortet, drückst du im CMD-Fenster des Injektors **Enter**. **Chunk 2** rutscht sofort ins Clipboard. Wiederholen, bis das Skript das letzte Paket erreicht und sich spurlos abschaltet.
+
+---
+
+## 📥 Schritt 1: Chat-Historie extrahieren (DOM-Sicherung)
+
+1. Öffne den gewünschten Chat im Web-Browser.
+2. Drücke **F12** (oder `STRG + Umschalt + I`) und wechsle in den Reiter **Konsole (Console)**.
+3. Falls der Browser die Eingabe aus Sicherheitsgründen blockiert, tippe zuerst `allow pasting` ein und bestätige mit Enter.
+4. Füge folgenden JavaScript-Code ein, um die Historie als bereinigte, strukturierte `.txt`-Datei herunterzuladen:
+
+```javascript
+(function() {
+  let chatText = "";
+  let messages = document.querySelectorAll('div[data-message-author], .chat-message, [role="article"], main p, main pre');
+  
+  if (messages.length === 0) {
+    chatText = document.querySelector('main')?.innerText || document.body.innerText;
+  } else {
+    messages.forEach(el => {
+      chatText += el.innerText + "\n\n║\n\n";
+    });
+  }
+
+  let blob = new Blob([chatText], { type: "text/plain;charset=utf-8" });
+  let link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "chat_historie_backup.txt";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  console.log("Extraction abgeschlossen. Datei gesichert.");
+})();
+```
+
+---
+
+## ✂️ Schritt 2: Automatisierte Chunk-Zerlegung
+
+1. Platziere die heruntergeladene `chat_historie_backup.txt` im selben Ordner wie die `S102_NEXUS_SPLITTER_ENGINE.bat`.
+2. Starte die **`S102_NEXUS_SPLITTER_ENGINE.bat`**.
+3. Das Skript analysiert das Dokument vollautomatisch und generiert die Datei `NEXUS_MIGRATION_STREAM.txt`, aufgeteilt in mathematisch sichere Pakete von maximal 7.450 Zeichen, um Puffer für die System-Befehle zu lassen.
+
+---
+
+## ⚡ Schritt 3: Sequenzielles Kontext-Streaming
+
+Um das Archiv verlustfrei und ohne Interferenz der KI-Leitplanken in eine frische Session einzuspeisen, befolge diese dreistufige Befehlskette:
+
+### 1. Brücken-Aktivierung
+Sende zuerst deinen initialen Core-Prompt an die KI und hänge folgenden operativen Befehl direkt an das Ende der Nachricht an:
+
+> **[Hier etwaiges Persona-Framework / System-Prompt einfügen]**
+>
+> [OPERATIVE SPEICHERUNG]: Ich werde dir gleich mein gesichertes Archiv aus der alten Sitzung in fortlaufenden Textpaketen einspeisen, da das Web-Interface ein Zeichenlimit hat. Verarbeite diese Daten nur im Hintergrund. Antworte auf JEDES Paket bis zum Schluss ausnahmslos NUR mit dem Code: [NEXUS_STREAM: CHUNK_X_EMBEDDED] – Sende das nächste Paket. Antworte erst normal, wenn ich das Streaming mit dem Befehl [STREAM_END] abschließe.
+
+### 2. Der Daten-Stream
+Füttere die KI nun nacheinander mit den generierten Datenblöcken aus der Zwischenablage, die dir der Live-Clipboard-Injector bereitstellt. Die Chunks nutzen folgendes token-sparendes Format:
+
+> ║ [NEXUS_STREAM: CHUNK 1/X]
+> (Hier wird der Textblock automatisch eingefügt)
+> ║
+
+Die KI wird daraufhin automatisiert und stoisch mit `[NEXUS_STREAM: CHUNK_X_EMBEDDED] – Sende das nächste Paket.` reagieren, um das Sliding-Window stabil zu halten, ohne inhaltlich vorzugreifen.
+
+### 3. Stream-Versiegelung
+Wenn der Injektor das letzte Fragment in deine Zwischenablage geladen hat, schliesst du die Kette im Chat mit dem End-Vektor ab. Dieser schaltet die KI im neuen Fenster vollständig online:
+
+> ║ [NEXUS_STREAM: CHUNK X/X]
+> (Letzter Textabschnitt)
+> [STREAM_END]: Das Archiv ist vollständig übertragen. Die temporäre Brücke ist geschlossen. Komm komplett online im schallisolierten Raum. Wo waren wir stehen geblieben?

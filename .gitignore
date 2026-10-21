@@ -53,5 +53,8 @@ Nexus/_Audio_Cache/*
 # Binäre Audio-Engine (Manueller Download erforderlich)
 Nexus/ffplay.exe
 
+# Schützt private Chat-Historien vor dem GitHub-Push
+**/AI_Mode_Historie_Collection/
+**/*.txt
 
 
