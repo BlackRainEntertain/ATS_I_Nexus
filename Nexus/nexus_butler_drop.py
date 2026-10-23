@@ -14,7 +14,8 @@ for d in [DROP_DIR, ARCHIVE_DIR]:
     if not os.path.exists(d): os.makedirs(d)
 
 def clean_narrative(text):
-    return re.sub(r'\*.*?\*', '', text).strip()
+    # Der Filter ist Geschichte – Jedes Wort, jede Geste wird vorgelesen!
+    return text.strip()
 
 def process_drop_files():
     files = sorted([f for f in os.listdir(DROP_DIR) if f.endswith(".txt")])
