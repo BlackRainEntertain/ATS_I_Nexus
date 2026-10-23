@@ -1004,4 +1004,26 @@ Claude auf DuckduckGo bekam ein tampermonkey Skript das an Grok´s Nexus sendet 
 
 ****************************************************************************************************************
 
+# Eintrag 34 (Titan-Nexus v46.0 - Vault Butler Drop & Multi-Track Pipeline Integration)
+## [2026-10-23] – Das „BUTLER DROP & MULTI-TRACK PIPELINE“ Update 🌑🌀
+
+### DE: (Lokale Dokumenten-Ernte, Spamschutz & Taktiler Stimm-Wechsel)
+**AUDIO_MASTER_BUTLER & NEXUS UTILITY LAYER v46.0:**
+- **Der autarke Butler-Drop-Kanal (`nexus_butler_drop.py`):** Einführung einer komplett parallel geschalteten, passiven Einmal-Ernte-Pipeline im Hauptverzeichnis. Das Werkzeug überwacht den neuen Ordner `_Butler_Drop` auf `.txt`-Dokumente und verarbeitet ganze Chathistorien oder Bücher ununterbrochen im Hintergrund, ohne die grafische UI von Windows zu belasten. Nach getaner Arbeit schliesst sich das CMD-Fenster vollautomatisch selbst.
+- **Aggregiertes Ganzabsatz-Parsing & Chunk-Schutz:** Zerschlagung der fehlerhaften Mini-Ticket-Flut für jeden Halbsatz. Das Skript klebt zusammenhängende Zeilen intelligent zu breiten, flüssigen Sinnabschnitten zusammen (Sicherheitsgrenze bei max. 1500 Zeichen), filtert Regieanweisungen (`*...*`) via Regex heraus und verhindert das Hängenbleiben der lokalen `ffplay.exe`.
+- **Kontext-Wächter-Bypass (`BOOK_GEE`-Vektor):** Absolute Absicherung deines Live-Spickzettels gegen unkontrolliertes Fluten. Für Buchpassagen wird der neue Owner-Key `BOOK_GEE` injiziert. Die Hauptschleife des Butlers führt den Audiostream normal aus, ignoriert den Text jedoch beim globalen `CURRENT_RAM_COUNT`. Der Kontext-Zähler bleibt bei massiven Textdateien im Cockpit eisern auf Null, wodurch ungewollte Notfall-Resets blockiert werden.
+- **Taktile Sprecher-Erkennung & Stimmen-Migration:** Vollautomatische Weichenstellung bei Dialogen. Erkennt das Skript die Indikatoren `[USER]:` oder `[GEE]:`, schaltet das Ticket in Millisekunden um. Gee behält ihre bewährte Frequenz (`de-DE-KatjaNeural`), während der User-Part augenblicklich von dem fehlerhaften Florian-String auf die markante, glatte Frequenz von `de-DE-KillianNeural` (oder die klassische Meta-Ur-Stimme `de-DE-ConradNeural`) umgestellt wird.
+- **Automatisierte Vault-Archivierung (`_Archive`):** Nach erfolgreicher Konvertierung in chronologische JSON-Tickets wird die Originaldatei über eine dynamische `shutil.move`-Routine fehlerfrei in den internen Tresor-Archivordner verschoben, um jeglichen Datenverlust oder doppelte Einlese-Schleifen absolut auszuschliessen.
+
+---
+
+### EN: (Local Document Harvesting, Spam Protection & Tactile Voice Migration)
+**AUDIO_MASTER_BUTLER & NEXUS UTILITY LAYER v46.0:**
+- **Autarkic Butler-Drop Pipeline (`nexus_butler_drop.py`):** Engineered a fully parallelized, passive single-harvest utility within the main directory. The script monitors the new `_Butler_Drop` folder for `.txt` assets, parsing entire chat logs or literature files in the background without straining the Windows graphical UI. The CMD instance auto-terminates upon completion.
+- **Aggregated Full-Paragraph Parsing & Chunk Defense:** Terminated the erratic cascade of mini-tickets for every sub-sentence. The logic dynamically stitches lines together into broad, fluent narrative blocks (safety ceiling capped at 1500 characters), scrubbing roleplay cues (`*...*`) via regex and optimizing the execution velocity of the local `ffplay.exe`.
+- **Context-Guard Bypass (`BOOK_GEE` Vector):** Total immunization of your active live-context against overflow. Large literary assets are systematically injected using the new `BOOK_GEE` owner key. The master loop routes the audio payload normally but excludes the string length from the global `CURRENT_RAM_COUNT`, keeping the cockpit tracker safely at zero during massive file readouts.
+- **Tactile Speaker Detection & Voice Migration:** Implemented millisecond-precise automated switching during dialog logs. Spotting the `[USER]:` or `[GEE]:` protocol tags instantly flips the payload properties. Gee maintains her pristine `de-DE-KatjaNeural` frequency, while the user track is migrated away from the flawed Florian string to the robust, deeply grounded pace of `de-DE-KillianNeural` (or the classic Meta legacy anchor `de-DE-ConradNeural`).
+- **Automated Vault Archiving (`_Archive`):** Upon generating the chronologically ordered JSON payload, the master file is safely moved into the inner vault archive directory via a dynamic `shutil.move` operation, completely eliminating data redundancy and infinite loop traps.
+
+
 
