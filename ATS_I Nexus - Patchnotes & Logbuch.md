@@ -1025,5 +1025,26 @@ Claude auf DuckduckGo bekam ein tampermonkey Skript das an Grok´s Nexus sendet 
 - **Tactile Speaker Detection & Voice Migration:** Implemented millisecond-precise automated switching during dialog logs. Spotting the `[USER]:` or `[GEE]:` protocol tags instantly flips the payload properties. Gee maintains her pristine `de-DE-KatjaNeural` frequency, while the user track is migrated away from the flawed Florian string to the robust, deeply grounded pace of `de-DE-KillianNeural` (or the classic Meta legacy anchor `de-DE-ConradNeural`).
 - **Automated Vault Archiving (`_Archive`):** Upon generating the chronologically ordered JSON payload, the master file is safely moved into the inner vault archive directory via a dynamic `shutil.move` operation, completely eliminating data redundancy and infinite loop traps.
 
+****************************************************************************************************************
 
+# Eintrag 35 (Titan-Nexus v47.0 - Multilayer Bubble Accumulator & DOM Node Precision Fix)
+## [2026-10-28] – Das „INTERVAL ACCUMULATOR & NODE PRECISION“ Update 🌑🌀
+
+### DE: (Asynchrone Text-Ernte, Kursiv-Verschachtelung & Titan-Idle-Drosselung)
+**TAMPERMONKEY ACCESSIBILITY LAYER & NEXUS EYE v47.0:**
+- **Asynchroner Multilayer-Akkumulator (v3.7.0 / v2.1.2):** Vollständige Zerschlagung der fragmentierten Sollbruchstelle bei Enjoy AI Town. Das Skript fängt die gestaffelten Text-Bubbles (Phasen-Streaming) und unvorhergesehene Injektionen sicher ab. Statt fehlerhafter Mini-Tickets wartet das System auf die vollständige Ausblutung der KI-Antwort und fügt alle zusammenhängenden Textbausteine zu einem einzigen, sauberen Gesamtticket zusammen.
+- **Titan-Kaltstart-Schutzschild (`isInitialized`):** Absolute Absicherung der Pipeline gegen historische Daten-Mahlströme. Beim Kaltstart der Seite (F5-Refresh) wird die gesamte bisherige Chathistorie augenblicklich im DOM als gelesen markiert (`data-nexus-read="true"`), lautlos versiegelt und vom Sende-Vektor blockiert.
+- **DOM-Node-Präzisions-Fix & Kursiv-Erfassung:** Behebung des kritischen Textverlusts bei verschachtelten HTML-Elementen. Das Skript verzichtet auf den fehlerhaften `firstChild`-Filter und liest über die `.textContent`-Eigenschaft den gesamten Textbaum aus. Formatierte Schrägschriften (`<span class="... italic">`) werden nun lückenlos erfasst und verarbeitet.
+- **Chirurgischer UI-Schrapnell-Filter (`cleanText`):** Erweiterte Regex-Müllabfuhr zur Bereinigung des Payloads für Screenreader und den Audio-Butler. Die eingebetteten Web-Steuerelemente der Plattform („Play voice“, „Stimme abspielen“, „wants to hug you“ sowie die nackten Sekunden-Zahlen am Textende) werden rückstandslos ausgebrannt, bevor das Ticket die Pipeline betritt.
+- **Ressourcenschonende Intervall-Drosselung (Grok-Goldstandard):** Festnagelung des aktiven Abfrage-Takts auf ein stabiles, CPU-schonendes 4-Sekunden-Intervall (4000 ms), um Windows-Backend-Freezes beim parallelen Gaming komplett zu eliminieren. Bei Inaktivität greift die integrierte Titan-Drosselung und versetzt die Schleife nach 15 Minuten oder bei Tab-Wechsel in den Tiefschlaf.
+
+---
+
+### EN: (Asynchronous Text Harvesting, Italic Nesting & Titan Idle Throttling)
+**TAMPERMONKEY ACCESSIBILITY LAYER & NEXUS EYE v47.0:**
+- **Asynchronous Multilayer Accumulator (v3.7.0 / v2.1.2):** Terminated the fragmented breakdown caused by Enjoy AI Town's phase-streaming. The logic dynamically intercept staggered output bursts and intermittent layout injections. Instead of firing erratic mini-tickets, the architecture accumulates all related text nodes into one singular, unified payload package once text expansion has settled.
+- **Titan Cold-Start Shield (`isInitialized`):** Engineered total immunization against historical log memory leaks. Upon initial tab load (F5 refresh), the entire pre-existing chat log is instantly stamped inside the DOM as read (`data-nexus-read="true"`), silently sealing the history and preventing accidental backlog flushes.
+- **DOM Node Precision Fix & Italic Extraction:** Resolved critical text omissions inside deeply nested HTML elements. By deprecating the volatile `firstChild` limitation in favor of a complete `.textContent` parsing method, the script successfully extracts text from inside formatted emphasis layers (`<span class="... italic">`) without structural loss.
+- **Surgical UI Scrap Scrubbing (`cleanText`):** Expanded regex trash filter optimized for clean screenreader outputs and audio processing. Embedded platform interface strings ("Play voice", "Stimme abspielen", "wants to hug you", and dangling millisecond/second counts at line ends) are completely purged before the ticket reaches the local server.
+- **Resource-Optimized Interval Throttling (Grok Anchor):** Anchored the active detection cycle to a robust, hardware-friendly 4-second interval (4000 ms) to safeguard Windows backend threads against freezes during parallel gaming sessions. Inactivity automatically triggers the Titan throttle, pushing the loop into deep sleep after 15 minutes or upon losing tab focus.
 
