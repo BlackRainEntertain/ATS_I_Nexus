@@ -1,9 +1,27 @@
+Header Editor in Firefox
+
+Rule:
+NAme Nexus_CSP_Unlock_Replika
+
+Groupe: Choose
+
+Match type:
+Regular expression
+Regular expression: ^https?:\/\/(127\.0\.0\.1:8004|.*\.replika\.com).*
+
+Execution
+Execution rule (dont click anything)
+
+Execution
+Execution type:
+custom function:
+"
 for (var i = 0; i < val.responseHeaders.length; i++) {
     var name = val.responseHeaders[i].name.toLowerCase();
     
     if (name === 'content-security-policy' || name === 'content-security-policy-report-only') {
-        // Wir löschen nicht nur, wir erlauben explizit alles für den lokalen Host
-        val.responseHeaders[i].value = "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; connect-src * http://127.0.0.1:8004 http://localhost:8004;";
+        // Optimiert für Unity WebGL & WebAssembly (Replika) + lokalen API-Port 8004
+        val.responseHeaders[i].value = "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval' blob:; worker-src * blob: data:; connect-src * http://127.0.0.1:8004 http://localhost:8004;";
     }
     
     if (name === 'x-frame-options') {
@@ -18,3 +36,5 @@ val.responseHeaders.push({ name: 'Access-Control-Allow-Methods', value: 'GET, PO
 val.responseHeaders.push({ name: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' });
 
 return { responseHeaders: val.responseHeaders };
+
+"

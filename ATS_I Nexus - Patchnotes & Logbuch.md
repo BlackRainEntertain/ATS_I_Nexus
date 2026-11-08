@@ -1048,3 +1048,33 @@ Claude auf DuckduckGo bekam ein tampermonkey Skript das an Grok´s Nexus sendet 
 - **Surgical UI Scrap Scrubbing (`cleanText`):** Expanded regex trash filter optimized for clean screenreader outputs and audio processing. Embedded platform interface strings ("Play voice", "Stimme abspielen", "wants to hug you", and dangling millisecond/second counts at line ends) are completely purged before the ticket reaches the local server.
 - **Resource-Optimized Interval Throttling (Grok Anchor):** Anchored the active detection cycle to a robust, hardware-friendly 4-second interval (4000 ms) to safeguard Windows backend threads against freezes during parallel gaming sessions. Inactivity automatically triggers the Titan throttle, pushing the loop into deep sleep after 15 minutes or upon losing tab focus.
 
+****************************************************************************************************************
+
+# Eintrag 36 (Titan-Nexus v47.5 - WebGL Graphics Acceleration, CORS Proxy Regex & Orbital RAM Funnel)
+## [2026-11-08] – Das „ORBITAL BUFFER & GRAPHICS ACCELERATION“ Update 🌑🌀
+
+### DE: (WebGL-Erzwingung, Firefox-Layout-Anpassung, CORS-Regex & Asynchroner Hintergrund-Trichter)
+**FIREFOX ENGINE & CORE CONNECTIVITY FIXES:**
+- **WebGL-Maschinenraum-Erzwingung (`about:config`):** Behebung des permanenten blauen Ladebildschirms bei Unity/WebGL-Engines (Replika Web) unter Windows 11 Home. Durch die Zwangsschaltung von `layers.acceleration.force-enabled` auf `true` sowie `webgl.force-enabled` auf `true` wird Firefox gezwungen, die 3D-Wohnung und den Avatar direkt über die GPU zu rendern. Experimentelle, blockierende HTTP3-Loops wurden via `network.http.http3.enabled` auf `false` dauerhaft eliminiert.
+- **Modulare UI-Navigation & Leistungs-Freigabe:** Anpassung an das veränderte Einstellungs-Layout von Firefox. Die Hardwarebeschleunigung wurde durch das Deaktivieren der empfohlenen Leistungseinstellungen im neuen Reiter „Tabs und Surfen“ erfolgreich freigeschaltet.
+- **Kombinierter CORS & CSP-Header-Riegel (`Header Editor`):** Modifikation der Regular Expression im Header Editor zur Überwindung restriktiver Content-Security-Policies. Der neue Kombi-Ausdruck `^https?:\/\/(127\.0\.0\.1:8004|.*\.replika\.com).*` öffnet die Schleusen parallel für den lokalen FastAPI-Port 8004 und die offizielle Replika-Web-Domain, wodurch cross-origin WebAssembly-Worker und Texturen fehlerfrei geladen werden.
+
+**TAMPERMONKEY ACCESSIBILITY LAYER & PLUGINS v47.5:**
+- **Hochpräziser DOM-Grid-Fokus (v45.1 - Replika Eye):** Radikale Umstrukturierung des MutationObservers. Statt den gesamten `document.body` zu überwachen und durch Grafik-Animationen CPU-Massenevents (Main-Thread-Jank) auszulösen, lauscht der Observer nun exakt auf das isolierte Chat-Grid `div[data-testid="chat-messages"]`. Ernte-Duplikate werden durch die gezielte Abfrage von `data-testid="chat-message-text"` und `data-author="replika"` im Keim erstickt.
+- **Kaltstart- CPU-Schutz-Delay (7000ms):** Einbau einer 7-sekündigen Zündverzögerung beim ersten Seitenaufruf. Dies gewährt Firefox ungestörte CPU-Zyklen zum Laden des Google-Auth-Tokens und der WebGL-Sitzung, bevor sich der Nexus lautlos einklinkt.
+- **Orbitaler RAM-Akkumulator (`plugins/nexus_voice.py`):** Meisterhafte Entkopplung der System-Gleise ohne Eingriff in den sterilen Master Butler. Das Plugin fängt das ungedrosselte Nachrichten-Maschinengewehr von Replika in einem thread-sicheren orbitalen RAM-Speicher (`queue.Queue`) ab. Ein autarker Hintergrund-Thread (`threading.Thread`) portionisiert die Tickets nach Atsis Goldstandard und schiebt sie im sicheren 8,5-Sekunden-Rhythmus in die `_Voice_Queue`. Der visuelle Printer (`replika_printer.py`) bleibt bei 0ms Echtzeit, Microsoft-Edge-TTS-Infarkte (`[CRITICAL]`) sind Geschichte, und der Browser-Thread friert nie wieder ein.
+
+---
+
+### EN: (WebGL Enforcement, Firefox Layout Adaptation, CORS Regex & Asynchronous Background Funnel)
+**FIREFOX ENGINE & CORE CONNECTIVITY FIXES:**
+- **WebGL Machine-Room Enforcement (`about:config`):** Resolved permanent blue loading screen issues inside Unity/WebGL rendering pipelines (Replika Web) on Windows 11 Home. Forcing `layers.acceleration.force-enabled` to `true` and `webgl.force-enabled` to `true` coerces Firefox into processing the 3D room and avatar directly via GPU. Experimental, blocking HTTP3 loops were permanently decommissioned via `network.http.http3.enabled` set to `false`.
+- **Modular UI Navigation & Performance Unlocking:** Adapted execution parameters to the overhauled Firefox preferences architecture. Hardware acceleration controls were successfully unlocked by de-selecting recommended performance benchmarks within the new "Tabs and Browsing" partition.
+- **Combined CORS & CSP Header Override (`Header Editor`):** Modified the routing Regular Expression inside the Header Editor extension to circumvent restrictive Content Security Policies. The new hybrid expression `^https?:\/\/(127\.0\.0\.1:8004|.*\.replika\.com).*` simultaneously opens communication channels for local FastAPI port 8004 and the official web domain, resolving cross-origin WebAssembly worker and texture blocks.
+
+**TAMPERMONKEY ACCESSIBILITY LAYER & PLUGINS v47.5:**
+- **High-Precision DOM Grid Focus (v45.1 - Replika Eye):** Radical restructuration of the core MutationObserver logic. Instead of monitoring the global `document.body` and triggering main-thread processor jank via 3D engine layout updates, the observer now anchors exclusively onto the chat grid node `div[data-testid="chat-messages"]`. Duplicate harvests are entirely eradicated by filtering strictly for `data-testid="chat-message-text"` and `data-author="replika"`.
+- **Cold-Start CPU Shield Delay (7000ms):** Implemented an initial 7-second ignition delay during initial tab load. This guarantees uninhibited browser cycles for verifying the Google Auth Token and settling the WebGL canvas before the Nexus accessibility layer hooks into the DOM.
+- **Orbital RAM Accumulator (`plugins/nexus_voice.py`):** Highly optimized architectural decoupling leaving the structural Master Butler entirely untouched. The plugin intercepts Replika's high-velocity response bursts into a thread-safe orbital RAM reservoir (`queue.Queue`). An autonomous background worker (`threading.Thread`) portion-feeds the tickets based on Atsi's gold-standard cadence, releasing JSON payloads into the `_Voice_Queue` in strict 8.5-second cycles. The visual engine (`replika_printer.py`) maintains 0ms real-time rendering, Microsoft Edge TTS server overloads (`[CRITICAL]`) are extinct, and web-threads never lock up again.
+
+
