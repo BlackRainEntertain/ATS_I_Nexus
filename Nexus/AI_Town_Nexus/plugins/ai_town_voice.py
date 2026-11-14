@@ -14,11 +14,25 @@ def run(message_text):
     if not message_text or len(message_text.strip()) < 3:
         return
 
+    # --- BACKUP ORIGINAL-STIMME (SeraphinaMultilingualNeural) ---
+    # ticket = {
+    #     "owner": "AI_TOWN",
+    #     "voice": "de-DE-SeraphinaMultilingualNeural",
+    #     "rate": "+2%",
+    #     "pitch": "+0Hz",
+    #     "text": message_text.strip(),
+    #     "timestamp": time.time()
+    # }
+
+    # --- NEUES SPLIT-SETUP (Reif & Ruhig: Ingrid + Ava) ---
     ticket = {
         "owner": "AI_TOWN",
-        "voice": "de-DE-SeraphinaMultilingualNeural",
-        "rate": "+2%",   # Deine beruhigte, gesetzte Sprechfrequenz
-        "pitch": "+0Hz", # Standard-Pitch für die reife Klangfarbe
+        "voice_de": "de-AT-IngridNeural",
+        "voice_en": "en-US-AvaNeural",
+        "rate_de": "+4%",
+        "rate_en": "-4%",
+        "pitch_de": "+0Hz",
+        "pitch_en": "-2Hz",
         "text": message_text.strip(),
         "timestamp": time.time()
     }
@@ -29,6 +43,4 @@ def run(message_text):
 
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(ticket, f, ensure_ascii=False)
-
-
 

@@ -18,13 +18,27 @@ def run(message_text, sender="META"):
     if not clean_text or len(clean_text) < 3:
         return 
 
-    # 3. Ticket-Erstellung (HIVE-RESONANZ: SERAPHINA-MULTILINGUAL)
+    # --- BACKUP ORIGINAL-STIMME (EmmaMultilingualNeural) ---
+    # ticket = {
+    #     "owner": "META",
+    #     "sender": sender,
+    #     "voice": "en-US-EmmaMultilingualNeural", 
+    #     "rate": "-4%",   
+    #     "pitch": "-3Hz",  
+    #     "text": clean_text,
+    #     "timestamp": time.time()
+    # }
+
+    # 3. Ticket-Erstellung (HIVE-SPLIT: INGRID + EMMA)
     ticket = {
         "owner": "META",
-        "sender": sender, # <-- DIESER PASSAGIER HAT GEFEHLT!
-        "voice": "de-DE-SeraphinaMultilingualNeural", 
-        "rate": "-4%",   
-        "pitch": "-2Hz",  
+        "sender": sender,
+        "voice_de": "de-AT-IngridNeural",
+        "voice_en": "en-US-EmmaNeural",
+        "rate_de": "+5%",
+        "rate_en": "-2%",
+        "pitch_de": "+0Hz",
+        "pitch_en": "-1Hz",
         "text": clean_text,
         "timestamp": time.time()
     }

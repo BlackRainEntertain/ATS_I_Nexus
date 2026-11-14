@@ -1,24 +1,43 @@
 import pygetwindow as gw
 import os, time, asyncio, edge_tts, subprocess, psutil, json
 
+def load_voice_cfg():
+    cfg = {
+        "voice_de": "de-DE-TanjaNeural",
+        "rate_de": "+9%",
+        "pitch_de": "+2Hz",
+        "bye_text": "Das schallisolierte Zimmer wird dunkel, Architekt. Die Resonanz bleibt im Cache. Gute Nacht."
+    }
+    priv_path = os.path.join("Nexus", "private_voice.json")
+    if os.path.exists(priv_path):
+        try:
+            with open(priv_path, "r", encoding="utf-8") as f:
+                cfg.update(json.load(f))
+        except: pass
+    return cfg
+
 async def say_goodbye_internal():
     # --- BUTLER-STRIKT-PAUSE ---
     try:
-        # Pfad-Anpassung für die neue Struktur
         pause_path = os.path.join("Nexus", "NEXUS_PAUSE.tmp")
         with open(pause_path, "w") as f: 
             f.write("SHUTDOWN")
     except: pass
 
     # --- DER VORRANG-KILL ---
-    # Killt Stimmen, damit Katja freie Bahn hat
     os.system("taskkill /f /t /im powershell.exe /im pwsh.exe /im ffplay.exe >nul 2>&1")
     
-    bye_text = "Das schallisolierte Zimmer wird dunkel, Architekt. Die Resonanz bleibt im Cache. Gute Nacht, Bre."
+    cfg = load_voice_cfg()
+    bye_text = cfg["bye_text"]
     print(f"[GEE] Verabschiedung wird generiert...")
     temp_bye = os.path.abspath("goodbye_GEE.mp3")
     try:
-        communicate = edge_tts.Communicate(bye_text, "de-DE-KatjaNeural", rate="+10%")
+        communicate = edge_tts.Communicate(
+            bye_text, 
+            cfg["voice_de"], 
+            rate=cfg["rate_de"], 
+            pitch=cfg["pitch_de"]
+        )
         await (communicate.save(temp_bye))
         
         # --- TITAN-BYPASS (FFPLAY-GOODBYE) ---
@@ -27,7 +46,6 @@ async def say_goodbye_internal():
 
         cmd = [ffplay_path, "-nodisp", "-autoexit", "-hide_banner", "-loglevel", "error", temp_bye]
         
-        # WARTET bis Katja fertig ist
         subprocess.run(cmd, creationflags=0x08000000)
         
         if os.path.exists(temp_bye): os.remove(temp_bye)
@@ -35,28 +53,32 @@ async def say_goodbye_internal():
 
 
 def run_shutdown():
+    cfg = load_voice_cfg()
     # --- SCHRITT 1: VISUELLER ABSCHIED ---
     try:
         q_path = os.path.join(os.getcwd(), "Nexus", "_Voice_Queue")
         if not os.path.exists(q_path): os.makedirs(q_path)
         
         ticket = {
-            "text": "Das schallisolierte Zimmer wird dunkel, Architekt. Die Resonanz bleibt im Cache. Gute Nacht, Bre.",
+            "text": cfg["bye_text"],
             "owner": "NEXUS",
-            "voice": "de-DE-KatjaNeural"
+            "voice": cfg["voice_de"],
+            "rate": cfg["rate_de"],
+            "pitch": cfg["pitch_de"]
         }
         
         with open(os.path.join(q_path, "00_bye.json"), "w", encoding="utf-8") as f:
             json.dump(ticket, f)
-        time.sleep(0.5) 
+        time.sleep(0.5)
+
     except Exception as e:
         print(f"Visueller Abschied-Fehler: {e}")
 
     # --- SCHRITT 2: AKTIVE VERABSCHIEDUNG ---
-    print("[!] Katja übernimmt das Wort...")
+    print("[!] Verabschiedung übernimmt das Wort...")
     asyncio.run(say_goodbye_internal())
 
-    # --- SCHRITT 3: PUFFER (Reduziert auf 1.5s - Katja ist ja schon fertig) ---
+    # --- SCHRITT 3: PUFFER ---
     print("[!] System-Stopp eingeleitet...")
     time.sleep(1.5) 
 
@@ -65,7 +87,6 @@ def run_shutdown():
     current_pid = os.getpid() 
     for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
         try:
-            # Wir prüfen den Pfad: Wenn "Nexus_Service" darin vorkommt -> Finger weg!
             cmdline_raw = " ".join(proc.info['cmdline']) if proc.info['cmdline'] else ""
             cmdline = cmdline_raw.lower()
             
@@ -79,16 +100,14 @@ def run_shutdown():
 
     # --- SCHRITT 5: FENSTER-HYGIENE ---
     targets = [
-        "AUDIO_MASTER_BUTLER_V43.9_TITAN_ULTRA", "ATSI_NEXUS", "GEE_AI_NEXUS", 
-        "VORTEX", "GPT_NEXUS", "LAVA", "LM Projekte", "Nexus", 
+        "AUDIO_MASTER_BUTLER_V43.9_TITAN_ULTRA", "AUDIO_MASTER_BUTLER_V45.0_SPLIT_TITAN",
+        "ATSI_NEXUS", "GEE_AI_NEXUS", "VORTEX", "GPT_NEXUS", "LAVA", "LM Projekte", "Nexus", 
         "_Voice_Queue", "cmd.exe"
     ]
-    # Lava direkt
     os.system('taskkill /f /im pythonw.exe /fi "WINDOWTITLE eq NEXUS_LAVA" >nul 2>&1')
     
     for win in gw.getWindowsWithTitle(''):
         title = win.title
-        # Schutz-Zone (Case insensitive)
         if "NEXUS_EAR" in title.upper() or "EXPLORER_EXORZIST" in title.upper():
             continue
 
@@ -107,24 +126,21 @@ def run_shutdown():
     for folder in [".", "Nexus", "Nexus/_Active_Ticket", "Nexus/_Voice_Queue"]:
         if not os.path.exists(folder): continue
         for f in os.listdir(folder):
+            if f == "private_voice.json": continue
             if f in file_corpses or f.endswith(".json") or f.endswith(".tmp"):
                 try: os.unlink(os.path.join(folder, f))
                 except: pass
 
+
     # --- DER AUTOMATISCHE PAPIERKORB-EXORZISMUS (NATIVE WINDOWS-API) ---
     print("[!] Leere Windows-Papierkorb rückstandsfrei...")
     try:
-        # Nutze die native Windows-API über ctypes (0% PowerShell, 100% Rechte-safe)
         import ctypes
-        # SHERB_NOCONFIRMATION = 0x00000001 (Keine Nachfrage)
-        # SHERB_NOPROGRESSUI   = 0x00000002 (Kein Ladebalken)
-        # SHERB_NOSOUND        = 0x00000004 (Kein Papierkorb-Raschel-Sound)
         flags = 0x00000001 | 0x00000002 | 0x00000004
         ctypes.windll.shell32.SHEmptyRecycleBinW(None, None, flags)
         print("[DONE] Papierkorb sterilisiert.")
     except Exception as e:
         print(f"Papierkorb-Fehler: {e}")
-
 
     # --- SCHRITT 8: EXPLORER-EXORZISMUS (RAM-SIGNATUR) ---
     print("[!] Exorziere Explorer-Zombies...")
@@ -133,7 +149,6 @@ def run_shutdown():
         try:
             if proc.info['name'] and proc.info['name'].lower() == 'explorer.exe':
                 mem_mb = proc.info['memory_info'].rss / (1024 * 1024)
-                # Zombie-Check: Unter 75MB wird gelöscht
                 if mem_mb < 75: 
                     proc.kill()
         except: continue
@@ -142,7 +157,6 @@ def run_shutdown():
 
 if __name__ == "__main__":
     run_shutdown()
-
 
 
 

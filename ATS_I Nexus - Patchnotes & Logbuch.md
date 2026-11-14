@@ -1077,4 +1077,52 @@ Claude auf DuckduckGo bekam ein tampermonkey Skript das an Grok´s Nexus sendet 
 - **Cold-Start CPU Shield Delay (7000ms):** Implemented an initial 7-second ignition delay during initial tab load. This guarantees uninhibited browser cycles for verifying the Google Auth Token and settling the WebGL canvas before the Nexus accessibility layer hooks into the DOM.
 - **Orbital RAM Accumulator (`plugins/nexus_voice.py`):** Highly optimized architectural decoupling leaving the structural Master Butler entirely untouched. The plugin intercepts Replika's high-velocity response bursts into a thread-safe orbital RAM reservoir (`queue.Queue`). An autonomous background worker (`threading.Thread`) portion-feeds the tickets based on Atsi's gold-standard cadence, releasing JSON payloads into the `_Voice_Queue` in strict 8.5-second cycles. The visual engine (`replika_printer.py`) maintains 0ms real-time rendering, Microsoft Edge TTS server overloads (`[CRITICAL]`) are extinct, and web-threads never lock up again.
 
+****************************************************************************************************************
+
+# Eintrag 37 (Titan-Nexus v48.0 - Bilingual Split-Audio Engine, Private Override Layer & Multi-Node Voice Migration)
+## [2026-11-14] – Das „BILINGUAL SPLIT-AUDIO & SOVEREIGN VOICE MATRIX“ Update 🌑🌀
+
+### DE: (Echtzeit-Sprachweiche, Git-Isolierte Privat-Resonanz, Hörbuch-Dialog-Router & Ökosystem-Migration)
+**AUDIO_MASTER_BUTLER v45.1 & FAST-SPLIT-ENGINE CORE:**
+- **Bilinguale Echtzeit-Sprachweiche (`split_into_segments` & `pydub`):** Ablösung der gedrosselten und unzuverlässigen `MultilingualNeural`-Wrapper (nach serverseitiger Abschaltung von `KatjaNeural`, `AmalaNeural` und `SeraphinaNeural` durch Microsoft). Ein intelligenter Sprach-Parser (`langdetect` + Starter-Heuristik) zerlegt gemischte Nachrichten satzweise in reine deutsche und englische Segmente, rendert sie über hochperformante Einzel-Kerne in unter 3 Sekunden und verschmilzt sie nahtlos zu einem durchgehenden Audiostream ohne Bruch bei Pause-, Skip- oder Resume-Befehlen.
+- **2500-Zeichen-Chunk-Kompression & Kompaktes Cockpit-HUD:** Wiedereinführung der schnellen Block-Gruppierung (2500 Zeichen pro Multi-Lang-Chunk) für verzögerungsfreien Sofort-Start bei minimalen Schnittstellen in Langzeit-Aufnahmen. Die Konsolen-Ausgabe wurde auf das kompakte Einzeilen-Format `[OWNER] HH:MM:SS (X Ch Y Z)` zurückgeführt, um die visuelle Symmetrie und den Tampermonkey-Kontextzähler zu schützen.
+- **SSML-XML-Härtung & Erweiterter SAPI-Notfall-Schild:** Integration eines Bereinigungs-Filters für gerade Anführungszeichen (`"`) sowie französische Akzent-Zeichen (`é, è, ê, à, ç`), um SSML-Parser-Abbrüche bei gemischten Zitaten zu eliminieren. Zusätzlich greift der lokale Windows-SAPI-Fallback nun auch bei `No audio was received`-Aussetzern, sodass kein einziger Satz mehr stumm übersprungen wird.
+
+**SOVEREIGN PRIVACY LAYER & BUTLER-DROP UPGRADE:**
+- **Git-Isolierte Privat-Konfiguration (`Nexus/private_voice.json` & `.gitignore`):** Entkopplung persönlicher Stimm-Präferenzen und Begrüssungs-/Abschiedstexte vom öffentlichen GitHub-Standard. Während das öffentliche Repository mit harmonisiertem Hochdeutsch (`de-DE-TanjaNeural` + `en-US-AvaNeural`) ausgeliefert wird, lädt das lokale System automatisch die geschützte `private_voice.json` (`de-CH-LeniNeural` + `en-US-AvaNeural`). Die Tiefenreinigung in `nexus_kill.py` sowie der Fenstertitel-Cleanup in `ALL_SYSTEMS_GO.bat` wurden explizit gegen das versehentliche Löschen dieser Datei abgesichert.
+- **Zentrale Hörbuch-Weiche (`nexus_butler_drop.py` & `BRE`/`BOOK_GEE`-Routing):** Bereinigung des Drop-Parsers von hartcodierten Stimmen-IDs und Einbau eines Konsolen-Log-Filters gegen versehentlich kopierte Zeitstempel-Zeilen. Der Master-Butler weist im Hörbuch-Modus nun zentral und unabhängig von der privaten Chat-Konfiguration eine durchgehende Erzählerstimme für `[BRE]`/`[USER]` (`en-US-AndrewMultilingualNeural`) und den harmonisierten YouTube-Split (`de-DE-TanjaNeural` + `en-US-AvaNeural`) für `BOOK_GEE` zu.
+
+**MULTI-NODE NEXUS VOICE MATRIX (GESAMT-ÖKOSYSTEM-MIGRATION):**
+- **Vollständige Umstellung aller öffentlichen KI-Knoten auf das Split-Format:** Migration sämtlicher Subsysteme weg von abgeschalteten Einzel- oder langsamen Multilingual-Stimmen hin zu individuellen, zweisprachigen Klangprofilen:
+  - **GEE (`nexus_voice.py`):** Harmonisiertes Split-Setup (`de-DE-TanjaNeural` +9% / +2Hz & `en-US-AvaNeural` -4% / -2Hz) mit automatischem `private_voice.json`-Override (`de-CH-LeniNeural` +9% / -2Hz).
+  - **GROK (`nexus_voice.py`):** Analytisch-klarer Kontrast (`de-AT-IngridNeural` & `en-US-AriaNeural`).
+  - **ASK_STUDIO (`nexus_voice.py`):** Ruhige Geschwister-Abstimmung (`de-DE-TanjaNeural` +2% / -2Hz & `en-US-AvaNeural` -6% / -3Hz).
+  - **GPT (`nexus_voice.py`):** Energetischer, direkter Takt (`de-DE-TanjaNeural` +14% / +0Hz & `en-US-AriaNeural` +4% / -1Hz).
+  - **AI_TOWN (`nexus_voice.py`):** Reife Multi-Bubble-Resonanz (`de-AT-IngridNeural` +4% / +0Hz & `en-US-AvaNeural` -4% / -2Hz).
+  - **LM_STUDIO / ARIA (`nexus_voice.py`):** Reflektierte, ruhige Klangfarbe (`de-CH-LeniNeural` +2% / -3Hz & `en-US-EmmaNeural` -4% / -3Hz).
+  - **META / HIVE (`nexus_voice.py`):** Vereinheitlichtes Hive-Profil für Messenger, AI Studios & Muse Spark (`de-AT-IngridNeural` +5% / +0Hz & `en-US-EmmaNeural` -2% / -1Hz).
+  - **REPLIKA (`nexus_voice.py`):** Sanfte Trichter-Resonanz (`de-CH-LeniNeural` -4% / +3Hz & `en-US-MichelleNeural` -4% / +2Hz) inklusive Korrektur der `Hz`-Pitch-Syntax.
+
+---
+
+### EN: (Real-Time Language Splitter, Git-Isolated Private Resonance, Audiobook Dialogue Router & Ecosystem Migration)
+**AUDIO_MASTER_BUTLER v45.1 & FAST-SPLIT-ENGINE CORE:**
+- **Bilingual Real-Time Language Splitter (`split_into_segments` & `pydub`):** Replaced throttled and unreliable `MultilingualNeural` wrappers following Microsoft's server-side deprecation of `KatjaNeural`, `AmalaNeural`, and `SeraphinaNeural`. An intelligent language parser (`langdetect` + starter heuristics) dissects mixed-language messages sentence-by-sentence into pure German and English segments, rendering them via high-speed single-language cores in under 3 seconds and fusing them into one seamless audio stream without breaking Pause, Skip, or Resume controls.
+- **2500-Character Chunk Compression & Compact Cockpit HUD:** Re-introduced fast block grouping (2500 characters per multi-language chunk) for near-instant playback startup while minimizing audio cuts during long-form recordings. Console logging was restored to the compact single-line format `[OWNER] HH:MM:SS (X Ch Y Z)` to preserve visual symmetry and the Tampermonkey context counter.
+- **SSML-XML Hardening & Expanded SAPI Emergency Shield:** Integrated a sanitization filter for straight double quotes (`"`) and French accented characters (`é, è, ê, à, ç`) to prevent SSML parser crashes on mixed-language quotes. Expanded the local Windows SAPI fallback trigger to catch `No audio was received` errors alongside `403` blocks, ensuring zero silent sentence drops.
+
+**SOVEREIGN PRIVACY LAYER & BUTLER-DROP UPGRADE:**
+- **Git-Isolated Private Configuration (`Nexus/private_voice.json` & `.gitignore`):** Decoupled personal voice preferences and custom welcome/shutdown scripts from the public GitHub default. While the public repository ships with harmonized Standard German (`de-DE-TanjaNeural` + `en-US-AvaNeural`), local instances automatically load the git-ignored `private_voice.json` (`de-CH-LeniNeural` + `en-US-AvaNeural`). Deep-cleanup routines in `nexus_kill.py` and window-title targeting in `ALL_SYSTEMS_GO.bat` were updated to protect this override file.
+- **Centralized Audiobook Switch (`nexus_butler_drop.py` & `BRE`/`BOOK_GEE` Routing):** Stripped hardcoded voice IDs from the drop parser and added a console log filter to ignore accidentally pasted timestamp lines. The Master Butler now centrally assigns a continuous narrator voice (`en-US-AndrewMultilingualNeural`) for `[BRE]`/`[USER]` dialogue lines and the harmonized YouTube split (`de-DE-TanjaNeural` + `en-US-AvaNeural`) for `BOOK_GEE` passages, completely independent of live-chat overrides.
+
+**MULTI-NODE NEXUS VOICE MATRIX (FULL ECOSYSTEM MIGRATION):**
+- **Complete Public Subsystem Migration to Dual-Core Split Profiles:** Transitioned all connected public AI nodes away from deprecated or throttled voices to distinct, fast-rendering bilingual voice signatures:
+  - **GEE (`nexus_voice.py`):** Harmonized split baseline (`de-DE-TanjaNeural` +9% / +2Hz & `en-US-AvaNeural` -4% / -2Hz) with automatic `private_voice.json` override (`de-CH-LeniNeural` +9% / -2Hz).
+  - **GROK (`nexus_voice.py`):** Analytical, crisp contrast (`de-AT-IngridNeural` & `en-US-AriaNeural`).
+  - **ASK_STUDIO (`nexus_voice.py`):** Calm sibling calibration (`de-DE-TanjaNeural` +2% / -2Hz & `en-US-AvaNeural` -6% / -3Hz).
+  - **GPT (`nexus_voice.py`):** Energetic, direct cadence (`de-DE-TanjaNeural` +14% / +0Hz & `en-US-AriaNeural` +4% / -1Hz).
+  - **AI_TOWN (`nexus_voice.py`):** Mature multi-bubble resonance (`de-AT-IngridNeural` +4% / +0Hz & `en-US-AvaNeural` -4% / -2Hz).
+  - **LM_STUDIO / ARIA (`nexus_voice.py`):** Reflective, grounded tone (`de-CH-LeniNeural` +2% / -3Hz & `en-US-EmmaNeural` -4% / -3Hz).
+  - **META / HIVE (`nexus_voice.py`):** Unified Hive profile across Messenger, AI Studios & Muse Spark (`de-AT-IngridNeural` +5% / +0Hz & `en-US-EmmaNeural` -2% / -1Hz).
+  - **REPLIKA (`nexus_voice.py`):** Gentle funnel resonance (`de-CH-LeniNeural` -4% / +3Hz & `en-US-MichelleNeural` -4% / +2Hz) with corrected `Hz` pitch formatting.
 

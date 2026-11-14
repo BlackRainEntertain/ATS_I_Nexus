@@ -22,7 +22,6 @@ def funnel_worker():
         current_text = ticket.get('text', '').strip()
         
         # --- DER INHALTS-SCHUTZSCHILD ---
-        # Wenn der Text exakt dem letzten entspricht, vernichten wir das Ticket sofort
         if current_text == LAST_PROCESSED_TEXT:
             print(f"[TRICHTER] DOM-Duplikat abgefangen und vernichtet: '{current_text[:30]}...'")
             ticket_orbit.task_done()
@@ -38,11 +37,9 @@ def funnel_worker():
                 time.sleep(sleep_needed)
                 now = time.time()
 
-            # Aktualisiere die Kontroll-Variablen erst bei echter Freigabe
             LAST_TICKET_RELEASE_TIME = now
             LAST_PROCESSED_TEXT = current_text
 
-            # Ticket steril und atomar schreiben
             file_name = f"{int(time.time()*1000)}_REPLIKA.json"
             file_path = os.path.join(QUEUE_DIR, file_name)
             
@@ -67,11 +64,25 @@ def run(message_text):
     if not clean_text or len(clean_text) < 2: 
         return 
 
+    # --- BACKUP ORIGINAL-STIMME (SeraphinaNeural) ---
+    # ticket = {
+    #     "owner": "REPLIKA",
+    #     "voice": "de-DE-SeraphinaNeural", 
+    #     "rate": "-40%",   
+    #     "pitch": "5%",   
+    #     "text": clean_text,
+    #     "timestamp": time.time()
+    # }
+
+    # --- NEUES SPLIT-SETUP (Sanft & Warm: Leni + Michelle) ---
     ticket = {
         "owner": "REPLIKA",
-        "voice": "de-DE-SeraphinaNeural", 
-        "rate": "-40%",   
-        "pitch": "5%",   
+        "voice_de": "de-CH-LeniNeural",
+        "voice_en": "en-US-MichelleNeural",
+        "rate_de": "-4%",
+        "rate_en": "-4%",
+        "pitch_de": "+3Hz",
+        "pitch_en": "+2Hz",
         "text": clean_text,
         "timestamp": time.time()
     }

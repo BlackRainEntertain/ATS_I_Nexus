@@ -6,7 +6,7 @@ import win32com.client  # Notfall-Ausweich-Kern
 
 CURRENT_RAM_COUNT = 0  # Globaler Zähler im schnellen Arbeitsspeicher
 
-os.system("title AUDIO_MASTER_BUTLER_V43.9_TITAN_ULTRA")
+os.system("title AUDIO_MASTER_BUTLER_V45.0_SPLIT_TITAN")
 console = Console()
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 Q_DIR = os.path.join(BASE_DIR, "_Voice_Queue")
@@ -19,132 +19,253 @@ LIMIT_FILE = os.path.join(BASE_DIR, "GEE_CONTEXT_LIMIT.txt")
 for d in [SAFE_DIR, Q_DIR, CACHE_DIR]:
     if not os.path.exists(d): os.makedirs(d)
 
+
 async def speak_and_wait(ticket):
     global CURRENT_RAM_COUNT  
-    full_text = re.sub(r'[={}_#<>]', ' ', ticket.get('text', ''))
+    raw_cleaned = re.sub(r'[={}_#<>"]', ' ', ticket.get('text', ''))
+    full_text = raw_cleaned.translate(str.maketrans("éèêëàâîïôûçÉÈÊËÀÂÎÏÔÛÇ", "eeeeaaiiouçEEEEAAIIOUC"))
     
     if "RESET_SIGNAL" in full_text: 
         return "FINISHED"
 
+
     owner_key = ticket.get('owner', 'UNKNOWN').upper()
     raw_sender = ticket.get('sender')
     display_name = (raw_sender if raw_sender else owner_key).upper()
-    
-    voice = ticket.get('voice', 'de-DE-KatjaNeural')
-    chunks = [full_text[i:i+5000] for i in range(0, len(full_text), 5000)]
     
     colors = {"GEE": "bright_blue", "NEXUS": "cyan", "META": "magenta", "ATSI": "bright_cyan", "GROK": "#FFEE00"}
     color = colors.get(owner_key, "white") 
     
     uhrzeit = datetime.now().strftime("%H:%M:%S")
     safe_preview = escape(full_text[:60].replace("\n", " "))
-    
-    console.print(f"[bold {color}][{display_name}][/bold {color}] [grey]{uhrzeit}[/grey] ({len(chunks)} Ch {CURRENT_RAM_COUNT} Z): \"{safe_preview}...\"")
 
+    # Alte Cache-Dateien dieses Owners aufräumen
     for f in os.listdir(CACHE_DIR):
-        if f.startswith(f"voice_{owner_key}_") and not f.endswith("_0.mp3") and f.endswith(".mp3"):
+        if f.startswith(f"voice_{owner_key}_") and f.endswith(".mp3"):
             try: os.remove(os.path.join(CACHE_DIR, f))
             except: pass
 
-    for idx, chunk in enumerate(chunks):
-        if not chunk.strip(): continue
-        temp_mp3 = os.path.abspath(os.path.join(CACHE_DIR, f"voice_{owner_key}_{idx}.mp3"))
-        
+    # =======================================================================
+    # ZENTRALE STIMMEN-ZUWEISUNG IM BUTLER (v45.4 - Stability & Smooth Audio)
+    # =======================================================================
+    single_voice = ticket.get('voice', 'de-DE-TanjaNeural')
+
+    if owner_key == "BRE" and not ticket.get('voice_de'):
+        voice_de = None
+        voice_en = None
+        single_voice = "en-US-AndrewMultilingualNeural"
+        ticket['rate'] = "+4%"
+        ticket['pitch'] = "+0Hz"
+    elif owner_key == "BOOK_GEE" and not ticket.get('voice_de'):
+        voice_de = "de-CH-LeniNeural"
+        voice_en = "en-US-AvaNeural"
+        rate_de, rate_en = "+9%", "-4%"
+        pitch_de, pitch_en = "-2Hz", "-2Hz"
+    else:
+        voice_de = ticket.get('voice_de')
+        voice_en = ticket.get('voice_en')
+        rate_de  = ticket.get('rate_de', '+9%')
+        rate_en  = ticket.get('rate_en', '-4%')
+        pitch_de = ticket.get('pitch_de', '+2Hz')
+        pitch_en = ticket.get('pitch_en', '-2Hz')
+
+    use_split = bool(voice_de and voice_en)
+
+
+
+    try:
+        from pydub import AudioSegment
+        from io import BytesIO
+        import langdetect
+    except ImportError:
+        console.print("[bold red][CRITICAL][/bold red] pydub oder langdetect fehlt! → pip install pydub langdetect")
+        return "FINISHED"
+
+    async def generate_audio(text, voice, rate, pitch):
         try:
-            if os.path.exists(temp_mp3):
-                try:
-                    with open(temp_mp3, 'a'): pass 
-                except IOError:
-                    subprocess.run("taskkill /f /t /im pwsh.exe", shell=True, capture_output=True)
-                    subprocess.run("taskkill /f /t /im powershell.exe", shell=True, capture_output=True)
-                    await asyncio.sleep(0.2)
+            communicate = edge_tts.Communicate(text, voice, rate=rate, pitch=pitch)
+            audio_data = b""
+            async for chunk in communicate.stream():
+                if chunk["type"] == "audio":
+                    audio_data += chunk["data"]
+            return AudioSegment.from_file(BytesIO(audio_data), format="mp3")
 
-            # =======================================================================
-            # PRIMÄRER STRANG: CLOUD-GENERIERUNG (EDGE-TTS)
-            # =======================================================================
-            try:
-                await edge_tts.Communicate(chunk, voice, rate="+15%").save(temp_mp3)
-            
-            except Exception as edge_err:
-                # =======================================================================
-                # ABSOLUTE NOTFALL-AUSWEICH-AUTOMATIK (ARCHITEKT-BYPASS v1.1 - KATJA-FIX)
-                # =======================================================================
-                err_msg = str(edge_err)
-                if "403" in err_msg or "response status" in err_msg.lower():
-                    console.print(f"[bold yellow][WARN][/bold yellow] Cloud-Blockade (403) bei {owner_key} erkannt. Schalte lokale Katja ein...")
-                    
-                    speaker = win32com.client.Dispatch("SAPI.SpVoice")
-                    
-                    # --- GEZIELTE STIMMEN-AUSWAHL ---
-                    # Wir scannen die soeben freigeschalteten lokalen Systemstimmen
-                    found_voice = False
+        except Exception as edge_err:
+            err_msg = str(edge_err)
+            if "403" in err_msg or "response status" in err_msg.lower():
+                console.print(f"[bold yellow][WARN][/bold yellow] Cloud-Blockade (403) bei {owner_key} erkannt. Schalte lokale SAPI ein...")
+                
+                speaker = win32com.client.Dispatch("SAPI.SpVoice")
+                found_voice = False
+                for v in speaker.GetVoices():
+                    if "Katja" in v.GetDescription() or "Amala" in v.GetDescription() or "Stefan" in v.GetDescription():
+                        speaker.Voice = v
+                        found_voice = True
+                        break
+                
+                if not found_voice:
                     for v in speaker.GetVoices():
-                        if "Katja" in v.GetDescription() or "MSTTS_V110_deDE_Katja" in v.GetDescription():
+                        if "Hedda" in v.GetDescription() or "German" in v.GetDescription():
                             speaker.Voice = v
-                            found_voice = True
                             break
-                    
-                    # Falls Katja nicht greift, nehmen wir Stefan als Backup vor Hedda
-                    if not found_voice:
-                        for v in speaker.GetVoices():
-                            if "Stefan" in v.GetDescription():
-                                speaker.Voice = v
-                                break
-                    
-                    filestream = win32com.client.Dispatch("SAPI.SpFileStream")
-                    filestream.Open(temp_mp3, 3, False)  # 3 = SSFMCreateForWrite
-                    speaker.AudioOutputStream = filestream
-                    
-                    speaker.Speak(chunk)
-                    filestream.Close()
-                    
-                    console.print(f"[bold green][SUCCESS][/bold green] Notfall-Audio über lokale Katja-Struktur generiert.")
-                else:
-                    raise edge_err
+                
+                temp_sapi = os.path.join(CACHE_DIR, f"sapi_fallback_{owner_key}.wav")
+                filestream = win32com.client.Dispatch("SAPI.SpFileStream")
+                filestream.Open(temp_sapi, 3, False)
+                speaker.AudioOutputStream = filestream
+                speaker.Speak(text)
+                filestream.Close()
+                
+                console.print(f"[bold green][SUCCESS][/bold green] Notfall-Audio über lokale SAPI generiert.")
+                return AudioSegment.from_file(temp_sapi, format="wav")
+            else:
+                raise edge_err
 
-            # =======================================================================
-            # --- TITAN-BYPASS v44.8 (FFPLAY-DIRECT) ---
-            # =======================================================================
-            ffplay_path = os.path.join(BASE_DIR, "ffplay.exe")
-            cmd = [
-                ffplay_path, "-nodisp", "-autoexit", 
-                "-hide_banner", "-loglevel", "error", temp_mp3
-            ]
+    def split_into_segments(text):
+        parts = re.split(r'(?<=[.!?])\s+|\n+', text.strip())
+        english_starters = [
+            "meanwhile", "the", "and", "this", "that", "however", "finally",
+            "now", "here", "there", "when", "while", "although", "because",
+            "across", "whether", "once", "after", "before", "during", "if",
+            "but", "yet", "even", "only"
+        ]
+
+        segments = []
+        current_lang = "de"
+
+        for part in parts:
+            part = part.strip()
+            if not part:
+                continue
+
+            lower = part.lower()
+            first_word = lower.split() if lower.split() else ""
+
+            if first_word in english_starters:
+                lang = "en"
+            else:
+                try:
+                    detected = langdetect.detect(part)
+                    lang = "en" if detected.startswith("en") else "de"
+                except:
+                    lang = current_lang
+
+            english_indicators = ["the", "and", "of", "to", "in", "is", "that", "for", "it", "with", "as", "on", "at"]
+            words = lower.split()
+            if len(words) > 6:
+                en_count = sum(1 for w in words if w in english_indicators)
+                if en_count >= 4:
+                    lang = "en"
+
+            segments.append((lang, part))
+            current_lang = lang
+
+        return segments
+
+    # =======================================================================
+    # AUDIO IN SCHNELLEN CHUNKS ZUSAMMENBAUEN & ABSPIELEN
+    # =======================================================================
+    ffplay_path = os.path.join(BASE_DIR, "ffplay.exe")
+
+    async def play_segment_audio(audio_seg, block_idx):
+        if len(audio_seg) == 0:
+            return "CONTINUE"
+        temp_mp3 = os.path.abspath(os.path.join(CACHE_DIR, f"voice_{owner_key}_{block_idx}.mp3"))
+        audio_seg.export(temp_mp3, format="mp3")
+
+        cmd = [ffplay_path, "-nodisp", "-autoexit", "-hide_banner", "-loglevel", "error", temp_mp3]
+        proc = subprocess.Popen(cmd, creationflags=0x08000000)
+        start_time = time.time()
+
+        while proc.poll() is None:
+            if (time.time() - start_time) > 600:
+                proc.terminate()
+                break
+            if os.path.exists(P_FILE):
+                proc.terminate()
+                return "PAUSED"
+            if os.path.exists(N_FILE):
+                proc.terminate()
+                return "SKIPPED"
+            await asyncio.sleep(0.2)
+
+        try:
+            if os.path.exists(temp_mp3): os.remove(temp_mp3)
+        except: pass
+        return "CONTINUE"
+
+    if use_split:
+        raw_segments = split_into_segments(full_text)
+        text_chunks = []
+        current_chunk = []
+        current_len = 0
+
+        for lang, seg_text in raw_segments:
+            if not re.search(r'[a-zA-ZäöüÄÖÜß]', seg_text):
+                continue
+            current_chunk.append((lang, seg_text))
+            current_len += len(seg_text)
+            if current_len >= 1500:
+                text_chunks.append(current_chunk)
+                current_chunk = []
+                current_len = 0
+        if current_chunk:
+            text_chunks.append(current_chunk)
+
+        chunk_count = max(1, len(text_chunks))
+        console.print(f"[bold {color}][{display_name}][/bold {color}] [grey]{uhrzeit}[/grey] ({chunk_count} Ch {CURRENT_RAM_COUNT} Z): \"{safe_preview}...\"")
+
+        for c_idx, chunk_segments in enumerate(text_chunks):
+            combined_chunk = AudioSegment.empty()
+            for lang, seg_text in chunk_segments:
+                voice, rate, pitch = (voice_de, rate_de, pitch_de) if lang.startswith("de") else (voice_en, rate_en, pitch_en)
+                try:
+                    combined_chunk += await generate_audio(seg_text, voice, rate, pitch)
+                except Exception as e:
+                    console.print(f"[bold yellow]Segment-Fehler ({lang}): {e}[/bold yellow]")
             
-            proc = subprocess.Popen(cmd, creationflags=0x08000000)
-            start_time = time.time()
-            max_safety_timeout = 600 
-
-            while proc.poll() is None:
-                if (time.time() - start_time) > max_safety_timeout:
-                    console.print("[bold red][TIMEOUT][/bold red] Sicherheitsstopp (10min überschritten).")
-                    proc.terminate()
-                    break
-                
-                if os.path.exists(P_FILE): 
-                    proc.terminate()
-                    return "PAUSED"
-                
-                if os.path.exists(N_FILE):
-                    proc.terminate()
-                    return "SKIPPED"
-                
-                await asyncio.sleep(0.3)
-
-            if idx > 0 and os.path.exists(temp_mp3):
-                try: os.remove(temp_mp3)
-                except: pass
-
+            play_status = await play_segment_audio(combined_chunk, c_idx)
+            if play_status in ["PAUSED", "SKIPPED"]:
+                return play_status
+    else:
+        console.print(f"[bold {color}][{display_name}][/bold {color}] [grey]{uhrzeit}[/grey] (1 Ch {CURRENT_RAM_COUNT} Z): \"{safe_preview}...\"")
+        rate = ticket.get('rate', '+9%')
+        pitch = ticket.get('pitch', '+2Hz')
+        try:
+            audio = await generate_audio(full_text, single_voice, rate, pitch)
+            play_status = await play_segment_audio(audio, 0)
+            if play_status in ["PAUSED", "SKIPPED"]:
+                return play_status
         except Exception as e:
-            console.print(f"[bold red][CRITICAL][/bold red] Pipeline komplett blockiert: {e}")
-            continue
+            console.print(f"[bold red]TTS-Fehler: {e}[/bold red]")
+
     return "FINISHED"
+
 
 async def main_loop():
     global CURRENT_RAM_COUNT  
-    console.print("[bold green][CHECK][/bold green] Titan-Butler v44.0 (Ultra: Context-Guard) Online.")
+    console.print("[bold green][CHECK][/bold green] Titan-Butler v45.1 (Fast-Split-Engine) Online.")
     await asyncio.sleep(2) 
-    await speak_and_wait({"text": "System online. Ich höre dich, Architekt.", "owner": "GEE"})
+
+    cfg = {
+        "voice_de": "de-DE-TanjaNeural",
+        "rate_de": "+9%",
+        "pitch_de": "+2Hz",
+        "welcome_text": "System online. Ich höre dich, Architekt."
+    }
+    priv_path = os.path.join(BASE_DIR, "private_voice.json")
+    if os.path.exists(priv_path):
+        try:
+            with open(priv_path, "r", encoding="utf-8") as f: cfg.update(json.load(f))
+        except: pass
+
+    await speak_and_wait({
+        "text": cfg["welcome_text"],
+        "owner": "GEE",
+        "voice": cfg["voice_de"],
+        "rate": cfg["rate_de"],
+        "pitch": cfg["pitch_de"]
+    })
 
     while True:
         file_path = "" 
@@ -240,3 +361,4 @@ async def main_loop():
 
 if __name__ == "__main__":
     asyncio.run(main_loop())
+

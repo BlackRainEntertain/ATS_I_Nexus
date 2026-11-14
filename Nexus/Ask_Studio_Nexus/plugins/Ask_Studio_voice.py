@@ -15,12 +15,25 @@ def run(message_text):
     if not clean_text or len(clean_text) < 2:
         return 
 
-    # Ticket-Erstellung (STUDIO-RESONANZ)
+    # --- BACKUP ORIGINAL-STIMME (KatjaNeural) ---
+    # ticket = {
+    #     "owner": "ASK_STUDIO",
+    #     "voice": "de-DE-KatjaNeural", 
+    #     "rate": "-10%",
+    #     "pitch": "0%",
+    #     "text": clean_text,
+    #     "timestamp": time.time()
+    # }
+
+    # --- NEUES SPLIT-SETUP (Geschwister-Abstimmung: Tanja & Ava Ruhig) ---
     ticket = {
         "owner": "ASK_STUDIO",
-        "voice": "de-DE-KatjaNeural", 
-        "rate": "-10%",
-        "pitch": "0%",
+        "voice_de": "de-DE-TanjaNeural",
+        "voice_en": "en-US-AvaNeural",
+        "rate_de": "+2%",
+        "rate_en": "-6%",
+        "pitch_de": "-2Hz",
+        "pitch_en": "-3Hz",
         "text": clean_text,
         "timestamp": time.time()
     }

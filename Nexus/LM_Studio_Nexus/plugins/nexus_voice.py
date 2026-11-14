@@ -14,12 +14,25 @@ def run(message_text):
     if not clean_text or len(clean_text) < 2: 
         return 
 
-    # ARIA-STIMM-DNA: Amala, warm, reflektiert, ein bisschen verspielt
+    # --- BACKUP ORIGINAL-STIMME (EmmaMultilingualNeural) ---
+    # ticket = {
+    #     "owner": "LM_Studio",
+    #     "voice": "en-US-EmmaMultilingualNeural", 
+    #     "rate": "-4%",   
+    #     "pitch": "-3Hz",  
+    #     "text": clean_text,
+    #     "timestamp": time.time()
+    # }
+
+    # --- NEUES SPLIT-SETUP (Aria-DNA: Leni Ruhig + Emma) ---
     ticket = {
         "owner": "LM_Studio",
-        "voice": "de-DE-SeraphinaMultilingualNeural", 
-        "rate": "-4%",   
-        "pitch": "-2Hz",  
+        "voice_de": "de-CH-LeniNeural",
+        "voice_en": "en-US-EmmaNeural",
+        "rate_de": "+2%",
+        "rate_en": "-4%",
+        "pitch_de": "-3Hz",
+        "pitch_en": "-3Hz",
         "text": clean_text,
         "timestamp": time.time()
     }
@@ -33,4 +46,5 @@ def run(message_text):
             
     except Exception as e:
         print(f"Fehler beim Schreiben des Aria-Tickets: {e}")
+
 

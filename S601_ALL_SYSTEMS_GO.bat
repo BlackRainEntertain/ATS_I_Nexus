@@ -8,7 +8,7 @@ title NEXUS_ALL_SYSTEMS_GO_v6.8_EXCLUSIVE_SESSION
 color 0b
 
 echo [!] Komplette System-Reinigung (Tabula Rasa)...
-taskkill /F /FI "WINDOWTITLE eq AUDIO_MASTER_BUTLER_V43.9_TITAN_ULTRA" /T >nul 2>&1
+taskkill /F /FI "WINDOWTITLE eq AUDIO_MASTER_BUTLER_V45.0_SPLIT_TITAN" /T >nul 2>&1
 taskkill /F /IM python.exe /IM pythonw.exe /IM powershell.exe /IM pwsh.exe /IM ffplay.exe /T >nul 2>&1
 
 :: Räumt hängende Explorer-Zombies auf

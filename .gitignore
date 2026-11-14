@@ -44,6 +44,7 @@ Nexus/*.mp3
 Nexus/GEE_CONTEXT_LIMIT.txt
 Nexus/NEXUS_PAUSE.tmp
 Nexus/NEXUS_NEXT.tmp
+Nexus/private_voice.json
 
 # --- AUDIO-CACHE SCHUTZ (v44.2) ---
 Nexus/_Audio_Cache/*

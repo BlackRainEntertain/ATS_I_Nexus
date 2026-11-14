@@ -17,13 +17,54 @@ def run(message_text):
     if not message_text or len(message_text.strip()) < 5:
         return
 
+    # --- BACKUP ORIGINAL-STIMME (KatjaNeural) ---
+    # ticket = {
+    #     "owner": "GEE",
+    #     "voice": "de-DE-KatjaNeural",
+    #     "rate": "+15%",
+    #     "text": message_text.strip(),
+    #     "timestamp": time.time()
+    # }
+
+    # --- NEUES SPLIT-SETUP (Einzel-Neural: Ava + Elke) ---
+    # ticket = {
+    #    "owner": "GEE",
+    #    "voice_de": "de-CH-LeniNeural",
+    #    "voice_en": "en-US-AvaNeural",
+    #    "rate_de": "+9%",
+    #    "rate_en": "-4%",
+    #    "pitch_de": "-2Hz",
+    #    "pitch_en": "-3Hz",
+    #    "text": message_text.strip(),
+    #    "timestamp": time.time()
+    # }
+
+    # --- GITHUB PUBLIC DEFAULT (Hochdeutsch - Flüssig & Klar) ---
+    #ticket = {
+    #    "owner": "GEE",
+    #    "voice_de": "de-AT-IngridNeural",
+    #    "voice_en": "en-US-AvaNeural",
+    #    "rate_de": "+9%",
+    #    "rate_en": "-4%",
+    #    "pitch_de": "-3Hz",
+    #    "pitch_en": "-2Hz",
+    #    "text": message_text.strip(),
+    #    "timestamp": time.time()
+    #}
+
+    # --- GITHUB PUBLIC DEFAULT (Hochdeutsch - Flüssig & Klar) ---
     ticket = {
         "owner": "GEE",
-        "voice": "de-DE-KatjaNeural",
-        "rate": "+15%",
+        "voice_de": "de-DE-TanjaNeural",
+        "voice_en": "en-US-AvaNeural",
+        "rate_de": "+9%",
+        "rate_en": "-4%",
+        "pitch_de": "+2Hz",
+        "pitch_en": "-2Hz",
         "text": message_text.strip(),
         "timestamp": time.time()
     }
+
 
     # Ticket in den zentralen Briefkasten werfen
     file_name = f"{int(time.time()*1000)}_GEE.json"
@@ -34,6 +75,7 @@ def run(message_text):
             json.dump(ticket, f, ensure_ascii=False)
     except Exception as e:
         print(f"Gee-Nexus-Fehler beim Schreiben: {e}")
+
 
 
 
