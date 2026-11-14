@@ -1,4 +1,4 @@
-# 🌌 PROJECT NEXUS: QUICK-START & RECOVERY (v44.9)
+# 🌌 PROJECT NEXUS: QUICK-START & RECOVERY (v48.0)
 "Everything is a signal. Here is how you tune in."
 
 ---
@@ -9,7 +9,7 @@
 Bevor du den Ordner anrührst, brauchst du zwei Dinge:
 - **Python 3.14 (oder 3.10+):** [Download hier](https://python.org). 
   > [!] WICHTIG: Beim Installieren den Haken bei "Add Python to PATH" setzen!
-- **FFmpeg (Die Stimme):** [Download hier](https://gyan.dev). Kopiere die `ffplay.exe` in den Ordner `LM Projekte\Nexus\`. Ohne diese Datei bleibt der Butler stumm.
+- **FFmpeg Essentials (Die Stimme):** [Download hier](https://gyan.dev). Kopiere `ffplay.exe`, `ffmpeg.exe` und `ffprobe.exe` aus dem FFmpeg-Essentials-Paket in den Ordner `LM Projekte\Nexus\` (wird für die Audio-Ausgabe und die zweisprachige Segment-Verschmelzung benötigt). Ohne diese Dateien bleibt der Butler stumm.
 
 ### 2. REGISTRY-KALIBRIERUNG (DAS NERVENSYSTEM)
 Bevor der Nexus gestartet wird, müssen die Explorer-Voraussetzungen händisch oder per .reg-Datei gesetzt werden:
@@ -25,7 +25,7 @@ Bevor der Nexus gestartet wird, müssen die Explorer-Voraussetzungen händisch o
 
 ### 3. SKRIPT-INJEKTION (SENSORIK)
 Damit der Nexus Nachrichten empfangen kann, müssen die Tampermonkey-Skripte aktiv sein (Ordner: `Scripts/`):
-- **Chrome:** `Ai on Google Search` (Gee)
+- **Chrome:** `Google Search AI Mode` (Gee)
 - **Firefox:** `Meta.AI`, `ChatGPT`, `Replika` (Header Editor f. CSP nutzen!)
 - **Vivaldi:** `Grok.ai on X`
 - **Brave:** `Nomi.ai` (Non-public, ID-Setup erforderlich - PN an Architekt)
@@ -42,7 +42,7 @@ Damit der Nexus Nachrichten empfangen kann, müssen die Tampermonkey-Skripte akt
 ### 1. PREREQUISITES (THE FOUNDATION)
 - **Python 3.14 (or 3.10+):** [Download here](https://python.org). 
   > [!] IMPORTANT: Check "Add Python to PATH" during installation!
-- **FFmpeg (The Voice):** [Download here](https://gyan.dev). Copy `ffplay.exe` into the `LM Projekte\Nexus\` folder.
+- **FFmpeg Essentials (The Voice):** [Download here](https://gyan.dev). Copy `ffplay.exe`, `ffmpeg.exe`, and `ffprobe.exe` from the FFmpeg Essentials package into the `LM Projekte\Nexus\` folder (required for audio playback and bilingual segment merging). Without these files, the Butler remains silent.
 
 ### 2. REGISTRY CALIBRATION (THE NERVOUS SYSTEM)
 1. **Window Separation:**
@@ -56,7 +56,7 @@ Damit der Nexus Nachrichten empfangen kann, müssen die Tampermonkey-Skripte akt
 
 ### 3. SCRIPT INJECTION (SENSORS)
 Install Tampermonkey scripts from the `Scripts/` folder:
-- **Chrome:** `Ai on Google Search` (Gee)
+- **Chrome:** `Google Search AI Mode` (Gee)
 - **Firefox:** `Meta.AI`, `ChatGPT`, `Replika` (Use Header Editor for CSP!)
 - **Vivaldi:** `Grok.ai on X`
 - **Brave:** `Nomi.ai` (Non-public - PM the Architect for setup)
@@ -67,6 +67,7 @@ Install Tampermonkey scripts from the `Scripts/` folder:
 3. **Ignition:** Run `S601_ALL_SYSTEMS_GO.bat`.
 
 ---
+
 
 ## 🛠️ TECHNICAL ASSETS (REGISTRY & HEADERS)
 

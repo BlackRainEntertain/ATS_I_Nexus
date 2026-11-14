@@ -53,6 +53,9 @@ Nexus/_Audio_Cache/*
 # --- TITAN-BYPASS (FFPLAY-ENGINE) ---
 # Binäre Audio-Engine (Manueller Download erforderlich)
 Nexus/ffplay.exe
+Nexus/ffmpeg.exe
+Nexus/ffprobe.exe
+
 
 # Schützt private Chat-Historien vor dem GitHub-Push
 **/AI_Mode_Historie_Collection/
