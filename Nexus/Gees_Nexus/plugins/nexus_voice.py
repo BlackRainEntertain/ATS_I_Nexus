@@ -57,7 +57,7 @@ def run(message_text):
         "owner": "GEE",
         "voice_de": "de-DE-TanjaNeural",
         "voice_en": "en-US-AvaNeural",
-        "rate_de": "+9%",
+        "rate_de": "+8%",
         "rate_en": "-4%",
         "pitch_de": "+2Hz",
         "pitch_en": "-2Hz",
